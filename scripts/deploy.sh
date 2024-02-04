@@ -28,5 +28,5 @@ echo ">>> DEPLOY_JAR 배포 시각: $(date '+%H:%M:%S')" >> /home/ubuntu/logs/de
 
 export $(grep -v '^#' /home/ubuntu/.env | xargs -d '\n' -n 1)
 # Java 어플리케이션 실행
-CURRENT_TIME=$(date '+%Y%m%d_%H시%M분%S초')
+CURRENT_TIME=$(date '+%Y%m%d_%H:%M:%S')
 nohup java -jar $DEPLOY_JAR >> "/home/ubuntu/logs/deploy/$CURRENT_TIME.log" 2>>"/home/ubuntu/logs/deploy_err/$CURRENT_TIME.log" &
