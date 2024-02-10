@@ -1,6 +1,10 @@
 server:
   port: 8080
-
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID
+      timeout: 30m
 spring:
   application:
     name: moongkl-here-admin-api
@@ -14,6 +18,11 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+  session:
+    store-type: redis
+    redis:
+      flush-mode: on_save # Sessions flush mode.
+      namespace: spring:session # Namespace for keys used to store sessions.
 
   jpa:
     open-in-view: false
@@ -22,6 +31,8 @@ spring:
     #database-platform: org.hibernate.dialect.MariaDB106Dialect
     hibernate:
       ddl-auto: ${SPRING_DATASOURCE_DDL-AUTO}
+      #MariaDB여도 SpringBoot3, MariaDB10.2에서 아래 설정을 사용해야함
+      dialect: org.hibernate.dialect.MySQLDialect
     properties:
       hibernate:
         jdbc:
@@ -30,3 +41,8 @@ spring:
         format_sql: true
     repositories:
       enabled: true
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
