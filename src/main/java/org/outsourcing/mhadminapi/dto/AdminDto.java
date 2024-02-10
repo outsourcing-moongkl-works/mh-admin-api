@@ -32,4 +32,28 @@ public class AdminDto {
         private String id; //id : UUID
         private String role;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class LoginAdminRequest {
+        private String adminId; //adminId : String
+        private String password;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class LoginAdminResponse {
+        private String id; //id : UUID
+        private String role;
+    }
+
+
 }
