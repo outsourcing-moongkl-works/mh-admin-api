@@ -8,7 +8,6 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 
 @SpringBootApplication
 @EnableJpaAuditing
-@EnableRedisHttpSession
 public class MhAdminApiApplication {
 
 	public static void main(String[] args) {

@@ -12,14 +12,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class UserDetailService implements UserDetailsService {
-
     @Autowired
     private AdminRepository adminRepository;
-
     @Override
-    public UserDetails loadUserByUsername(String adminId) throws UsernameNotFoundException {
-        Admin admin = adminRepository.findByAdminId(adminId).orElseThrow(
-                () -> new UsernameNotFoundException("Admin not found with id : " + adminId)
+    public UserDetails loadUserByUsername(String adminEmail) throws UsernameNotFoundException {
+        log.info("loadUserByUsername");
+        Admin admin = adminRepository.findByAdminEmail(adminEmail).orElseThrow(
+                () -> new UsernameNotFoundException("Admin not found with email : " + adminEmail)
         );
 
         return UserPrincipal.create(admin);

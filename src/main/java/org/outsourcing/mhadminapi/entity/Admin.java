@@ -27,13 +27,13 @@ public class Admin implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id", columnDefinition = "BINARY(16)")
+    @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
-    @Column(name = "admin_id", nullable = false, length = 50)
-    private String adminId;
+    @Column(name = "admin_email", nullable = false, length = 50)
+    private String adminEmail;
 
-    @Column(name = "password", length = 100)
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -56,8 +56,8 @@ public class Admin implements Serializable {
     }
 
     @Builder
-    public Admin(String adminId, String password, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.adminId = adminId;
+    public Admin(String adminEmail, String password, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.adminEmail = adminEmail;
         this.password = password;
         this.role = role;
         this.createdAt = createdAt;

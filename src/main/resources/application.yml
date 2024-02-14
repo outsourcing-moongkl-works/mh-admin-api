@@ -1,10 +1,5 @@
 server:
   port: 8080
-  servlet:
-    session:
-      cookie:
-        name: JSESSIONID
-      timeout: 30m
 spring:
   application:
     name: moongkl-here-admin-api
@@ -18,12 +13,6 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-  session:
-    store-type: redis
-    redis:
-      flush-mode: on_save # Sessions flush mode.
-      namespace: spring:session # Namespace for keys used to store sessions.
-
   jpa:
     open-in-view: false
     generate-ddl: true
@@ -46,3 +35,13 @@ cloud:
     credentials:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET}
+    expiration: ${APP_JWT_EXPIRATION}

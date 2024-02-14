@@ -26,12 +26,12 @@ public class SecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http    .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // swagger 경로 허용
-                        .requestMatchers("/admin/sign-up").permitAll() // 회원가입 경로 허용
-                        .requestMatchers("/admin/login").permitAll() // 로그인 경로 허용
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .logout(logout -> logout.logoutUrl("/admin/logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"))
                 ;
 
         return http.build();

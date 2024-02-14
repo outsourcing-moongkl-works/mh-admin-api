@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 
+//user 객체 생성
 public class UserPrincipal implements UserDetails {
     private Admin admin;
 
@@ -17,13 +17,15 @@ public class UserPrincipal implements UserDetails {
         this.admin = admin;
     }
 
+
     public Admin getAdmin() {
         return this.admin;
     }
 
-    public UUID getAdminId() {
-        return this.admin.getId();
+    public String getAdminId() {
+        return String.valueOf(this.admin.getId());
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(admin.getRole().getRoleName()));
@@ -36,7 +38,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return admin.getAdminId();
+        return admin.getAdminEmail();
     }
 
     @Override

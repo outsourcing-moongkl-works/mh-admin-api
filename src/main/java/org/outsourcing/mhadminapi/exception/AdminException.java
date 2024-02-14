@@ -7,4 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminException extends RuntimeException{
     private final AdminErrorResult adminErrorResult;
+    @Override
+    public String getMessage() {
+        return adminErrorResult.getMessage();
+    }
 }

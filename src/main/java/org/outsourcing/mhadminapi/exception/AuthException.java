@@ -7,4 +7,5 @@ public class AuthException extends RuntimeException{
     public AuthException(){
         super(HttpStatus.UNAUTHORIZED.toString());
     }
+
 }

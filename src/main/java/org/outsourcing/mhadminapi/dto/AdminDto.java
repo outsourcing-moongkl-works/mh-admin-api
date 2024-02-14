@@ -17,7 +17,7 @@ public class AdminDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CreateAdminRequest {
-        private String adminId; //adminId : String
+        private String adminEmail;
         private String password;
         private String role;
     }
@@ -29,7 +29,7 @@ public class AdminDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CreateAdminResponse {
-        private String id; //id : UUID
+        private String adminId;
         private String role;
     }
 
@@ -40,7 +40,7 @@ public class AdminDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class LoginAdminRequest {
-        private String adminId; //adminId : String
+        private String adminEmail;
         private String password;
     }
 
@@ -51,9 +51,8 @@ public class AdminDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class LoginAdminResponse {
-        private String id; //id : UUID
+        private String adminId; //id : UUID
         private String role;
+        private String accessToken;
     }
-
-
 }

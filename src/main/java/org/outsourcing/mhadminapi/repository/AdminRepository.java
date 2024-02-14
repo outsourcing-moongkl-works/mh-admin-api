@@ -8,8 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AdminRepository extends JpaRepository<Admin, UUID> {
-    boolean existsByAdminId(String adminId);
-    boolean existsByAdminIdAndPassword(String adminId, String password);
+    boolean existsByAdminEmail(String adminEmail);
 
-    Optional<Admin> findByAdminId(String adminId);
+    Optional<Admin> findByAdminEmail(String adminEmail);
 }

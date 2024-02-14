@@ -10,19 +10,20 @@ public class ResponseDto<T> {
     private T payload;
     private String error;
 
+
+    // 'success' 빌더 메소드는 payload만 설정합니다.
     @Builder(builderMethodName = "success")
-    public ResponseDto(T payload) {
-        this.payload = payload;
+    public static <T> ResponseDto<T> success(T payload) {
+        ResponseDto<T> dto = new ResponseDto<>();
+        dto.setPayload(payload);
+        return dto;
     }
 
+    // 'error' 빌더 메소드는 error 메시지만 설정합니다.
     @Builder(builderMethodName = "error")
-    public ResponseDto(String error) {
-        this.error = error;
-    }
-
-    @Builder
-    public ResponseDto(T payload, String error) {
-        this.payload = payload;
-        this.error = error;
+    public static <T> ResponseDto<T> error(String error) {
+        ResponseDto<T> dto = new ResponseDto<>();
+        dto.setError(error);
+        return dto;
     }
 }
