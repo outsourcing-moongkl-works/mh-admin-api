@@ -3,6 +3,7 @@ package org.outsourcing.mhadminapi.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.outsourcing.mhadminapi.auth.UserPrincipal;
 import org.outsourcing.mhadminapi.dto.AdminDto;
 import org.outsourcing.mhadminapi.exception.AdminErrorResult;
 import org.outsourcing.mhadminapi.exception.AdminException;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,8 @@ public class AdminController {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
 
-    //@PreAuthorize("hasRole('MASTER')")
+    //추후 배포 시 create admin은 master만 가능하도록 변경
+    //@PreAuthorize("hasAuthority('MASTER')")
     @PostMapping()
     public ResponseEntity<AdminDto.CreateAdminResponse> createAdmin(@RequestBody AdminDto.CreateAdminRequest request) {
         //orElseThrow
