@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransferListener {
 
-    @SqsListener("${application.amazon.sqs.queue-name}")
+    @SqsListener("${spring.cloud.aws.sqs.queue-name}")
     public void messageListener(String message) {
         System.out.println("Listener: " + message);
     }

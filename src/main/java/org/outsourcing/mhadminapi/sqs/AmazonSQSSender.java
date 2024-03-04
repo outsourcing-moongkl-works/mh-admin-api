@@ -2,18 +2,20 @@ package org.outsourcing.mhadminapi.sqs;
 
 import io.awspring.cloud.sqs.operations.SendResult;
 import io.awspring.cloud.sqs.operations.SqsTemplate;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 
 @Component
-@RequiredArgsConstructor
 public class AmazonSQSSender {
 
+    @Autowired
     private final SqsTemplate template;
 
-    @Value("${application.amazon.sqs.queue-name}")
+    @Value("${spring.cloud.aws.sqs.queue-name}")
     private String queueName;
 
     public AmazonSQSSender(SqsAsyncClient sqsAsyncClient) {

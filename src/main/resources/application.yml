@@ -40,6 +40,8 @@ spring:
         secret-key: ${AWS_SECRET_KEY}
       sqs:
         queue-name: ${AWS_SQS_QUEUE_NAME}
+      stack:
+        auto: false
 logging:
   level:
     org:
