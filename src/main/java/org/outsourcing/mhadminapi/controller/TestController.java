@@ -19,13 +19,13 @@ public class TestController {
 
     @PostMapping("/send")
     public void send() {
-        log.info("Sending message");
         Map<String, String> messageContent = new HashMap<>();
 
         messageContent.put("key1", "value1");
         messageContent.put("key2", "value2");
 
         MessageDto messageDto = MessageDto.builder()
+                .from("mhadminapi")
                 .topic("create enterprise skin")
                 .message(messageContent)
                 .build();
