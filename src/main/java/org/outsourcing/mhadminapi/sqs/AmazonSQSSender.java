@@ -1,5 +1,5 @@
 package org.outsourcing.mhadminapi.sqs;
-
+/*
 import io.awspring.cloud.sqs.operations.SendResult;
 import io.awspring.cloud.sqs.operations.SqsTemplate;
 import lombok.NoArgsConstructor;
@@ -32,3 +32,5 @@ public class AmazonSQSSender {
     }
 
 }
+
+ */

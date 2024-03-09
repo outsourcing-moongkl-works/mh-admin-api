@@ -1,5 +1,5 @@
 package org.outsourcing.mhadminapi.sqs;
-
+/*
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import org.springframework.stereotype.Component;
 
@@ -12,3 +12,5 @@ public class TransferListener {
     }
 
 }
+
+ */

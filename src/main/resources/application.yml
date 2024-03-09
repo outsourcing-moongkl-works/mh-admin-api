@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 spring:
   application:
     name: moongkl-here-admin-api
@@ -39,7 +39,7 @@ spring:
         access-key: ${AWS_ACCESS_KEY}
         secret-key: ${AWS_SECRET_KEY}
       sqs:
-        queue-name: ${AWS_SQS_QUEUE_NAME}
+        queue-url: ${AWS_SQS_QUEUE_URL}
       stack:
         auto: false
 logging:

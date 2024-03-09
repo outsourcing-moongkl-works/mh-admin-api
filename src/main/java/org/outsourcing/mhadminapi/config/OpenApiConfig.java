@@ -32,7 +32,7 @@ public class OpenApiConfig {
                         .security(Arrays.asList(securityRequirement))
                         .servers(Arrays.asList(
                         new Server().url("https://admin-api.moongkl.com").description("Production server"),
-                        new Server().url("http://localhost:8080").description("Local development server"),
+                        new Server().url("http://localhost:8081").description("Local development server"),
                         new Server().url("http://admin-api.moongkl.com").description("HTTP Production server")
                         ));
                         /*.contact(new Contact()

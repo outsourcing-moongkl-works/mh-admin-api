@@ -28,7 +28,6 @@ dependencies {
 	implementation 'org.springframework.session:spring-session-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
 	implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.2.20'
@@ -50,9 +49,11 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
-	implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+	//aws
+	implementation('io.awspring.cloud:spring-cloud-starter-aws:2.3.0')
+	implementation('io.awspring.cloud:spring-cloud-aws-messaging:2.3.0')
+	implementation('io.awspring.cloud:spring-cloud-aws-autoconfigure:2.3.0')
+
 }
 
 tasks.named('bootBuildImage') {
