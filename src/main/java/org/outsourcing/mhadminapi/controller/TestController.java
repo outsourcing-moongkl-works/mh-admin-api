@@ -2,6 +2,7 @@ package org.outsourcing.mhadminapi.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.dto.MessageDto;
+import org.outsourcing.mhadminapi.dto.NotificationDto;
 import org.outsourcing.mhadminapi.sqs.SqsSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ public class TestController {
 
     @PostMapping("/send")
     public void send() {
+
         Map<String, String> messageContent = new HashMap<>();
 
         messageContent.put("key1", "value1");
