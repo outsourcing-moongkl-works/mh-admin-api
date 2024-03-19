@@ -34,7 +34,7 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDto> handleException(Exception e) {
 
-        log.error("Exception" + e);
+        log.error("Exception " + e);
 
         if(e.getClass().getName().equals("org.springframework.security.access.AccessDeniedException")){
 

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 public class AdminDto {
 
     @Data
@@ -54,5 +56,27 @@ public class AdminDto {
         private String adminId; //id : UUID
         private String role;
         private String accessToken;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class DeleteAdminRequest{
+        private String adminId; //id : UUID
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class DeleteAdminResponse {
+        private String adminId; //id : UUID
+        private String role;
+        private LocalDateTime deletedAt;
     }
 }

@@ -67,4 +67,22 @@ public class AdminServiceImpl implements AdminService{
                 .accessToken(accessToken)
                 .build();
     }
+
+    @Override
+    @Transactional
+    public AdminDto.DeleteAdminResponse deleteAdmin(AdminDto.DeleteAdminRequest request) {
+        Optional<Admin> admin = adminRepository.findById(UUID.fromString(request.getAdminId()));
+
+        if (admin.isEmpty()) {
+            throw new AdminException(AdminErrorResult.NOT_FOUND_ADMIN);
+        }
+
+        adminRepository.delete(admin.get());
+
+        return AdminDto.DeleteAdminResponse.builder()
+                .adminId(admin.get().getId().toString())
+                .role(admin.get().getRole().name())
+                .deletedAt(LocalDateTime.now())
+                .build();
+    }
 }

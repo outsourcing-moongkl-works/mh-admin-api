@@ -66,11 +66,14 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/test")
-    public String test(@RequestHeader("Authorization") String token){
-        token = token.substring(7);
+    @PreAuthorize("hasAuthority('MASTER')")
+    @DeleteMapping
+    public ResponseEntity<AdminDto.DeleteAdminResponse> deleteAdmin(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody AdminDto.DeleteAdminRequest request){
 
-        return token;
+        AdminDto.DeleteAdminResponse response = adminService.deleteAdmin(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
 }

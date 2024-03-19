@@ -44,7 +44,7 @@ public class Terms {
     }
 
     @Builder
-    public Terms(String terms, String privacyPolicy, String companyLocation, String aboutUs, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Terms(String terms, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.terms = terms;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

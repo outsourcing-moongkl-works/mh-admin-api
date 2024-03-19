@@ -9,6 +9,10 @@ spring:
     url: jdbc:mariadb://localhost:${MARIA_PORT}/${INITIAL_DB}?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
     username: ${MARIA_USERNAME}
     password: ${MARIA_PASSWORD}
+
+  sql:
+    init:
+      mode: always
   data:
     redis:
       host: ${REDIS_HOST}
@@ -42,6 +46,8 @@ spring:
         queue-url: ${AWS_SQS_QUEUE_URL}
       stack:
         auto: false
+      ses:
+        region: ${AWS_REGION}
 logging:
   level:
     org:
