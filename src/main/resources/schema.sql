@@ -52,4 +52,4 @@ CREATE TABLE IF NOT EXISTS `admins` (
     `created_at` DATETIME(6) NULL,
     `updated_at` DATETIME(6) NULL,
     PRIMARY KEY (`id`)
-    );
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
