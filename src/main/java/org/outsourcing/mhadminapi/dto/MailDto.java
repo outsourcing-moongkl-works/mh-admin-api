@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class MailDto {
-
     @Getter
     @Builder
     @NoArgsConstructor
