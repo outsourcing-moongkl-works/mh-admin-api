@@ -3,20 +3,17 @@ package org.outsourcing.mhadminapi.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.auth.UserPrincipal;
-import org.outsourcing.mhadminapi.dto.AdminDto;
 import org.outsourcing.mhadminapi.dto.MessageDto;
 import org.outsourcing.mhadminapi.dto.MoongklWorksInformationDto;
-import org.outsourcing.mhadminapi.entity.Admin;
-import org.outsourcing.mhadminapi.exception.AdminErrorResult;
-import org.outsourcing.mhadminapi.exception.AdminException;
+import org.outsourcing.mhadminapi.dto.NotificationDto;
 import org.outsourcing.mhadminapi.service.MoongklWorksInformationService;
 import org.outsourcing.mhadminapi.sqs.SqsSender;
-import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 import java.util.Map;
 
@@ -50,11 +47,8 @@ public class MoongklWorksInformationController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/terms")
-    public ResponseEntity<MoongklWorksInformationDto.GetTermsResponse> getTerms(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-
-        log.info(userPrincipal.getAdmin().getAdminEmail() + " get terms");
+    public ResponseEntity<MoongklWorksInformationDto.GetTermsResponse> getTerms() {
 
         MoongklWorksInformationDto.GetTermsResponse response = moongklWorksInformationService.getTerms();
 
@@ -82,11 +76,8 @@ public class MoongklWorksInformationController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/about-us")
-    public ResponseEntity<MoongklWorksInformationDto.GetAboutUsResponse> getAboutUs(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-
-        log.info(userPrincipal.getAdmin().getAdminEmail() + " get about us");
+    public ResponseEntity<MoongklWorksInformationDto.GetAboutUsResponse> getAboutUs() {
 
         MoongklWorksInformationDto.GetAboutUsResponse response = moongklWorksInformationService.getAboutUs();
 
@@ -114,13 +105,43 @@ public class MoongklWorksInformationController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/company-location")
-    public ResponseEntity<MoongklWorksInformationDto.GetCompanyLocationResponse> getCompanyLocation(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-
-        log.info(userPrincipal.getAdmin().getAdminEmail() + " get company location");
+    public ResponseEntity<MoongklWorksInformationDto.GetCompanyLocationResponse> getCompanyLocation() {
 
         MoongklWorksInformationDto.GetCompanyLocationResponse response = moongklWorksInformationService.getCompanyLocation();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @PostMapping("/notification")
+    public ResponseEntity<NotificationDto.CreateResponse> createNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody NotificationDto.CreateRequest request) {
+
+        log.info(userPrincipal.getAdmin().getAdminEmail() + " create notification");
+
+        NotificationDto.CreateResponse response = moongklWorksInformationService.createNotification(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @PutMapping("/notification/{notificationId}")
+    public ResponseEntity<NotificationDto.UpdateResponse> updateNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable String notificationId, @RequestBody NotificationDto.UpdateRequest request) {
+
+        log.info(userPrincipal.getAdmin().getAdminEmail() + " update notification");
+
+        NotificationDto.UpdateResponse response = moongklWorksInformationService.updateNotification(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/notification")
+    public ResponseEntity<Page<NotificationDto.GetResponse>> getNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam int page, @RequestParam int size) {
+
+        log.info(userPrincipal.getAdmin().getAdminEmail() + " get notification");
+
+        Page<NotificationDto.GetResponse> response = moongklWorksInformationService.getNotification(page, size);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

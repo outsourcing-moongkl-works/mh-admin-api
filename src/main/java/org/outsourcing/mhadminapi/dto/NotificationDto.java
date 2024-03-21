@@ -15,6 +15,7 @@ public class NotificationDto {
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class CreateRequest{
+        private String adminId;
         private String title;
         private String content;
     }
@@ -36,7 +37,7 @@ public class NotificationDto {
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class UpdateRequest{
-        private String notifiationId;
+        private String notificationId;
         private String title;
         private String content;
     }
@@ -62,4 +63,17 @@ public class NotificationDto {
         private String notificationId;
     }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+    public static class GetResponse{
+        private String notificationId;
+        private String adminId;
+        private String title;
+        private String content;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+    }
 }

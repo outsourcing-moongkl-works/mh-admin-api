@@ -3,6 +3,7 @@ package org.outsourcing.mhadminapi.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.dto.MoongklWorksInformationDto;
+import org.outsourcing.mhadminapi.dto.NotificationDto;
 import org.outsourcing.mhadminapi.entity.AboutUs;
 import org.outsourcing.mhadminapi.entity.CompanyLocation;
 import org.outsourcing.mhadminapi.entity.Notification;
@@ -11,6 +12,11 @@ import org.outsourcing.mhadminapi.repository.AboutUsRepository;
 import org.outsourcing.mhadminapi.repository.CompanyLocationRepository;
 import org.outsourcing.mhadminapi.repository.NotificationRepository;
 import org.outsourcing.mhadminapi.repository.TermsRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -101,16 +107,53 @@ public class MoongklWorksInformationService{
         return response;
     }
 
-/*
-    public void updateNotification(MoongklWorksInformationDto.UpdateNotificationRequest request) {
-        //find Notification by '0c2a5181-f50d-417e-9553-7f9f06489431'
-        Optional<Notification> notification = notificationRepository.findById(UUID.fromString("0c2a5181-f50d-417e-9553-7f9f06489431"));
+    public NotificationDto.CreateResponse createNotification(NotificationDto.CreateRequest request) {
+        Notification notification = Notification.builder()
+                .adminId(UUID.fromString(request.getAdminId()))
+                .title(request.getTitle())
+                .content(request.getContent())
+                .build();
 
-        if (notification.isPresent()) {
-            notification.get().updateNotification(request.getNotification());
-            notificationRepository.save(notification.get());
-        }
+        notificationRepository.save(notification);
+
+        NotificationDto.CreateResponse response = NotificationDto.CreateResponse.builder()
+                .createdAt(notification.getCreatedAt())
+                .build();
+
+        return response;
     }
 
- */
+    public NotificationDto.UpdateResponse updateNotification(NotificationDto.UpdateRequest request) {
+
+        //Notification notification = notificationRepository.findById(request.getNotificationId());
+        //update Notification
+        Optional<Notification> notification = notificationRepository.findById(UUID.fromString(request.getNotificationId()));
+
+        notification.get().updateNotification(request.getTitle(), request.getContent());
+
+        notificationRepository.save(notification.get());
+
+        NotificationDto.UpdateResponse response = NotificationDto.UpdateResponse.builder()
+                .updatedAt(notification.get().getUpdatedAt())
+                .build();
+
+        return response;
+    }
+
+    public Page<NotificationDto.GetResponse> getNotification(int page, int size) {
+        Sort sortBy = Sort.by(Sort.Direction.DESC, "createdAt");
+        final Pageable pageable = PageRequest.of(page, size, sortBy);
+
+        Page<NotificationDto.GetResponse> response = notificationRepository.findAllByOrderByCreatedAtDesc(pageable).map(notification -> NotificationDto.GetResponse.builder()
+                .adminId(notification.getAdminId().toString())
+                .notificationId(notification.getNotificationId())
+                .title(notification.getTitle())
+                .content(notification.getContent())
+                .createdAt(notification.getCreatedAt())
+                .updatedAt(notification.getUpdatedAt())
+                .build());
+
+        return response;
+    }
+
 }
