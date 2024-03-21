@@ -45,6 +45,7 @@ spring:
         format_sql: true
     repositories:
       enabled: true
+    defer-datasource-initialization: true
 
   cloud:
     aws:

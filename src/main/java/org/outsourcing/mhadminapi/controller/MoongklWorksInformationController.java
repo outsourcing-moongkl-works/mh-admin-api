@@ -125,7 +125,7 @@ public class MoongklWorksInformationController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @PutMapping("/notification/{notificationId}")
+    @PutMapping("/notification")
     public ResponseEntity<NotificationDto.UpdateResponse> updateNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable String notificationId, @RequestBody NotificationDto.UpdateRequest request) {
 
         log.info(userPrincipal.getAdmin().getAdminEmail() + " update notification");
