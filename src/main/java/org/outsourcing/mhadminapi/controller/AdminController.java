@@ -13,12 +13,8 @@ import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +29,8 @@ public class AdminController {
     private final PasswordEncoder passwordEncoder;
 
     //추후 배포 시 create admin은 master만 가능하도록 변경
-    //@PreAuthorize("hasAuthority('MASTER')")
-    @PostMapping()
+    @PreAuthorize("hasAuthority('MASTER')")
+    @PostMapping
     public ResponseEntity<AdminDto.CreateAdminResponse> createAdmin(@RequestBody AdminDto.CreateAdminRequest request) {
         //orElseThrow
         if(adminRepository.existsByAdminEmail(request.getAdminEmail())){
@@ -67,10 +63,10 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @DeleteMapping
-    public ResponseEntity<AdminDto.DeleteAdminResponse> deleteAdmin(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody AdminDto.DeleteAdminRequest request){
+    @DeleteMapping("/adminId")
+    public ResponseEntity<AdminDto.DeleteAdminResponse> deleteAdmin(@RequestParam(name = "admin_id") String adminId){
 
-        AdminDto.DeleteAdminResponse response = adminService.deleteAdmin(request);
+        AdminDto.DeleteAdminResponse response = adminService.deleteAdmin(adminId);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

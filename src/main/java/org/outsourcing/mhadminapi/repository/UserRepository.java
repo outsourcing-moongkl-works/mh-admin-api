@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID>, PagingAndSortingRepository<User, UUID>{
@@ -39,4 +41,18 @@ public interface UserRepository extends JpaRepository<User, UUID>, PagingAndSort
             "FROM User u WHERE u.phoneNumber LIKE %:phoneNumber% ORDER BY u.createdAt DESC")
     Page<UserDto.ReadResponse> findUserByPhoneNumberContaining(@Param("phoneNumber") String phoneNumber, Pageable pageable);
 
+    @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
+            "u.id, u.email, u.gender, u.country, u.phoneNumber) " +
+            "FROM User u WHERE u.createdAt BETWEEN :startDate AND :endDate ORDER BY u.createdAt DESC")
+    Page<UserDto.ReadResponse> findUserByCreatedAtBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
+
+    @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
+            "u.id, u.email, u.gender, u.country, u.phoneNumber) " +
+            "FROM User u WHERE u.id = :userId ORDER BY u.createdAt DESC")
+    UserDto.ReadResponse findUserById(UUID userId);
+
+    @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
+            "u.id, u.email, u.gender, u.country, u.phoneNumber)" +
+            "FROM User u ORDER BY u.createdAt DESC")
+    Page<UserDto.ReadResponse> findAllUser(Pageable pageable);
 }

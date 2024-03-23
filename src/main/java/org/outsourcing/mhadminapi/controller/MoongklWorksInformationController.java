@@ -125,12 +125,12 @@ public class MoongklWorksInformationController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @PutMapping("/notification")
+    @PutMapping("/notification/{notificationId}")
     public ResponseEntity<NotificationDto.UpdateResponse> updateNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable String notificationId, @RequestBody NotificationDto.UpdateRequest request) {
 
         log.info(userPrincipal.getAdmin().getAdminEmail() + " update notification");
 
-        NotificationDto.UpdateResponse response = moongklWorksInformationService.updateNotification(request);
+        NotificationDto.UpdateResponse response = moongklWorksInformationService.updateNotification(notificationId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

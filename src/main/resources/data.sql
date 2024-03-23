@@ -1,6 +1,6 @@
 
 -- MASTER role을 가진 테스트 유저 생성
-INSERT INTO `admins` (`id`, `admin_email`, `password`, `role`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `admins` (`id`, `admin_email`, `password`, `role`, `created_at`, `updated_at`) VALUES
     (UNHEX(REPLACE(UUID(), '-', '')), 'test@admin.com', 'testpassword', 'MASTER', NOW(), NOW());
 
 

@@ -123,11 +123,11 @@ public class MoongklWorksInformationService{
         return response;
     }
 
-    public NotificationDto.UpdateResponse updateNotification(NotificationDto.UpdateRequest request) {
+    public NotificationDto.UpdateResponse updateNotification(String notificationId, NotificationDto.UpdateRequest request) {
 
         //Notification notification = notificationRepository.findById(request.getNotificationId());
         //update Notification
-        Optional<Notification> notification = notificationRepository.findById(UUID.fromString(request.getNotificationId()));
+        Optional<Notification> notification = notificationRepository.findById(UUID.fromString(notificationId));
 
         notification.get().updateNotification(request.getTitle(), request.getContent());
 

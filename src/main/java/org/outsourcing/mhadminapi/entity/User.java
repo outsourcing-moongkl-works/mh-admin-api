@@ -5,12 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.*;
@@ -50,10 +46,10 @@ public class User {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<UserSkin> userSkins;
+    private List<UserHere> userHeres;
 
-    public void addUserSkin(UserSkin userSkin) {
-        this.userSkins.add(userSkin);
+    public void addUserSkin(UserHere userHere) {
+        this.userHeres.add(userHere);
     }
 
     @Builder(toBuilder = true)
@@ -69,7 +65,7 @@ public class User {
         this.country = country;
         this.phoneNumber = phoneNumber;
         this.createdAt = createdAt;
-        this.userSkins = new ArrayList<>();
+        this.userHeres = new ArrayList<>();
     }
 }
 
