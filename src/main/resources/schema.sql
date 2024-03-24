@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS company_location
 -- Admin 테이블 생성
 CREATE TABLE IF NOT EXISTS `admins` (
                                         `id` BINARY(16) NOT NULL,
-    `admin_email` VARCHAR(50) NOT NULL,
+    `email` VARCHAR(50) NOT NULL UNIQUE,
     `password` VARCHAR(100) NOT NULL,
     `role` VARCHAR(20) NOT NULL,
     `created_at` DATETIME(6) NULL,

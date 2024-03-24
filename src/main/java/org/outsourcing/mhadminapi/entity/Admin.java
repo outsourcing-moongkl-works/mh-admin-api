@@ -20,9 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class Admin implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class Admin{
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -30,8 +28,8 @@ public class Admin implements Serializable {
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
-    @Column(name = "admin_email", nullable = false, length = 50)
-    private String adminEmail;
+    @Column(name = "email", nullable = false, length = 50, unique = true)
+    private String email;
 
     @Column(name = "password", nullable = false, length = 100)
     private String password;
@@ -56,8 +54,8 @@ public class Admin implements Serializable {
     }
 
     @Builder
-    public Admin(String adminEmail, String password, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.adminEmail = adminEmail;
+    public Admin(String email, String password, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.email = email;
         this.password = password;
         this.role = role;
         this.createdAt = createdAt;

@@ -30,7 +30,7 @@ public class EnquiryDto {
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class  ReplyResponse{
         private String email;
-        private String adminEmail;
+        private String Email;
         private LocalDateTime createdAt;
     }
 
@@ -41,7 +41,7 @@ public class EnquiryDto {
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class GetResponse{
         private String email;
-        private String adminEmail;
+        private String Email;
         private String title;
         private String content;
         private LocalDateTime createdAt;

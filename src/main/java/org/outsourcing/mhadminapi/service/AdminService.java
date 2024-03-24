@@ -30,7 +30,7 @@ public class AdminService{
     public AdminDto.CreateAdminResponse createAdmin(AdminDto.CreateAdminRequest request) {
 
         Admin admin = Admin.builder()
-                .adminEmail(request.getAdminEmail())
+                .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.valueOf(request.getRole()))
                 .build();
@@ -48,11 +48,13 @@ public class AdminService{
     @Transactional
     public AdminDto.LoginAdminResponse login(AdminDto.LoginAdminRequest request) {
 
-        Admin admin = adminRepository.findByAdminEmail(request.getAdminEmail())
+        String password = passwordEncoder.encode(request.getPassword());
+
+        Admin admin = adminRepository.findByEmailAndPassword(request.getEmail(), password)
                 .orElseThrow(() -> new AdminException(AdminErrorResult.NOT_FOUND_ADMIN));
 
         JwtDto.JwtRequestDto jwtRequestDto = JwtDto.JwtRequestDto.builder()
-                .adminEmail(request.getAdminEmail())
+                .Email(request.getEmail())
                 .adminId(String.valueOf(admin.getId()))
                 .role(admin.getRole().name()) // enum to string
                 .build();

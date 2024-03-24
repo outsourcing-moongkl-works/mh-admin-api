@@ -28,7 +28,7 @@ public class EnquiryService {
     }
 
 
-    public EnquiryDto.ReplyResponse replyEnquiry(String adminEmail, EnquiryDto.ReplyRequest request) {
+    public EnquiryDto.ReplyResponse replyEnquiry(String Email, EnquiryDto.ReplyRequest request) {
         MailDto.MailSendDto mailSendDto = MailDto.MailSendDto.builder()
                 .to(request.getEmail())
                 .title(request.getTitle())
@@ -38,7 +38,7 @@ public class EnquiryService {
 
         EnquiryDto.ReplyResponse response = EnquiryDto.ReplyResponse.builder()
                 .email(request.getEmail())
-                .adminEmail(adminEmail)
+                .Email(Email)
                 .createdAt(LocalDateTime.now())
                 .build();
         return response;

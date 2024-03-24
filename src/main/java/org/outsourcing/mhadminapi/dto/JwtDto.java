@@ -16,7 +16,7 @@ public class JwtDto {
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class JwtRequestDto{
         String adminId;
-        String adminEmail;
+        String Email;
         String role;
     }
 

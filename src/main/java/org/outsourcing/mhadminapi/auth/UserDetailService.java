@@ -15,10 +15,10 @@ public class UserDetailService implements UserDetailsService {
     @Autowired
     private AdminRepository adminRepository;
     @Override
-    public UserDetails loadUserByUsername(String adminEmail) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String Email) throws UsernameNotFoundException {
         log.info("loadUserByUsername");
-        Admin admin = adminRepository.findByAdminEmail(adminEmail).orElseThrow(
-                () -> new UsernameNotFoundException("Admin not found with email : " + adminEmail)
+        Admin admin = adminRepository.findByEmail(Email).orElseThrow(
+                () -> new UsernameNotFoundException("Admin not found with email : " + Email)
         );
 
         return UserPrincipal.create(admin);

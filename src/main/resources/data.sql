@@ -1,8 +1,8 @@
 
 -- MASTER role을 가진 테스트 유저 생성
-INSERT IGNORE INTO `admins` (`id`, `admin_email`, `password`, `role`, `created_at`, `updated_at`) VALUES
-    (UNHEX(REPLACE(UUID(), '-', '')), 'test@admin.com', 'testpassword', 'MASTER', NOW(), NOW());
-
+INSERT INTO `admins` (id, email, password, role, created_at, updated_at)
+VALUES (UNHEX(REPLACE(UUID(), '-', '')), 'test@admin.com', 'testpassword', 'MASTER', NOW(), NOW())
+ON DUPLICATE KEY UPDATE email = email;
 
 -- Terms 테이블에 조건부 삽입
 INSERT IGNORE INTO terms (id) VALUES (UNHEX(REPLACE('4000c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')));

@@ -30,7 +30,7 @@ public class MoongklWorksInformationController {
     @PutMapping("/terms")
     public ResponseEntity<MoongklWorksInformationDto.UpdateTermsResponse> updateTerms(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody MoongklWorksInformationDto.UpdateTermsRequest request) {
 
-        log.info(userPrincipal.getAdmin().getAdminEmail() + " update terms");
+        log.info(userPrincipal.getAdmin().getEmail() + " update terms");
 
         Map<String, String> message = Map.of("terms", request.getTerms());
 
@@ -59,7 +59,7 @@ public class MoongklWorksInformationController {
     @PutMapping("/about-us")
     public ResponseEntity<MoongklWorksInformationDto.UpdateAboutUsResponse> updateAboutUs(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody MoongklWorksInformationDto.UpdateAboutUsRequest request) {
 
-        log.info(userPrincipal.getAdmin().getAdminEmail() + " update about us");
+        log.info(userPrincipal.getAdmin().getEmail() + " update about us");
 
         Map<String, String> message = Map.of("aboutUs", request.getAboutUs());
 
@@ -88,7 +88,7 @@ public class MoongklWorksInformationController {
     @PutMapping("/company-location")
     public ResponseEntity<MoongklWorksInformationDto.UpdateCompanyLocationResponse> updateCompanyLocation(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody MoongklWorksInformationDto.UpdateCompanyLocationRequest request) {
 
-        log.info(userPrincipal.getAdmin().getAdminEmail() + " update company location");
+        log.info(userPrincipal.getAdmin().getEmail() + " update company location");
 
         Map<String, String> message = Map.of("companyLocation", request.getCompanyLocation());
 
@@ -117,7 +117,7 @@ public class MoongklWorksInformationController {
     @PostMapping("/notification")
     public ResponseEntity<NotificationDto.CreateResponse> createNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody NotificationDto.CreateRequest request) {
 
-        log.info(userPrincipal.getAdmin().getAdminEmail() + " create notification");
+        log.info(userPrincipal.getAdmin().getEmail() + " create notification");
 
         NotificationDto.CreateResponse response = moongklWorksInformationService.createNotification(request);
 
@@ -128,7 +128,7 @@ public class MoongklWorksInformationController {
     @PutMapping("/notification/{notificationId}")
     public ResponseEntity<NotificationDto.UpdateResponse> updateNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable String notificationId, @RequestBody NotificationDto.UpdateRequest request) {
 
-        log.info(userPrincipal.getAdmin().getAdminEmail() + " update notification");
+        log.info(userPrincipal.getAdmin().getEmail() + " update notification");
 
         NotificationDto.UpdateResponse response = moongklWorksInformationService.updateNotification(notificationId, request);
 
@@ -139,7 +139,7 @@ public class MoongklWorksInformationController {
     @GetMapping("/notification")
     public ResponseEntity<Page<NotificationDto.GetResponse>> getNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam int page, @RequestParam int size) {
 
-        log.info(userPrincipal.getAdmin().getAdminEmail() + " get notification");
+        log.info(userPrincipal.getAdmin().getEmail() + " get notification");
 
         Page<NotificationDto.GetResponse> response = moongklWorksInformationService.getNotification(page, size);
 

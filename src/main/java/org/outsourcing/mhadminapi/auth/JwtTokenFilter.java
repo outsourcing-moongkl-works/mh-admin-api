@@ -40,7 +40,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             if (token != null && jwtTokenProvider.validateToken(token)) {
 
-                String email = jwtTokenProvider.getAdminEmailFromToken(token);
+                String email = jwtTokenProvider.getEmailFromToken(token);
                 //UUID adminId = jwtTokenProvider.getAdminIdFromToken(token);
 
                 UserDetails userDetails;

@@ -36,9 +36,9 @@ public class EnquiryController {
 
         Admin admin = userPrincipal.getAdmin();
 
-        log.info("admin: {}", admin.getAdminEmail());
+        log.info("admin: {}", admin.getEmail());
 
-        EnquiryDto.ReplyResponse response = enquiryService.replyEnquiry(admin.getAdminEmail(), request);
+        EnquiryDto.ReplyResponse response = enquiryService.replyEnquiry(admin.getEmail(), request);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

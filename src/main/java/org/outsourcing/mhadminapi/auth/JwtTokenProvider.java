@@ -26,7 +26,7 @@ public class JwtTokenProvider {
         log.info("jwtAccessToken 생성");
 
         String token = Jwts.builder()
-                .setSubject(jwtRequestDto.getAdminEmail())
+                .setSubject(jwtRequestDto.getEmail())
                 .claim("adminId", jwtRequestDto.getAdminId().toString())
                 .claim("role", jwtRequestDto.getRole())
                 .setIssuedAt(now)
@@ -39,7 +39,7 @@ public class JwtTokenProvider {
         return token;
     }
 
-    public String getAdminEmailFromToken(String token) {
+    public String getEmailFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
