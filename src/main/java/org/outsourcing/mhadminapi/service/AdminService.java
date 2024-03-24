@@ -28,6 +28,9 @@ public class AdminService{
     private final JwtTokenProvider jwtTokenProvider;
 
     public AdminDto.CreateAdminResponse createAdmin(AdminDto.CreateAdminRequest request) {
+        if(adminRepository.existsByEmail(request.getEmail())){
+            throw new AdminException(AdminErrorResult.ALREADY_EXIST_ADMIN);
+        }
 
         Admin admin = Admin.builder()
                 .email(request.getEmail())

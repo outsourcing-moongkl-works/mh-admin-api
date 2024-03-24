@@ -19,7 +19,7 @@ public class AdminDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CreateAdminRequest {
-        private String Email;
+        private String email;
         private String password;
         private String role;
     }

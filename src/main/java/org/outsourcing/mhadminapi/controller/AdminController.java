@@ -32,10 +32,6 @@ public class AdminController {
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping
     public ResponseEntity<AdminDto.CreateAdminResponse> createAdmin(@RequestBody AdminDto.CreateAdminRequest request) {
-        //orElseThrow
-        if(adminRepository.existsByEmail(request.getEmail())){
-            throw new AdminException(AdminErrorResult.ALREADY_EXIST_ADMIN);
-        }
 
         String adminRole = request.getRole();
 
