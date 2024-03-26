@@ -26,8 +26,8 @@ public class Enterprise{
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
-    @Column(name = "email", nullable = false, length = 50, unique = true)
-    private String email;
+    @Column(name = "login_id", nullable = false, length = 50, unique = true)
+    private String loginId;
 
     @Column(name = "password", nullable = false, length = 100)
     private String password;
@@ -57,10 +57,14 @@ public class Enterprise{
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private LogoImgUrl logoImgUrl;
 
-    @JoinColumn(name = "manager_id", foreignKey = @ForeignKey(name = "enterprise_fk_manager_id"))
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Manager manager;
+    @Column(name = "manager_name", nullable = false, length = 50)
+    private String managerName;
 
+    @Column(name = "manager_phone", nullable = false, length = 50)
+    private String managerPhone;
+
+    @Column(name = "manager_email", nullable = false, length = 50)
+    private String managerEmail;
     @CreatedDate
     @Column(name = "created_at", length = 20)
     private LocalDateTime createdAt;
@@ -77,17 +81,19 @@ public class Enterprise{
     }
 
     @Builder
-    public Enterprise(String email, String password, Role role, String name, String businessNumber, String corporateNumber, String address, String isApproved, LogoImgUrl logoImgUrl, Manager manager, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.email = email;
+    public Enterprise(String loginId, String password, Role role, String name, String businessNumber, String corporateNumber, String address, String isApproved, LogoImgUrl logoImgUrl, String managerEmail, String managerName, String managerPhone, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.loginId = loginId;
         this.password = password;
         this.role = role;
         this.name = name;
         this.businessNumber = businessNumber;
         this.corporateNumber = corporateNumber;
         this.address = address;
+        this.managerEmail = managerEmail;
+        this.managerName = managerName;
+        this.managerPhone = managerPhone;
         this.isApproved = isApproved;
         this.logoImgUrl = logoImgUrl;
-        this.manager = manager;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

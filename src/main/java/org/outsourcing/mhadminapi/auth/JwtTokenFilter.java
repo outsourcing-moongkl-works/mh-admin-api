@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,7 +42,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             if (token != null && jwtTokenProvider.validateToken(token)) {
 
                 String email = jwtTokenProvider.getEmailFromToken(token);
-                //UUID adminId = jwtTokenProvider.getAdminIdFromToken(token);
 
                 UserDetails userDetails;
                 userDetails = userDetailsService.loadUserByUsername(email);

@@ -1,5 +1,6 @@
 package org.outsourcing.mhadminapi.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.dto.EnquiryDto;
@@ -19,7 +20,8 @@ public class EnquiryService {
 
     private final EnquiryRepository enquiryRepository;
     private final MailService mailService;
-    //getEnquiries
+
+    @Transactional
     public Page<EnquiryDto.GetResponse> getEnquiries(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<EnquiryDto.GetResponse> response = enquiryRepository.findAllByOrderByCreatedAtDesc(pageable);

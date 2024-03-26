@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,14 +19,29 @@ import org.springframework.web.multipart.MultipartFile;
 public class EnterpriseController {
     private final EnterpriseService enterpriseService;
 
-    @PreAuthorize("hasAuthority('ENTERPRISE')")
-    @PostMapping("/authorize", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/authorize", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ResponseDto> authorizeEnterprise(@RequestPart(name = "authorize_enterprise_request") EnterpriseDto.AuthorizeRequest request,
                                                            @RequestPart(name = "logo_img") MultipartFile logoImg) throws Exception{
         log.info("authorizeEnterprise: {}", request);
 
         enterpriseService.authorizeEnterprise(request, logoImg);
 
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<EnterpriseDto.LoginResponse> login(EnterpriseDto.LoginRequest request) {
+
+        log.info("login: {}", request);
+
+        EnterpriseDto.LoginResponse response = enterpriseService.login(request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PreAuthorize("hasAuthority('ENTERPRISE')")
+    @GetMapping("/test")
+    public ResponseEntity<ResponseDto> test() {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

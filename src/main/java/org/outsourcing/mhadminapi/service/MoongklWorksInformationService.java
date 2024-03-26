@@ -1,5 +1,6 @@
 package org.outsourcing.mhadminapi.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.dto.MoongklWorksInformationDto;
@@ -30,6 +31,7 @@ public class MoongklWorksInformationService{
     private final NotificationRepository notificationRepository;
     private final TermsRepository termsRepository;
     private final AboutUsRepository aboutUsRepository;
+    @Transactional
     public MoongklWorksInformationDto.UpdateTermsResponse updateTerms(MoongklWorksInformationDto.UpdateTermsRequest request) {
         //find Terms by '4000c0f7-0c97-4bd7-a200-0de1392f1df0'
         Optional<Terms> terms = termsRepository.findById(UUID.fromString("4000c0f7-0c97-4bd7-a200-0de1392f1df0"));
@@ -57,6 +59,7 @@ public class MoongklWorksInformationService{
         return response;
     }
 
+    @Transactional
     public MoongklWorksInformationDto.UpdateAboutUsResponse updateAboutUs(MoongklWorksInformationDto.UpdateAboutUsRequest request) {
         //find AboutUs by '648c4bf4-3c90-492a-bb23-600dae7a4d70'
         Optional<AboutUs> aboutUs = aboutUsRepository.findById(UUID.fromString("648c4bf4-3c90-492a-bb23-600dae7a4d70"));
@@ -82,6 +85,7 @@ public class MoongklWorksInformationService{
         return response;
     }
 
+    @Transactional
     public MoongklWorksInformationDto.UpdateCompanyLocationResponse updateCompanyLocation(MoongklWorksInformationDto.UpdateCompanyLocationRequest request) {
         //find CompanyLocation by '7ddde530-4d8a-429f-bb19-405f4e74057a'
         Optional<CompanyLocation> companyLocation = companyLocationRepository.findById(UUID.fromString("7ddde530-4d8a-429f-bb19-405f4e74057a"));
@@ -107,6 +111,7 @@ public class MoongklWorksInformationService{
         return response;
     }
 
+    @Transactional
     public NotificationDto.CreateResponse createNotification(NotificationDto.CreateRequest request) {
         Notification notification = Notification.builder()
                 .adminId(UUID.fromString(request.getAdminId()))
@@ -123,6 +128,7 @@ public class MoongklWorksInformationService{
         return response;
     }
 
+    @Transactional
     public NotificationDto.UpdateResponse updateNotification(String notificationId, NotificationDto.UpdateRequest request) {
 
         //Notification notification = notificationRepository.findById(request.getNotificationId());

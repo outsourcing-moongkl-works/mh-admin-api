@@ -17,9 +17,61 @@ public class EnterpriseDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AuthorizeRequest {
-        private String email;
+        private String loginId;
         private String password;
-        private String role;
+        private String name;
+        private String businessNumber;
+        private String corporateNumber;
+        private String address;
+
+        private String managerName;
+        private String managerPhone;
+        private String managerEmail;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class LoginRequest {
+        private String loginId;
+        private String password;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class LoginResponse {
+        private String accessToken;
+        private String createdAt;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class LogoImgUrl {
+        private String s3Url;
+        private String cloudfrontUrl;
+    }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class StoryUrl{
+        private String s3Url;
+        private String cloudfrontUrl;
+    }
+}
+class ManagerRequest {
 
 }

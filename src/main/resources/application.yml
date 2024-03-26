@@ -60,6 +60,14 @@ spring:
         auto: false
       ses:
         region: ${AWS_REGION}
+      s3:
+        bucket: files.mobile-api.moongkl.com
+        region: ${AWS_REGION}
+        root-directory: ${AWS_S3_ROOT_DIRECTORY}
+        enterprise-logo-directory: "enterprise-logo"
+        enterprise-story-directory: "enterprise-story"
+      cloudfront:
+        distribution-domain: ${CLOUDFRONT_URL}
 logging:
   level:
     org:

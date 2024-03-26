@@ -27,6 +27,7 @@ public class AdminService{
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Transactional
     public AdminDto.CreateAdminResponse createAdmin(AdminDto.CreateAdminRequest request) {
         if(adminRepository.existsByEmail(request.getEmail())){
             throw new AdminException(AdminErrorResult.ALREADY_EXIST_ADMIN);
@@ -57,8 +58,8 @@ public class AdminService{
                 .orElseThrow(() -> new AdminException(AdminErrorResult.NOT_FOUND_ADMIN));
 
         JwtDto.JwtRequestDto jwtRequestDto = JwtDto.JwtRequestDto.builder()
-                .Email(request.getEmail())
-                .adminId(String.valueOf(admin.getId()))
+                .email(request.getEmail())
+                .id(String.valueOf(admin.getId()))
                 .role(admin.getRole().name()) // enum to string
                 .build();
 

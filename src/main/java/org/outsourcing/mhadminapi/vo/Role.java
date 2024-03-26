@@ -4,6 +4,7 @@ public enum Role {
     ADMIN("ROLE_SUPERVISOR"),
     MANAGER("ROLE_MANAGER"),
     STAFF("ROLE_STAFF"),
+    ENTERPRISE("ROLE_ENTERPRISE"),
     ;
 
     private final String roleName;

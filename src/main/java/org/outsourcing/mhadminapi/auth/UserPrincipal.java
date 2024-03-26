@@ -1,6 +1,7 @@
 package org.outsourcing.mhadminapi.auth;
 
 import org.outsourcing.mhadminapi.entity.Admin;
+import org.outsourcing.mhadminapi.entity.Enterprise;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,9 +13,16 @@ import java.util.Collections;
 public class UserPrincipal implements UserDetails {
     private Admin admin;
 
+    private Enterprise enterprise;
+
     public UserPrincipal(Admin admin) {
         super();
         this.admin = admin;
+    }
+
+    public UserPrincipal(Enterprise enterprise) {
+        super();
+        this.enterprise = enterprise;
     }
 
 
@@ -61,8 +69,21 @@ public class UserPrincipal implements UserDetails {
         return true;
     }
 
-    public static UserPrincipal create(Admin admin) {
+    public static UserPrincipal createAdmin(Admin admin) {
         return new UserPrincipal(admin);
     }
+
+    public static UserPrincipal createEnterprise(Enterprise enterprise) {
+        return new UserPrincipal(enterprise);
+    }
+
+    public boolean isAdmin() {
+        return this.admin != null;
+    }
+
+    public boolean isEnterprise() {
+        return this.enterprise != null;
+    }
+
 }
 

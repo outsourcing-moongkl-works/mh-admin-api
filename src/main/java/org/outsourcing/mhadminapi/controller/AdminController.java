@@ -46,14 +46,7 @@ public class AdminController {
 
     //login with redis data session
     @PostMapping("/login")
-    public ResponseEntity<AdminDto.LoginAdminResponse> login(@RequestBody AdminDto.LoginAdminRequest request, HttpServletRequest httpRequest) {
-        try {
-
-        } catch (AuthenticationException e) {
-            log.error("로그인 실패", e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+    public ResponseEntity<AdminDto.LoginAdminResponse> login(@RequestBody AdminDto.LoginAdminRequest request) {
         AdminDto.LoginAdminResponse response = adminService.login(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

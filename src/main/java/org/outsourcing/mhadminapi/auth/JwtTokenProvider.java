@@ -27,7 +27,7 @@ public class JwtTokenProvider {
 
         String token = Jwts.builder()
                 .setSubject(jwtRequestDto.getEmail())
-                .claim("adminId", jwtRequestDto.getAdminId().toString())
+                .claim("id", jwtRequestDto.getId().toString())
                 .claim("role", jwtRequestDto.getRole())
                 .setIssuedAt(now)
                 .setExpiration(tokenExpiryDate)
@@ -46,14 +46,6 @@ public class JwtTokenProvider {
                 .getBody()
                 .getSubject();
     }
-    public UUID getAdminIdFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return UUID.fromString(claims.get("adminId", String.class));
-    }
 
     public String getRoleFromToken(String token) {
         Claims claims = Jwts.parser()
@@ -64,12 +56,12 @@ public class JwtTokenProvider {
         return claims.get("role", String.class);
     }
 
-    public boolean validateUserIdWithTokenClaims(String token, UUID adminId) {
+    public boolean validateUserIdWithTokenClaims(String token, UUID id) {
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
 
-        String adminIdInToken = claims.get("adminId", String.class);
+        String adminIdInToken = claims.get("id", String.class);
 
-        if (adminIdInToken.equals(adminId.toString()))
+        if (adminIdInToken.equals(id.toString()))
             return true;
 
         log.info("요청된 사용자 ID가 토큰과 일치하지 않습니다");

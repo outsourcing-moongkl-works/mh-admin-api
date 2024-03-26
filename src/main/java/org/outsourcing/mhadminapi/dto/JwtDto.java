@@ -15,8 +15,8 @@ public class JwtDto {
     @Builder @NoArgsConstructor @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class JwtRequestDto{
-        String adminId;
-        String Email;
+        String id;
+        String email;
         String role;
     }
 
@@ -24,7 +24,7 @@ public class JwtDto {
     @Builder @NoArgsConstructor @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class JwtResponseDto{
-        String adminId;
+        String id;
         String jwt;
     }
 }
