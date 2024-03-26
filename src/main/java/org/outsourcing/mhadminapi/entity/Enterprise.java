@@ -98,8 +98,11 @@ public class Enterprise{
         this.updatedAt = updatedAt;
     }
 
-    public void setLogoImgUrl(LogoImgUrl logoImgUrl) {
+    public void updateLogoImgUrl(LogoImgUrl logoImgUrl) {
         this.logoImgUrl = logoImgUrl;
+    }
+    public void updateIsApproved(String isApproved) {
+        this.isApproved = isApproved;
     }
 
 }

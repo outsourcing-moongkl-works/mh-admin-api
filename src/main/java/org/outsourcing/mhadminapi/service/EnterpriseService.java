@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -65,5 +66,37 @@ public class EnterpriseService {
                 .accessToken(accessToken)
                 .createdAt(String.valueOf(LocalDateTime.now()))
                 .build();
+    }
+
+    public void approveEnterprise(String enterpriseId) {
+
+            Enterprise enterprise = enterpriseRepository.findById(UUID.fromString(enterpriseId))
+                    .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
+
+            enterprise.updateIsApproved("TRUE");
+
+            enterpriseRepository.save(enterprise);
+    }
+
+    public EnterpriseDto.GetApprovalResponse getApproval(String loginId) {
+
+        Enterprise enterprise = enterpriseRepository.findByLoginId(loginId)
+                    .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
+
+            return EnterpriseDto.GetApprovalResponse.builder()
+                    .isApproved(enterprise.getIsApproved())
+                    .build();
+    }
+
+    public void withdraw(UUID id, String password) {
+
+            Enterprise enterprise = enterpriseRepository.findById(id)
+                    .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
+
+            if(!passwordEncoder.matches(password, enterprise.getPassword())){
+                throw new EnterpriseException(EnterpriseErrorResult.WRONG_PASSWORD);
+            }
+
+            enterpriseRepository.delete(enterprise);
     }
 }

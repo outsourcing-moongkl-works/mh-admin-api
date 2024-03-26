@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.auth.UserPrincipal;
 import org.outsourcing.mhadminapi.dto.AdminDto;
+import org.outsourcing.mhadminapi.dto.ResponseDto;
 import org.outsourcing.mhadminapi.exception.AdminErrorResult;
 import org.outsourcing.mhadminapi.exception.AdminException;
 import org.outsourcing.mhadminapi.repository.AdminRepository;
 import org.outsourcing.mhadminapi.service.AdminService;
+import org.outsourcing.mhadminapi.service.EnterpriseService;
 import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final AdminService adminService;
-    private final AdminRepository adminRepository;
-    private final PasswordEncoder passwordEncoder;
-
+    private final EnterpriseService enterpriseService;
     //추후 배포 시 create admin은 master만 가능하도록 변경
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping
@@ -59,6 +59,17 @@ public class AdminController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @GetMapping("/approve/{enterprise_id}")
+    public ResponseEntity<ResponseDto> approveEnterprise(@RequestParam("enterprise_id") String enterpriseId){
+        log.info("approveEnterprise: {}", enterpriseId);
+
+        enterpriseService.approveEnterprise(enterpriseId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 
 
 }

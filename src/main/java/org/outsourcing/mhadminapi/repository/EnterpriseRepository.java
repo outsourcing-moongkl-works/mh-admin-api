@@ -13,4 +13,9 @@ public interface EnterpriseRepository extends JpaRepository<Enterprise, UUID>{
 
     @Query("SELECT e FROM Enterprise e WHERE e.loginId = :loginId AND e.password = :encode")
     Optional<Enterprise> findByEmailAndPassword(String loginId, String encode);
+
+    Optional<Enterprise> findById(UUID id);
+
+    Optional<Enterprise> findByLoginId(String LoginId);
+
 }

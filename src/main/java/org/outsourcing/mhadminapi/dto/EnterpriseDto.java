@@ -71,6 +71,16 @@ public class EnterpriseDto {
         private String s3Url;
         private String cloudfrontUrl;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class GetApprovalResponse {
+        private String isApproved;
+    }
 }
 class ManagerRequest {
 

@@ -29,9 +29,15 @@ public class UserPrincipal implements UserDetails {
     public Admin getAdmin() {
         return this.admin;
     }
+    public Enterprise getEnterprise() {
+        return this.enterprise;
+    }
 
     public String getAdminId() {
         return String.valueOf(this.admin.getId());
+    }
+    public String getEnterpriseId() {
+        return String.valueOf(this.enterprise.getId());
     }
 
     @Override
