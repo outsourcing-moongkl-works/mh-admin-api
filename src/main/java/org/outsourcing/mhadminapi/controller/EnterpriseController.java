@@ -1,5 +1,8 @@
 package org.outsourcing.mhadminapi.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.auth.UserPrincipal;
@@ -21,13 +24,16 @@ import org.springframework.web.multipart.MultipartFile;
 public class EnterpriseController {
     private final EnterpriseService enterpriseService;
 
-    @PostMapping(value = "/authorize", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<ResponseDto> authorizeEnterprise(@RequestPart(name = "authorize_enterprise_request") EnterpriseDto.AuthorizeRequest request,
-                                                           @RequestPart(name = "logo_img") MultipartFile logoImg) throws Exception{
+    @PostMapping(value = "/authorize", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDto> requestApproveEnterprise(
+            @RequestPart(name = "authorize_enterprise_request") EnterpriseDto.AuthorizeRequest request,
+            @RequestPart(name = "logo_img") MultipartFile logoImg) {
         log.info("authorizeEnterprise: {}", request);
 
-        enterpriseService.authorizeEnterprise(request, logoImg);
+        enterpriseService.requestApproveEnterprise(request, logoImg);
 
+        // Assuming ResponseDto has a proper constructor or method to create a success response
+        // Change HttpStatus.NO_CONTENT to HttpStatus.OK or appropriate status based on your logic
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -65,6 +71,7 @@ public class EnterpriseController {
     @PreAuthorize("hasAuthority('ENTERPRISE')")
     @GetMapping("/test")
     public ResponseEntity<ResponseDto> test() {
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -74,7 +74,7 @@ public class Enterprise{
     private LocalDateTime updatedAt;
 
     @PrePersist
-    public void setUserId() {
+    public void setEnterpriseId() {
         if (id == null) {
             id = UUID.randomUUID();
         }

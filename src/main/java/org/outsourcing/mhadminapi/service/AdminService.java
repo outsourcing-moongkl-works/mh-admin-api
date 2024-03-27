@@ -52,11 +52,14 @@ public class AdminService{
     @Transactional
     public AdminDto.LoginAdminResponse login(AdminDto.LoginAdminRequest request) {
 
-        String password = passwordEncoder.encode(request.getPassword());
-
-        Admin admin = adminRepository.findByEmailAndPassword(request.getEmail(), password)
+        // 이메일을 기반으로 사용자 정보 조회
+        Admin admin = adminRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AdminException(AdminErrorResult.NOT_FOUND_ADMIN));
 
+        // matches 메서드를 사용하여 비밀번호 확인
+        if (!passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
+            throw new AdminException(AdminErrorResult.NOT_FOUND_ADMIN);
+        }
         JwtDto.JwtRequestDto jwtRequestDto = JwtDto.JwtRequestDto.builder()
                 .email(request.getEmail())
                 .id(String.valueOf(admin.getId()))

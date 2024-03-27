@@ -29,13 +29,14 @@ public class EnterpriseService {
     private final LogoImgService logoImgService;
     private final EnterpriseStoryService enterpriseStoryService;
 
-    public void authorizeEnterprise(EnterpriseDto.AuthorizeRequest request, MultipartFile logoImg) {
+    public void requestApproveEnterprise(EnterpriseDto.AuthorizeRequest request, MultipartFile logoImg) {
 
         Enterprise enterprise = Enterprise.builder()
                 .loginId(request.getLoginId())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.valueOf("ENTERPRISE"))
                 .corporateNumber(request.getCorporateNumber())
+                .businessNumber(request.getBusinessNumber())
                 .name(request.getName())
                 .address(request.getAddress())
                 .managerEmail(request.getManagerEmail())
@@ -44,16 +45,25 @@ public class EnterpriseService {
                 .isApproved("FALSE")
                 .build();
 
-        logoImgService.uploadLogoImg(enterprise.getId(), logoImg);
+        enterprise.setEnterpriseId();
 
         enterpriseRepository.save(enterprise);
+
+        logoImgService.uploadLogoImg(enterprise.getId(), logoImg);
+
     }
 
     @Transactional
     public EnterpriseDto.LoginResponse login(EnterpriseDto.LoginRequest request) {
 
-        Enterprise enterprise = enterpriseRepository.findByEmailAndPassword(request.getLoginId(), passwordEncoder.encode(request.getPassword()))
+        // 이메일을 기반으로 사용자 정보 조회
+        Enterprise enterprise = enterpriseRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
+
+        // matches 메서드를 사용하여 비밀번호 확인
+        if (!passwordEncoder.matches(request.getPassword(), enterprise.getPassword())) {
+            throw new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND);
+        }
 
         JwtDto.JwtRequestDto jwtRequestDto = JwtDto.JwtRequestDto.builder()
                 .email(request.getLoginId())
