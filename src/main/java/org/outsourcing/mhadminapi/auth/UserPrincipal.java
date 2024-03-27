@@ -6,26 +6,22 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 
-//user 객체 생성
-public class UserPrincipal implements UserDetails {
+public class UserPrincipal implements UserDetails, Serializable {
+    private static final long serialVersionUID = 1L; // `UserPrincipal` 클래스에 추가
     private Admin admin;
-
     private Enterprise enterprise;
 
     public UserPrincipal(Admin admin) {
-        super();
         this.admin = admin;
     }
 
     public UserPrincipal(Enterprise enterprise) {
-        super();
         this.enterprise = enterprise;
     }
-
-
     public Admin getAdmin() {
         return this.admin;
     }
@@ -33,26 +29,35 @@ public class UserPrincipal implements UserDetails {
         return this.enterprise;
     }
 
-    public String getAdminId() {
-        return String.valueOf(this.admin.getId());
-    }
-    public String getEnterpriseId() {
-        return String.valueOf(this.enterprise.getId());
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(admin.getRole().getRoleName()));
+        if (isAdmin()) {
+            return Collections.singletonList(new SimpleGrantedAuthority(String.valueOf(admin.getRole())));
+        } else if (isEnterprise()) {
+            // 예시로, Enterprise 엔티티에도 getRole 메소드가 있다고 가정
+            return Collections.singletonList(new SimpleGrantedAuthority(String.valueOf(enterprise.getRole())));
+        }
+        return Collections.emptyList();
     }
 
     @Override
     public String getPassword() {
-        return admin.getPassword();
+        if (isAdmin()) {
+            return admin.getPassword();
+        } else if (isEnterprise()) {
+            return enterprise.getPassword(); // Enterprise 엔티티에 getPassword 메소드가 있다고 가정
+        }
+        return null;
     }
 
     @Override
     public String getUsername() {
-        return admin.getEmail();
+        if (isAdmin()) {
+            return admin.getEmail();
+        } else if (isEnterprise()) {
+            return enterprise.getLoginId(); // Enterprise 엔티티에 getEmail 메소드가 있다고 가정
+        }
+        return null;
     }
 
     @Override
@@ -90,6 +95,4 @@ public class UserPrincipal implements UserDetails {
     public boolean isEnterprise() {
         return this.enterprise != null;
     }
-
 }
-

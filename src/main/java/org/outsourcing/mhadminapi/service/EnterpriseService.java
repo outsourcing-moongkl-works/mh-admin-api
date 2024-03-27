@@ -67,6 +67,7 @@ public class EnterpriseService {
         }
 
         JwtDto.JwtRequestDto jwtRequestDto = JwtDto.JwtRequestDto.builder()
+                .id(enterprise.getId().toString())
                 .email(request.getLoginId())
                 .role(enterprise.getRole().name())
                 .build();

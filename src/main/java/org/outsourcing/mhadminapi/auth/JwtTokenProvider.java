@@ -40,11 +40,13 @@ public class JwtTokenProvider {
     }
 
     public String getEmailFromToken(String token) {
-        return Jwts.parser()
+
+        Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+
+        return claims.getSubject();
     }
 
     public String getRoleFromToken(String token) {

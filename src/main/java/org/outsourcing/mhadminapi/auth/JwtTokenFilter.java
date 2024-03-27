@@ -43,13 +43,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                 String email = jwtTokenProvider.getEmailFromToken(token);
 
-                UserDetails userDetails;
-                userDetails = userDetailsService.loadUserByUsername(email);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
-                        AuthorityUtils.NO_AUTHORITIES
+                        userDetails.getAuthorities() // 이 부분을 userDetails에서 가져온 권한으로 변경
                 );
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

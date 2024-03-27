@@ -61,8 +61,8 @@ public class AdminService{
             throw new AdminException(AdminErrorResult.NOT_FOUND_ADMIN);
         }
         JwtDto.JwtRequestDto jwtRequestDto = JwtDto.JwtRequestDto.builder()
-                .email(request.getEmail())
                 .id(String.valueOf(admin.getId()))
+                .email(request.getEmail())
                 .role(admin.getRole().name()) // enum to string
                 .build();
 

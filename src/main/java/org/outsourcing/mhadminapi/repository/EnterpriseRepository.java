@@ -9,7 +9,6 @@ import java.util.UUID;
 
 public interface EnterpriseRepository extends JpaRepository<Enterprise, UUID>{
 
-    Optional<Enterprise> findByManagerEmail(String email);
 
     @Query("SELECT e FROM Enterprise e WHERE e.loginId = :loginId AND e.password = :encode")
     Optional<Enterprise> findByEmailAndPassword(String loginId, String encode);
