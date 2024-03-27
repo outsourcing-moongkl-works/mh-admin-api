@@ -43,6 +43,7 @@ public class EnterpriseService {
                 .managerName(request.getManagerName())
                 .managerPhone(request.getManagerPhone())
                 .isApproved("FALSE")
+                .country(request.getCountry())
                 .build();
 
         enterprise.setEnterpriseId();

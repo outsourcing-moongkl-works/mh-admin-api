@@ -39,13 +39,14 @@ public class Enterprise{
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    //사업자번호
     @Column(name = "business_number", nullable = false, length = 50)
     private String businessNumber;
 
-    //법인번호
     @Column(name = "corporate_number", nullable = false, length = 50)
     private String corporateNumber;
+
+    @Column(name = "country", nullable = false, length = 50)
+    private String country;
 
     @Column(name = "address", nullable = false, length = 50)
     private String address;
@@ -81,7 +82,7 @@ public class Enterprise{
     }
 
     @Builder
-    public Enterprise(String loginId, String password, Role role, String name, String businessNumber, String corporateNumber, String address, String isApproved, LogoImgUrl logoImgUrl, String managerEmail, String managerName, String managerPhone, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Enterprise(String loginId, String password, Role role, String name, String businessNumber, String corporateNumber, String address, String isApproved, LogoImgUrl logoImgUrl, String managerEmail, String managerName, String managerPhone, LocalDateTime createdAt, LocalDateTime updatedAt, String country) {
         this.loginId = loginId;
         this.password = password;
         this.role = role;
@@ -94,6 +95,7 @@ public class Enterprise{
         this.managerPhone = managerPhone;
         this.isApproved = isApproved;
         this.logoImgUrl = logoImgUrl;
+        this.country = country;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

@@ -23,7 +23,7 @@ public class EnterpriseDto {
         private String businessNumber;
         private String corporateNumber;
         private String address;
-
+        private String country;
         private String managerName;
         private String managerPhone;
         private String managerEmail;
