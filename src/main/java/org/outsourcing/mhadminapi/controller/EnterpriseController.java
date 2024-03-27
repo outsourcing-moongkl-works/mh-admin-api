@@ -58,8 +58,8 @@ public class EnterpriseController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<EnterpriseDto.LoginResponse> login(EnterpriseDto.LoginRequest request) {
+    @PostMapping("/login")
+    public ResponseEntity<EnterpriseDto.LoginResponse> login(@RequestBody EnterpriseDto.LoginRequest request) {
 
         log.info("login: {}", request);
 
