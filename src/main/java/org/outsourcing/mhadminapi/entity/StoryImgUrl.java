@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
-import org.outsourcing.mhadminapi.dto.StoryImgUrlDto;
+import org.outsourcing.mhadminapi.dto.EnterpriseDto;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -30,18 +31,27 @@ public class StoryImgUrl {
     @Column
     private String cloudfrontUrl;
 
+    @OneToOne(mappedBy = "storyImgUrl", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Story story;
+
+
     @Builder
-    public StoryImgUrl(UUID id, String s3Url, String cloudfrontUrl) {
+    public StoryImgUrl(UUID id, String s3Url, String cloudfrontUrl, Story story) {
         this.id = id;
         this.s3Url = s3Url;
         this.cloudfrontUrl = cloudfrontUrl;
+        this.story = story;
     }
 
-    public static StoryImgUrl convertStoryImgUrlDtoToEntity(StoryImgUrlDto uploadedStoryImgUrl) {
+    public static StoryImgUrl convertStoryImgUrlDtoToEntity(EnterpriseDto.StoryUrl uploadedStoryImgUrl) {
         return StoryImgUrl.builder()
                 .s3Url(uploadedStoryImgUrl.getS3Url())
                 .cloudfrontUrl(uploadedStoryImgUrl.getCloudfrontUrl())
                 .build();
+    }
+
+    public void setStory(Story story) {
+        this.story = story;
     }
 
 }

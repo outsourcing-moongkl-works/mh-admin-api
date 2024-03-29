@@ -92,10 +92,10 @@ public class EnterpriseController {
     //Story 비공개
     @PreAuthorize("hasAuthority('ENTERPRISE')")
     @PostMapping("/story/changing-public")
-    public ResponseEntity<ResponseDto> changeIsPublic(@RequestBody String storyId) {
-        log.info("hideStory: {}", storyId);
+    public ResponseEntity<ResponseDto> changeIsPublic(@RequestBody EnterpriseDto.ChangeIsPublicRequest request) {
+        log.info("changeIsPublic: {}", request);
 
-        enterpriseService.changeIsPublic(storyId);
+        enterpriseService.changeIsPublic(request.getStoryId());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -103,10 +103,10 @@ public class EnterpriseController {
     //Story 삭제
     @PreAuthorize("hasAuthority('ENTERPRISE')")
     @DeleteMapping("/story")
-    public ResponseEntity<ResponseDto> deleteStory(@RequestBody String storyId) {
-        log.info("deleteStory: {}", storyId);
+    public ResponseEntity<ResponseDto> deleteStory(@RequestBody EnterpriseDto.DeleteStoryRequest request) {
+        log.info("deleteStory: {}", request.getStoryId());
 
-        enterpriseService.deleteStory(UUID.fromString(storyId));
+        enterpriseService.deleteStory(UUID.fromString(request.getStoryId()));
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

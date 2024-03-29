@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "story_img_urls")
+@Table(name = "stories")
 @NoArgsConstructor
 @Getter
 @EntityListeners(AuditingEntityListener.class)
@@ -37,9 +37,8 @@ public class Story {
     @Column(name = "view_count", nullable = false)
     private long viewCount;
 
-    @ColumnDefault("false")
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @JoinColumn(name = "enterprise_id", foreignKey = @ForeignKey(name = "story_img_url_fk_enterprise_id"))
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -54,16 +53,15 @@ public class Story {
     private LocalDateTime createdAt;
 
     @Builder
-    public Story(Enterprise enterprise, long useCount, long shareCount, long viewCount, boolean isPublic, StoryImgUrl storyImgUrl, LocalDateTime createdAt) {
+    public Story(Enterprise enterprise, long useCount, long shareCount, long viewCount, Boolean isPublic, StoryImgUrl storyImgUrl, LocalDateTime createdAt) {
         this.enterprise = enterprise;
         this.useCount = useCount;
         this.shareCount = shareCount;
         this.viewCount = viewCount;
-        this.isPublic = isPublic;
+        this.isPublic = isPublic != null ? isPublic : true;
         this.storyImgUrl = storyImgUrl;
         this.createdAt = createdAt;
     }
-
     public void increaseUseCount() {
         this.useCount++;
     }
@@ -85,5 +83,8 @@ public class Story {
         this.isPublic = !this.isPublic;
     }
 
-
+    public void setStoryImgUrl(StoryImgUrl storyImgUrl) {
+        this.storyImgUrl = storyImgUrl;
+        storyImgUrl.setStory(this);
+    }
 }

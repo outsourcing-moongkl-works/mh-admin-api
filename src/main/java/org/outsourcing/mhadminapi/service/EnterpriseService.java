@@ -9,6 +9,7 @@ import org.outsourcing.mhadminapi.dto.JwtDto;
 import org.outsourcing.mhadminapi.entity.Enterprise;
 import org.outsourcing.mhadminapi.entity.LogoImgUrl;
 import org.outsourcing.mhadminapi.entity.Story;
+import org.outsourcing.mhadminapi.entity.StoryImgUrl;
 import org.outsourcing.mhadminapi.exception.EnterpriseErrorResult;
 import org.outsourcing.mhadminapi.exception.EnterpriseException;
 import org.outsourcing.mhadminapi.repository.EnterpriseRepository;
@@ -37,6 +38,7 @@ public class EnterpriseService {
     private final LogoImgService logoImgService;
     private final StoryRepository storyRepository;
     private final LogoImgUrlRepository logoImgUrlRepository;
+    private final StoryService storyService;
     @Transactional
     public void requestApproveEnterprise(EnterpriseDto.AuthorizeRequest request, MultipartFile logoImg) {
 
@@ -111,8 +113,18 @@ public class EnterpriseService {
             enterpriseRepository.delete(enterprise);
     }
 
+    @Transactional
     public void createStory(UUID enterpriseId, MultipartFile storyImg) {
+        Enterprise enterprise = enterpriseRepository.findById(enterpriseId).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
 
+        EnterpriseDto.StoryUrl storyImgUrlDto = storyService.uploadStoryImg(enterpriseId, storyImg);
+
+        Story story = Story.builder()
+                .enterprise(enterprise)
+                .storyImgUrl(StoryImgUrl.convertStoryImgUrlDtoToEntity(storyImgUrlDto))
+                .build();
+
+        storyRepository.save(story);
     }
 
     public void deleteStory(UUID storyId) {

@@ -95,9 +95,9 @@ public class EnterpriseDto {
         UUID storyId;
         String cloudfrontUrl;
         Boolean isPublic;
-        int useCount;
-        int shareCount;
-        int viewCount;
+        long useCount;
+        long shareCount;
+        long viewCount;
         LocalDateTime createdAt;
     }
 
@@ -111,9 +111,9 @@ public class EnterpriseDto {
         UUID storyId;
         String cloudfrontUrl;
         Boolean isPublic;
-        int useCount;
-        int shareCount;
-        int viewCount;
+        long useCount;
+        long shareCount;
+        long viewCount;
     }
 
 
@@ -135,5 +135,25 @@ public class EnterpriseDto {
         String managerEmail;
         String logoImgUrl;
         Boolean isApproved;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class ChangeIsPublicRequest {
+        private String storyId;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class DeleteStoryRequest {
+        private String storyId;
     }
 }

@@ -16,18 +16,18 @@ public interface StoryRepository extends JpaRepository<Story, UUID> {
     void deleteById(UUID id);
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$GetStoryPageResponse(" +
-            "s.id, SIU.cloudfrontUrl, s.isPublic, s.useCount, s.shareCount, s.viewCount, s.createdAt) " +
+            "s.id, siu.cloudfrontUrl, s.isPublic, s.useCount, s.shareCount, s.viewCount, s.createdAt) " +
             "FROM Story s " +
-            "JOIN s.storyImgUrl SIU " +
+            "JOIN s.storyImgUrl siu " +
             "WHERE s.enterprise.id = :enterpriseId " +
             "AND s.createdAt BETWEEN :startDateTime AND :endDateTime " +
             "ORDER BY s.createdAt DESC")
     Page<EnterpriseDto.GetStoryPageResponse> findByEnterpriseIdAndCreatedAtBetween(UUID enterpriseId, LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$GetStoryPageResponse(" +
-            "s.id, SIU.cloudfrontUrl, s.isPublic, s.useCount, s.shareCount, s.viewCount, s.createdAt) " +
+            "s.id, siu.cloudfrontUrl, s.isPublic, s.useCount, s.shareCount, s.viewCount, s.createdAt) " +
             "FROM Story s " +
-            "JOIN s.storyImgUrl SIU " +
+            "JOIN s.storyImgUrl siu " +
             "WHERE s.enterprise.id = :enterpriseId " +
             "AND s.createdAt BETWEEN :startDateTime AND :endDateTime " +
             "AND s.isPublic = true " +
@@ -35,9 +35,9 @@ public interface StoryRepository extends JpaRepository<Story, UUID> {
     Page<EnterpriseDto.GetStoryPageResponse> findByEnterpriseIdAndCreatedAtBetweenAndPublic(UUID enterpriseId, LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$GetStoryPageResponse(" +
-            "s.id, SIU.cloudfrontUrl, s.isPublic, s.useCount, s.shareCount, s.viewCount, s.createdAt) " +
+            "s.id, siu.cloudfrontUrl, s.isPublic, s.useCount, s.shareCount, s.viewCount, s.createdAt) " +
             "FROM Story s " +
-            "JOIN s.storyImgUrl SIU " +
+            "JOIN s.storyImgUrl siu " +
             "WHERE s.enterprise.id = :enterpriseId " +
             "AND s.createdAt BETWEEN :startDateTime AND :endDateTime " +
             "AND s.isPublic = false " +
