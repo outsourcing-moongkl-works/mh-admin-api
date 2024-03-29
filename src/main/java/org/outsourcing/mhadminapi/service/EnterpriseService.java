@@ -7,10 +7,18 @@ import org.outsourcing.mhadminapi.auth.JwtTokenProvider;
 import org.outsourcing.mhadminapi.dto.EnterpriseDto;
 import org.outsourcing.mhadminapi.dto.JwtDto;
 import org.outsourcing.mhadminapi.entity.Enterprise;
+import org.outsourcing.mhadminapi.entity.LogoImgUrl;
+import org.outsourcing.mhadminapi.entity.Story;
 import org.outsourcing.mhadminapi.exception.EnterpriseErrorResult;
 import org.outsourcing.mhadminapi.exception.EnterpriseException;
 import org.outsourcing.mhadminapi.repository.EnterpriseRepository;
+import org.outsourcing.mhadminapi.repository.LogoImgUrlRepository;
+import org.outsourcing.mhadminapi.repository.StoryRepository;
 import org.outsourcing.mhadminapi.vo.Role;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,8 +35,9 @@ public class EnterpriseService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final LogoImgService logoImgService;
-    private final EnterpriseStoryService enterpriseStoryService;
-
+    private final StoryRepository storyRepository;
+    private final LogoImgUrlRepository logoImgUrlRepository;
+    @Transactional
     public void requestApproveEnterprise(EnterpriseDto.AuthorizeRequest request, MultipartFile logoImg) {
 
         Enterprise enterprise = Enterprise.builder()
@@ -42,16 +51,15 @@ public class EnterpriseService {
                 .managerEmail(request.getManagerEmail())
                 .managerName(request.getManagerName())
                 .managerPhone(request.getManagerPhone())
-                .isApproved("FALSE")
+                .isApproved(false)
                 .country(request.getCountry())
                 .build();
 
         enterprise.setEnterpriseId();
+        EnterpriseDto.LogoImgUrl logoImgUrl = logoImgService.uploadLogoImg(enterprise.getId(), logoImg);
+        enterprise.updateLogoImgUrl(LogoImgUrl.convertLogoImgUrlDtoToEntity(logoImgUrl));
 
         enterpriseRepository.save(enterprise);
-
-        logoImgService.uploadLogoImg(enterprise.getId(), logoImg);
-
     }
 
     @Transactional
@@ -80,15 +88,6 @@ public class EnterpriseService {
                 .build();
     }
 
-    public void approveEnterprise(String enterpriseId) {
-
-            Enterprise enterprise = enterpriseRepository.findById(UUID.fromString(enterpriseId))
-                    .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
-
-            enterprise.updateIsApproved("TRUE");
-
-            enterpriseRepository.save(enterprise);
-    }
 
     public EnterpriseDto.GetApprovalResponse getApproval(String loginId) {
 
@@ -110,5 +109,40 @@ public class EnterpriseService {
             }
 
             enterpriseRepository.delete(enterprise);
+    }
+
+    public void createStory(UUID enterpriseId, MultipartFile storyImg) {
+
+    }
+
+    public void deleteStory(UUID storyId) {
+        Story story = storyRepository.findById(storyId).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.STORY_NOT_FOUND));
+
+        storyRepository.deleteById(storyId);
+    }
+
+    public Page<EnterpriseDto.GetStoryPageResponse> searchStory(UUID enterpriseId, int page, int size, String sort, LocalDateTime startDateTime, LocalDateTime endDateTime, Boolean isPublic) {
+        Pageable pageable;
+        if (sort == null || sort.isEmpty() || sort.equals("createdAt")) {
+            pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sort).descending());
+        }
+
+        if(isPublic == null) {
+            return storyRepository.findByEnterpriseIdAndCreatedAtBetween(enterpriseId, startDateTime, endDateTime, pageable);
+        }else if(isPublic.equals(true)){
+            return storyRepository.findByEnterpriseIdAndCreatedAtBetweenAndPublic(enterpriseId, startDateTime, endDateTime, pageable);
+        }else {
+            return storyRepository.findByEnterpriseIdAndCreatedAtBetweenAndNotPublic(enterpriseId, startDateTime, endDateTime, pageable);
+        }
+    }
+
+    public void changeIsPublic(String storyId) {
+        Story story = storyRepository.findById(UUID.fromString(storyId)).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.STORY_NOT_FOUND));
+
+        story.changeIsPublic();
+
+        storyRepository.save(story);
     }
 }

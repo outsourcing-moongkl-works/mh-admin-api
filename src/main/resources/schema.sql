@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS enterprises
     business_number VARCHAR(50) NOT NULL,
     corporate_number VARCHAR(50) NOT NULL,
     address VARCHAR(50) NOT NULL,
-    is_approved VARCHAR(10) NOT NULL,
+    is_approved TINYINT(1) NOT NULL,
     manager_name VARCHAR(50) NOT NULL,
     manager_phone VARCHAR(50) NOT NULL,
     manager_email VARCHAR(50) NOT NULL,

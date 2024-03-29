@@ -21,12 +21,12 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class EnterpriseStoryService { // 클래스 이름 변경
+public class StoryService { // 클래스 이름 변경
     private final S3Client amazonS3Client;
     private final EnterpriseRepository enterpriseRepository;
 
     @Autowired
-    public EnterpriseStoryService(S3Client amazonS3Client, EnterpriseRepository enterpriseRepository) {
+    public StoryService(S3Client amazonS3Client, EnterpriseRepository enterpriseRepository) {
         this.amazonS3Client = amazonS3Client;
         this.enterpriseRepository = enterpriseRepository;
     }

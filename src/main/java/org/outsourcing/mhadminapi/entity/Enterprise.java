@@ -53,8 +53,8 @@ public class Enterprise implements Serializable {
     @Column(name = "address", nullable = false, length = 50)
     private String address;
 
-    @Column(name = "is_approved", nullable = false, length = 10)
-    private String isApproved;
+    @Column(name = "is_approved", nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean isApproved;
 
     @JoinColumn(name = "logo_img_url_id", foreignKey = @ForeignKey(name = "enterprise_fk_logo_img_url_id"))
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -84,7 +84,7 @@ public class Enterprise implements Serializable {
     }
 
     @Builder
-    public Enterprise(String loginId, String password, Role role, String name, String businessNumber, String corporateNumber, String address, String isApproved, LogoImgUrl logoImgUrl, String managerEmail, String managerName, String managerPhone, LocalDateTime createdAt, LocalDateTime updatedAt, String country) {
+    public Enterprise(String loginId, String password, Role role, String name, String businessNumber, String corporateNumber, String address, Boolean isApproved, LogoImgUrl logoImgUrl, String managerEmail, String managerName, String managerPhone, LocalDateTime createdAt, LocalDateTime updatedAt, String country) {
         this.loginId = loginId;
         this.password = password;
         this.role = role;
@@ -104,8 +104,9 @@ public class Enterprise implements Serializable {
 
     public void updateLogoImgUrl(LogoImgUrl logoImgUrl) {
         this.logoImgUrl = logoImgUrl;
+        logoImgUrl.setEnterprise(this);
     }
-    public void updateIsApproved(String isApproved) {
+    public void updateIsApproved(Boolean isApproved) {
         this.isApproved = isApproved;
     }
 

@@ -27,11 +27,15 @@ public class LogoImgUrl {
     @Column
     private String cloudfrontUrl;
 
+    @OneToOne(mappedBy = "logoImgUrl", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Enterprise enterprise;
+
     @Builder
-    public LogoImgUrl(UUID id, String s3Url, String cloudfrontUrl) {
+    public LogoImgUrl(UUID id, String s3Url, String cloudfrontUrl, Enterprise enterprise) {
         this.id = id;
         this.s3Url = s3Url;
         this.cloudfrontUrl = cloudfrontUrl;
+        this.enterprise = enterprise;
     }
 
     public static LogoImgUrl convertLogoImgUrlDtoToEntity(EnterpriseDto.LogoImgUrl uploadedLogoImgUrl) {
@@ -39,5 +43,9 @@ public class LogoImgUrl {
                 .s3Url(uploadedLogoImgUrl.getS3Url())
                 .cloudfrontUrl(uploadedLogoImgUrl.getCloudfrontUrl())
                 .build();
+    }
+
+    public void setEnterprise(Enterprise enterprise) {
+        this.enterprise = enterprise;
     }
 }

@@ -6,14 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<User, UUID>, PagingAndSortingRepository<User, UUID>{
+public interface UserRepository extends JpaRepository<User, UUID> {
     //유저 성별로 조회, 페이징 처리
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id," +
@@ -29,12 +28,10 @@ public interface UserRepository extends JpaRepository<User, UUID>, PagingAndSort
             "FROM User u WHERE u.email LIKE %:email% ORDER BY u.createdAt DESC")
     Page<UserDto.ReadResponse> findUserByEmailContaining(@Param("email") String email, Pageable pageable);
 
-
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id, u.email, u.gender, u.country, u.phoneNumber) " +
             "FROM User u WHERE u.country LIKE %:country% ORDER BY u.createdAt DESC")
     Page<UserDto.ReadResponse> findUserByCountryContaining(@Param("country") String country, Pageable pageable);
-
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id, u.email, u.gender, u.country, u.phoneNumber) " +
@@ -44,12 +41,12 @@ public interface UserRepository extends JpaRepository<User, UUID>, PagingAndSort
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id, u.email, u.gender, u.country, u.phoneNumber) " +
             "FROM User u WHERE u.createdAt BETWEEN :startDate AND :endDate ORDER BY u.createdAt DESC")
-    Page<UserDto.ReadResponse> findUserByCreatedAtBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
+    Page<UserDto.ReadResponse> findUserByCreatedAtBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, Pageable pageable);
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id, u.email, u.gender, u.country, u.phoneNumber) " +
-            "FROM User u WHERE u.id = :userId ORDER BY u.createdAt DESC")
-    UserDto.ReadResponse findUserById(UUID userId);
+            "FROM User u WHERE u.id = :userId")
+    Optional<UserDto.ReadResponse> findUserById(@Param("userId") UUID userId);
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id, u.email, u.gender, u.country, u.phoneNumber)" +

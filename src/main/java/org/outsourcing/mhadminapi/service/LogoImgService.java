@@ -44,8 +44,6 @@ public class LogoImgService{
 
         String s3FilePath = enterpriseId + "/" + LOGOIMG_DIRECTORY;
 
-        Enterprise enterprise = enterpriseRepository.findById(enterpriseId).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
-
         EnterpriseDto.LogoImgUrl logoImgUrlDto;
 
         if(logoImg == null || logoImg.isEmpty()) {
@@ -56,7 +54,6 @@ public class LogoImgService{
 
             return logoImgUrlDto;
         }
-
 
         String fileExtension = logoImg.getOriginalFilename().substring(logoImg.getOriginalFilename().lastIndexOf("."));
 

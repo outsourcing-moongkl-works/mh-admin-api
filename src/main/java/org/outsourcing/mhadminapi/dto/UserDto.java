@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class UserDto {
 
@@ -56,7 +57,7 @@ public class UserDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ReadHereResponse{
-        private String userId;
+        private UUID userId;
         private String userEmail;
         private String skinCloudfrontUrl;
         private String storyCloudfrontUrl;
@@ -72,5 +73,26 @@ public class UserDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class DeleteHereResponse{
         private LocalDateTime deletedAt;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PauseResponse {
+        private LocalDateTime pausedAt;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PauseRequest {
+        private String userId;
+        private int days;
     }
 }

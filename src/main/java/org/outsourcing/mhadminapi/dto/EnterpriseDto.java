@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 public class EnterpriseDto {
     @Data
     @Builder
@@ -79,9 +82,58 @@ public class EnterpriseDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class GetApprovalResponse {
-        private String isApproved;
+        private Boolean isApproved;
     }
-}
-class ManagerRequest {
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class GetStoryPageResponse {
+        UUID storyId;
+        String cloudfrontUrl;
+        Boolean isPublic;
+        int useCount;
+        int shareCount;
+        int viewCount;
+        LocalDateTime createdAt;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class GetHideStoryResponse {
+        UUID storyId;
+        String cloudfrontUrl;
+        Boolean isPublic;
+        int useCount;
+        int shareCount;
+        int viewCount;
+    }
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class GetEnterprisePageResponse{
+        UUID enterpriseId;
+        String name;
+        String businessNumber;
+        String corporateNumber;
+        String address;
+        String country;
+        String managerName;
+        String managerPhone;
+        String managerEmail;
+        String logoImgUrl;
+        Boolean isApproved;
+    }
 }

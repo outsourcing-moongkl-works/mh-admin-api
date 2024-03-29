@@ -67,7 +67,8 @@ public class UserService {
 
     //findUserById
     public UserDto.ReadResponse findUserById(String userId) {
-        UserDto.ReadResponse response = userRepository.findUserById(UUID.fromString(userId));
+
+        UserDto.ReadResponse response = userRepository.findUserById(UUID.fromString(userId)).orElse(null);
 
         if(response == null) {
             throw new NoSuchElementException("User not found");
@@ -126,5 +127,9 @@ public class UserService {
         userHereRepository.delete(userHere);
 
         return UserDto.DeleteHereResponse.builder().deletedAt(LocalDateTime.now()).build();
+    }
+
+    public UserDto.PauseResponse pauseUser(UserDto.PauseRequest request) {
+        return null;
     }
 }

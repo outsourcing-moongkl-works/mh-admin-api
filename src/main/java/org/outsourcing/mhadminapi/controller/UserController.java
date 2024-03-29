@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @PostMapping("/{userId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<UserDto.DeleteResponse> deleteUser(@PathVariable String userId) {
 
         UserDto.DeleteResponse response = userService.deleteUser(userId);
@@ -140,6 +140,15 @@ public class UserController {
         UserDto.DeleteHereResponse response = userService.deleteHere(hereId);
 
         //@TODO : delete here send message
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @PostMapping("/pause")
+    public ResponseEntity<UserDto.PauseResponse> pauseUser(@RequestBody UserDto.PauseRequest request) {
+
+        UserDto.PauseResponse response = userService.pauseUser(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
