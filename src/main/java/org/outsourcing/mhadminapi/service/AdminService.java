@@ -20,10 +20,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public class AdminService{
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final EnterpriseRepository enterpriseRepository;
-
+    private final StringRedisTemplate redisTemplate;
     @Transactional
     public AdminDto.CreateAdminResponse createAdmin(AdminDto.CreateAdminRequest request) {
         if(adminRepository.existsByEmail(request.getEmail())){
@@ -140,5 +141,68 @@ public class AdminService{
                 .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
 
         enterpriseRepository.delete(enterprise);
+    }
+
+    public AdminDto.PauseEnterpriseResponse pauseEnterprise(AdminDto.PauseEnterpriseRequest request) {
+        if (request.getPauseDay() < 0) {
+            throw new IllegalArgumentException("Pause day cannot be negative");
+        }
+
+        String key = "pause:enterprise:" + request.getEnterpriseId();
+        String value = String.valueOf(request.getPauseDay());
+        if (request.getPauseDay() > 0) {
+            // 일수를 기반으로 만료 시간 계산 (예: 1일 = 24시간)
+            long timeout = Duration.ofDays(request.getPauseDay()).getSeconds();
+            redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(timeout));
+        } else if (request.getPauseDay() == 0) {
+            // 무제한 정지
+            redisTemplate.opsForValue().set(key, value);
+        }
+
+        return AdminDto.PauseEnterpriseResponse.builder()
+                .pauseStartAt(LocalDateTime.now())
+                .build();
+    }
+
+    public AdminDto.PauseUserResponse pauseUser(AdminDto.PauseUserRequest request) {
+        if (request.getPauseDay() < 0) {
+            throw new IllegalArgumentException("Pause day cannot be negative");
+        }
+
+        String key = "pause:user:" + request.getUserId();
+        String value = String.valueOf(request.getPauseDay());
+        if (request.getPauseDay() > 0) {
+            // 일수를 기반으로 만료 시간 계산 (예: 1일 = 24시간)
+            long timeout = Duration.ofDays(request.getPauseDay()).getSeconds();
+            redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(timeout));
+        } else if (request.getPauseDay() == 0) {
+            // 무제한 정지
+            redisTemplate.opsForValue().set(key, value);
+        }
+
+        //@TODO: message send
+
+        return AdminDto.PauseUserResponse.builder()
+                .pauseStartAt(LocalDateTime.now())
+                .build();
+    }
+
+    public AdminDto.UnpauseUserResponse unpauseUser(AdminDto.PauseUserRequest request) {
+        String key = "pause:user:" + request.getUserId();
+        redisTemplate.delete(key);
+
+        //@TODO: message send
+        return AdminDto.UnpauseUserResponse.builder()
+                .pauseEndAt(LocalDateTime.now())
+                .build();
+    }
+
+    public AdminDto.UnpauseEnterpriseResponse unpauseEnterprise(AdminDto.PauseEnterpriseRequest request) {
+        String key = "pause:enterprise:" + request.getEnterpriseId();
+        redisTemplate.delete(key);
+
+        return AdminDto.UnpauseEnterpriseResponse.builder()
+                .pauseEndAt(LocalDateTime.now())
+                .build();
     }
 }

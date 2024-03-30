@@ -92,12 +92,43 @@ public class AdminController {
     //기업 사용 정지
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping("/enterprise/pause")
-    public ResponseEntity<ResponseDto> pauseEnterprise(@RequestParam("enterprise_id") String enterpriseId){
-        log.info("pauseEnterprise: {}", enterpriseId);
+    public ResponseEntity<AdminDto.PauseEnterpriseResponse> pauseEnterprise(@RequestBody AdminDto.PauseEnterpriseRequest request){
+        log.info("pauseEnterprise: {}", request.getEnterpriseId());
 
-        //enterpriseService.pauseEnterprise(enterpriseId);
+        AdminDto.PauseEnterpriseResponse response = adminService.pauseEnterprise(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    //유저 사용정지
+    @PreAuthorize("hasAuthority('MASTER')")
+    @PostMapping("/user/pause")
+    public ResponseEntity<AdminDto.PauseUserResponse> pauseUser(@RequestBody AdminDto.PauseUserRequest request){
+        log.info("pauseUser: {}", request.getUserId());
+
+        AdminDto.PauseUserResponse response = adminService.pauseUser(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @PostMapping("/enterprise/unpause")
+    public ResponseEntity<AdminDto.UnpauseEnterpriseResponse> unpauseEnterprise(@RequestBody AdminDto.PauseEnterpriseRequest request){
+        log.info("pauseEnterprise: {}", request.getEnterpriseId());
+
+        AdminDto.UnpauseEnterpriseResponse response = adminService.unpauseEnterprise(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @PostMapping("/user/unpause")
+    public ResponseEntity<AdminDto.UnpauseUserResponse> unpauseUser(@RequestBody AdminDto.PauseUserRequest request){
+        log.info("pauseUser: {}", request.getUserId());
+
+        AdminDto.UnpauseUserResponse response = adminService.unpauseUser(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     //모든 Story get, 페이징

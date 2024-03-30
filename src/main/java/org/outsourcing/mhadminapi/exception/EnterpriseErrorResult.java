@@ -14,7 +14,8 @@ public enum EnterpriseErrorResult {
     STORYIMG_UPLOAD_FAILED(HttpStatus.CONFLICT, "스토리 이미지 업로드에 실패했습니다."),
     STORYIMG_DELETE_FAILED(HttpStatus.CONFLICT, "스토리 이미지 삭제에 실패했습니다."),
     WRONG_PASSWORD(HttpStatus.FORBIDDEN, "잘못된 비밀번호입니다." ),
-    STORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 스토리를 찾을 수 없습니다.");
+    STORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 스토리를 찾을 수 없습니다."), NOT_APPROVED_ENTERPRISE(HttpStatus.FORBIDDEN, "승인되지 않은 기업입니다."),
+    BLOCKED_ENTERPRISE(HttpStatus.FORBIDDEN, "차단된 기업입니다."),;
     private final HttpStatus httpStatus;
     private final String message;
 }

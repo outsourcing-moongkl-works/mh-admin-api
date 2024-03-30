@@ -4,12 +4,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.auth.JwtTokenProvider;
+import org.outsourcing.mhadminapi.dto.AdminDto;
 import org.outsourcing.mhadminapi.dto.EnterpriseDto;
 import org.outsourcing.mhadminapi.dto.JwtDto;
 import org.outsourcing.mhadminapi.entity.Enterprise;
 import org.outsourcing.mhadminapi.entity.LogoImgUrl;
 import org.outsourcing.mhadminapi.entity.Story;
 import org.outsourcing.mhadminapi.entity.StoryImgUrl;
+import org.outsourcing.mhadminapi.exception.EnterpriseBlockException;
 import org.outsourcing.mhadminapi.exception.EnterpriseErrorResult;
 import org.outsourcing.mhadminapi.exception.EnterpriseException;
 import org.outsourcing.mhadminapi.repository.EnterpriseRepository;
@@ -20,12 +22,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -39,6 +43,8 @@ public class EnterpriseService {
     private final StoryRepository storyRepository;
     private final LogoImgUrlRepository logoImgUrlRepository;
     private final StoryService storyService;
+    private final StringRedisTemplate redisTemplate;
+
     @Transactional
     public void requestApproveEnterprise(EnterpriseDto.AuthorizeRequest request, MultipartFile logoImg) {
 
@@ -66,15 +72,22 @@ public class EnterpriseService {
 
     @Transactional
     public EnterpriseDto.LoginResponse login(EnterpriseDto.LoginRequest request) {
-
-        // 이메일을 기반으로 사용자 정보 조회
+        // 이메일(또는 로그인 ID)을 기반으로 사용자 정보 조회
         Enterprise enterprise = enterpriseRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
 
         // matches 메서드를 사용하여 비밀번호 확인
         if (!passwordEncoder.matches(request.getPassword(), enterprise.getPassword())) {
-            throw new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND);
+            throw new EnterpriseException(EnterpriseErrorResult.WRONG_PASSWORD);
         }
+
+        // 승인 상태인지 확인, 승인 상태가 아니라면 예외 발생
+        if (!enterprise.getIsApproved()) {
+            throw new EnterpriseException(EnterpriseErrorResult.NOT_APPROVED_ENTERPRISE);
+        }
+
+        // redis를 통해 정지 상태인지 확인, 정지 상태라면 예외 발생
+        checkAndThrowIfPaused(enterprise.getId()); // 이 메서드 호출로 정지 상태 확인
 
         JwtDto.JwtRequestDto jwtRequestDto = JwtDto.JwtRequestDto.builder()
                 .id(enterprise.getId().toString())
@@ -160,4 +173,26 @@ public class EnterpriseService {
 
         storyRepository.save(story);
     }
+
+    // 정지 상태 확인 및 예외 처리 메서드
+    public void checkAndThrowIfPaused(UUID enterpriseId) {
+        String key = "pause:enterprise:" + String.valueOf(enterpriseId);
+        String value = redisTemplate.opsForValue().get(key);
+        if (value != null) {
+            // 키의 남은 만료 시간(초 단위) 조회
+            Long expireSeconds = redisTemplate.getExpire(key, TimeUnit.SECONDS);
+            String message;
+            if (expireSeconds == null) {
+                message = "영구정지된 기업입니다.";
+            } else {
+                // 남은 만료 시간을 일수와 시간으로 계산
+                long days = TimeUnit.SECONDS.toDays(expireSeconds);
+                long hours = TimeUnit.SECONDS.toHours(expireSeconds) - TimeUnit.DAYS.toHours(days);
+                message = String.format("정지 기한이 %d일 %d시간 남았습니다.", days, hours);
+            }
+
+            throw new EnterpriseBlockException(message);
+        }
+    }
+
 }

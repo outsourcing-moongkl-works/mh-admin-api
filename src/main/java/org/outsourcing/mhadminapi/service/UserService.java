@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
     private final UserSkinRepository userSkinRepository;
+    private final StringRedisTemplate redisTemplate;
 
     //findUserByGender
 //    public Page<UserDto.ReadResponse> findUserByGender(String gender, int page, int size) {
@@ -150,10 +152,6 @@ public class UserService {
         return UserDto.DeleteResponse.builder().deletedAt(LocalDateTime.now()).build();
     }
 
-    @Transactional
-    public UserDto.PauseResponse pauseUser(UserDto.PauseRequest request) {
-        return null;
-    }
 
 
 }

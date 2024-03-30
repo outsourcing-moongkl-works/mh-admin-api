@@ -22,6 +22,29 @@ public class ControllerExceptionAdvice {
         return ResponseEntity.status(errorResult.getHttpStatus()).body(responseDto);
     }
 
+    @ExceptionHandler(EnterpriseException.class)
+    public ResponseEntity<ResponseDto> handleEnterpriseException(EnterpriseException e) {
+
+        log.error("EnterpriseException : " + e.getMessage());
+
+        final EnterpriseErrorResult errorResult = e.getEnterpriseErrorResult();
+
+        final ResponseDto responseDto = ResponseDto.error(errorResult.getMessage());
+
+        return ResponseEntity.status(errorResult.getHttpStatus()).body(responseDto);
+    }
+
+    @ExceptionHandler(EnterpriseBlockException.class)
+    public ResponseEntity<ResponseDto> handleEnterpriseBlockException(EnterpriseBlockException e) {
+
+        log.error("EnterpriseBlockException : " + e.getMessage());
+
+        final ResponseDto responseDto = ResponseDto.error(e.getMessage());
+
+        return ResponseEntity.status(e.getHttpStatus()).body(responseDto);
+    }
+
+
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<ResponseDto> authException(AuthException e){
 
@@ -31,6 +54,7 @@ public class ControllerExceptionAdvice {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseDto);
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDto> handleException(Exception e) {
 

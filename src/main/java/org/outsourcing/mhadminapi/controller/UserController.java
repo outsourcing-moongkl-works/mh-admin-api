@@ -151,15 +151,4 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-
-
-    @PreAuthorize("hasAuthority('MASTER')")
-    @PostMapping("/pause")
-    public ResponseEntity<UserDto.PauseResponse> pauseUser(@RequestBody UserDto.PauseRequest request) {
-
-        UserDto.PauseResponse response = userService.pauseUser(request);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
 }

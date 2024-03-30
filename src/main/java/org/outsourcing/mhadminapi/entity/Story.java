@@ -38,7 +38,7 @@ public class Story {
     private long viewCount;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private Boolean isPublic;
+    private Boolean isPublic; //중지 여부
 
     @JoinColumn(name = "enterprise_id", foreignKey = @ForeignKey(name = "story_img_url_fk_enterprise_id"))
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
