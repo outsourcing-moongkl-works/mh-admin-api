@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import jakarta.persistence.*;
-import org.outsourcing.mhadminapi.dto.UserHereDto;
+import org.outsourcing.mhadminapi.dto.UserSkinDto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "user_skins")
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Getter
-public class UserHere {
+public class UserSkin {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -39,7 +39,7 @@ public class UserHere {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder
-    public UserHere(UUID id, String storyCloudfrontUrl, String skinCloudfrontUrl, String country, LocalDateTime createdAt, User user){
+    public UserSkin(UUID id, String storyCloudfrontUrl, String skinCloudfrontUrl, String country, LocalDateTime createdAt, User user){
         this.id = id;
         this.storyCloudfrontUrl = storyCloudfrontUrl;
         this.skinCloudfrontUrl = skinCloudfrontUrl;
@@ -47,15 +47,15 @@ public class UserHere {
         this.createdAt = createdAt;
     }
 
-    public static UserHere convertUserSkinDtoToEntity(UserHereDto uploadedUserSkinUrl) {
-        final UserHere userHere = UserHere.builder()
+    public static UserSkin convertUserSkinDtoToEntity(UserSkinDto uploadedUserSkinUrl) {
+        final UserSkin userSkin = UserSkin.builder()
                 .id(uploadedUserSkinUrl.getId())
                 .storyCloudfrontUrl(uploadedUserSkinUrl.getStoryCloudfrontUrl())
                 .skinCloudfrontUrl(uploadedUserSkinUrl.getSkinCloudfrontUrl())
                 .country(uploadedUserSkinUrl.getCountry())
                 .createdAt(uploadedUserSkinUrl.getCreatedAt())
                 .build();
-        return userHere;
+        return userSkin;
     }
 
     public void updateUser(User user) {

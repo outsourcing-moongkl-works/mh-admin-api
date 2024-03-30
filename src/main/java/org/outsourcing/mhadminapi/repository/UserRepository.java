@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id, u.email, u.gender, u.country, u.phoneNumber) " +
             "FROM User u WHERE u.createdAt BETWEEN :startDate AND :endDate ORDER BY u.createdAt DESC")
-    Page<UserDto.ReadResponse> findUserByCreatedAtBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, Pageable pageable);
+    Page<UserDto.ReadResponse> findUserByCreatedAtBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id, u.email, u.gender, u.country, u.phoneNumber) " +

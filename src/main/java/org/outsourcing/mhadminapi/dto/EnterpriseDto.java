@@ -156,4 +156,23 @@ public class EnterpriseDto {
     public static class DeleteStoryRequest {
         private String storyId;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class WithdrawRequest {
+        private String password;
+    }
+
+    @Data @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class GetApprovalRequest {
+        private String loginId;
+    }
 }

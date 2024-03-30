@@ -67,11 +67,11 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @GetMapping("/approve/{enterprise_id}")
-    public ResponseEntity<ResponseDto> approveEnterprise(@RequestParam("enterprise_id") String enterpriseId){
-        log.info("approveEnterprise: {}", enterpriseId);
+    @PostMapping("/approve")
+    public ResponseEntity<ResponseDto> approveEnterprise(@RequestBody AdminDto.ApproveEnterpriseRequest request){
+        log.info("approveEnterprise: {}", request);
 
-        adminService.approveEnterprise(enterpriseId);
+        adminService.approveEnterprise(request.getEnterpriseId());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

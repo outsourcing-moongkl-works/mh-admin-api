@@ -103,6 +103,7 @@ public class AdminService{
                 .build();
     }
 
+    @Transactional
     public void approveEnterprise(String enterpriseId) {
         Enterprise enterprise = enterpriseRepository.findById(UUID.fromString(enterpriseId))
                 .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
@@ -133,6 +134,7 @@ public class AdminService{
         }
     }
 
+    @Transactional
     public void deleteEnterprise(String enterpriseId) {
         Enterprise enterprise = enterpriseRepository.findById(UUID.fromString(enterpriseId))
                 .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));

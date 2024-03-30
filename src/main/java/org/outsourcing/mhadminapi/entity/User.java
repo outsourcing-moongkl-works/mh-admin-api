@@ -46,10 +46,10 @@ public class User {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<UserHere> userHeres;
+    private List<UserSkin> userSkins;
 
-    public void addUserSkin(UserHere userHere) {
-        this.userHeres.add(userHere);
+    public void addUserSkin(UserSkin userSkin) {
+        this.userSkins.add(userSkin);
     }
 
     @Builder(toBuilder = true)
@@ -65,7 +65,7 @@ public class User {
         this.country = country;
         this.phoneNumber = phoneNumber;
         this.createdAt = createdAt;
-        this.userHeres = new ArrayList<>();
+        this.userSkins = new ArrayList<>();
     }
 }
 

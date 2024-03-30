@@ -21,14 +21,12 @@ public class EnquiryService {
     private final EnquiryRepository enquiryRepository;
     private final MailService mailService;
 
-    @Transactional
     public Page<EnquiryDto.GetResponse> getEnquiries(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<EnquiryDto.GetResponse> response = enquiryRepository.findAllByOrderByCreatedAtDesc(pageable);
 
         return response;
     }
-
 
     public EnquiryDto.ReplyResponse replyEnquiry(String Email, EnquiryDto.ReplyRequest request) {
         MailDto.MailSendDto mailSendDto = MailDto.MailSendDto.builder()

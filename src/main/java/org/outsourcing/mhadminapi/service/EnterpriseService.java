@@ -90,7 +90,7 @@ public class EnterpriseService {
                 .build();
     }
 
-
+    @Transactional
     public EnterpriseDto.GetApprovalResponse getApproval(String loginId) {
 
         Enterprise enterprise = enterpriseRepository.findByLoginId(loginId)
@@ -101,6 +101,7 @@ public class EnterpriseService {
                     .build();
     }
 
+    @Transactional
     public void withdraw(UUID id, String password) {
 
             Enterprise enterprise = enterpriseRepository.findById(id)
@@ -127,6 +128,7 @@ public class EnterpriseService {
         storyRepository.save(story);
     }
 
+    @Transactional
     public void deleteStory(UUID storyId) {
         Story story = storyRepository.findById(storyId).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.STORY_NOT_FOUND));
 
@@ -150,6 +152,7 @@ public class EnterpriseService {
         }
     }
 
+    @Transactional
     public void changeIsPublic(String storyId) {
         Story story = storyRepository.findById(UUID.fromString(storyId)).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.STORY_NOT_FOUND));
 

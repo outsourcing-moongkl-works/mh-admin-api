@@ -69,4 +69,14 @@ public class AdminDto {
         private String role;
         private LocalDateTime deletedAt;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class ApproveEnterpriseRequest {
+        private String enterpriseId;
+    }
 }

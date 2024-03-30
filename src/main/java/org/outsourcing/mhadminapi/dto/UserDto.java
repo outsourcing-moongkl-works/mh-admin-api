@@ -33,7 +33,7 @@ public class UserDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ReadResponse {
-        private String userId;
+        private UUID userId;
         private String email;
         private String gender;
         private String country;
@@ -56,7 +56,7 @@ public class UserDto {
     @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class ReadHereResponse{
+    public static class ReadUserSkinResponse{
         private UUID userId;
         private String userEmail;
         private String skinCloudfrontUrl;
@@ -71,7 +71,7 @@ public class UserDto {
     @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class DeleteHereResponse{
+    public static class DeleteUserSkinResponse{
         private LocalDateTime deletedAt;
     }
 
@@ -94,5 +94,25 @@ public class UserDto {
     public static class PauseRequest {
         private String userId;
         private int days;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class DeleteUserSkinRequest {
+        private String userSkinId;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class ReadUserSkinRequest {
+        private String userSkinId;
     }
 }

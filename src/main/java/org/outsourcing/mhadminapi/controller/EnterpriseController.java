@@ -42,7 +42,7 @@ public class EnterpriseController {
 
     //가입 상태확인
     @GetMapping("/approval")
-    public ResponseEntity<EnterpriseDto.GetApprovalResponse> getApproval(@RequestBody String loginId) {
+    public ResponseEntity<EnterpriseDto.GetApprovalResponse> getApproval(@RequestParam String loginId) {
         log.info("getApproval: {}", loginId);
 
         EnterpriseDto.GetApprovalResponse response = enterpriseService.getApproval(loginId);
@@ -53,10 +53,10 @@ public class EnterpriseController {
 
     @PreAuthorize("hasAuthority('ENTERPRISE')")
     @DeleteMapping("/withdraw")
-    public ResponseEntity<ResponseDto> withdraw(@AuthenticationPrincipal UserPrincipal enterprisePrincipal, @RequestBody String password) {
+    public ResponseEntity<ResponseDto> withdraw(@AuthenticationPrincipal UserPrincipal enterprisePrincipal, @RequestBody EnterpriseDto.WithdrawRequest request) {
         log.info("withdraw: {}", enterprisePrincipal);
 
-        enterpriseService.withdraw(enterprisePrincipal.getEnterprise().getId(), password);
+        enterpriseService.withdraw(enterprisePrincipal.getEnterprise().getId(), request.getPassword());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

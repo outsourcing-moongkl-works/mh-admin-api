@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class UserHereDto {
+public class UserSkinDto {
     private UUID id;
     private String storyCloudfrontUrl;
     private String skinCloudfrontUrl;
