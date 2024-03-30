@@ -68,6 +68,7 @@ public class Enterprise implements Serializable {
 
     @Column(name = "manager_email", nullable = false, length = 50)
     private String managerEmail;
+
     @CreatedDate
     @Column(name = "created_at", length = 20)
     private LocalDateTime createdAt;

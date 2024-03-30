@@ -58,12 +58,14 @@ public class User {
     @Builder(toBuilder = true)
     public User(UUID id,
                 String email,
+                String password,
                 String phoneNumber,
                 String gender,
                 String country,
                 LocalDateTime createdAt) {
         this.id = id;
         this.email = email;
+        this.password = password;
         this.gender = gender;
         this.country = country;
         this.phoneNumber = phoneNumber;

@@ -60,6 +60,7 @@ public class UserSkin {
 
     public void updateUser(User user) {
         this.user = user;
+        user.addUserSkin(this);
     }
 }
 

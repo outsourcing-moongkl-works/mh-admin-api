@@ -135,11 +135,8 @@ public class MoongklWorksInformationController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/notification")
-    public ResponseEntity<Page<NotificationDto.GetResponse>> getNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam int page, @RequestParam int size) {
-
-        log.info(userPrincipal.getAdmin().getEmail() + " get notification");
+    public ResponseEntity<Page<NotificationDto.GetResponse>> getNotification(@RequestParam int page, @RequestParam int size) {
 
         Page<NotificationDto.GetResponse> response = moongklWorksInformationService.getNotification(page, size);
 
