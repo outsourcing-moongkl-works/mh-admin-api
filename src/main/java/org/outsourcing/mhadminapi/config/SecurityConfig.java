@@ -32,7 +32,8 @@ public class SecurityConfig{
     private final UserDetailsService userDetailsService;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http    .csrf(csrf -> csrf.disable())
+        http    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .anyRequest().permitAll())
                 .sessionManagement(session -> session

@@ -12,6 +12,7 @@ import org.outsourcing.mhadminapi.repository.UserSkinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -72,6 +73,7 @@ public class SqsReceiver {
                 .phoneNumber(messageDto.getMessage().get("phoneNumber"))
                 .gender(messageDto.getMessage().get("gender"))
                 .country(messageDto.getMessage().get("country"))
+                .createdAt(LocalDateTime.parse(messageDto.getMessage().get("createdAt")))
                 .build();
         userRepository.save(user);
     }
