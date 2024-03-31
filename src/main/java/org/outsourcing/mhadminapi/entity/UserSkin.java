@@ -45,6 +45,7 @@ public class UserSkin {
         this.skinCloudfrontUrl = skinCloudfrontUrl;
         this.country = country;
         this.createdAt = createdAt;
+        this.user = user;
     }
 
     public static UserSkin convertUserSkinDtoToEntity(UserSkinDto uploadedUserSkinUrl) {

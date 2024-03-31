@@ -17,6 +17,7 @@ import org.outsourcing.mhadminapi.exception.EnterpriseException;
 import org.outsourcing.mhadminapi.repository.EnterpriseRepository;
 import org.outsourcing.mhadminapi.repository.LogoImgUrlRepository;
 import org.outsourcing.mhadminapi.repository.StoryRepository;
+import org.outsourcing.mhadminapi.sqs.SqsSender;
 import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -44,6 +47,7 @@ public class EnterpriseService {
     private final LogoImgUrlRepository logoImgUrlRepository;
     private final StoryService storyService;
     private final StringRedisTemplate redisTemplate;
+    private final SqsSender sqsSender;
 
     @Transactional
     public void requestApproveEnterprise(EnterpriseDto.AuthorizeRequest request, MultipartFile logoImg) {
@@ -139,6 +143,12 @@ public class EnterpriseService {
                 .build();
 
         storyRepository.save(story);
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+        messageMap.put("storyId", story.getId().toString());
+        messageMap.put("enterpriseId", enterpriseId.toString());
+        messageMap.put("s3Url", storyImgUrlDto.getS3Url());
+        messageMap.put("cloudfrontUrl", storyImgUrlDto.getCloudfrontUrl());
     }
 
     @Transactional

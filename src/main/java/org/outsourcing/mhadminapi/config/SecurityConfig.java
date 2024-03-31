@@ -32,16 +32,12 @@ public class SecurityConfig{
     private final UserDetailsService userDetailsService;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http    .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .anyRequest().permitAll())
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-                .logout(logout -> logout.logoutUrl("/admin/logout")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID"))
-                ;
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider());

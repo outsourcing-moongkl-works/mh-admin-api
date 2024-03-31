@@ -7,6 +7,7 @@ import org.outsourcing.mhadminapi.auth.JwtTokenProvider;
 import org.outsourcing.mhadminapi.dto.AdminDto;
 import org.outsourcing.mhadminapi.dto.EnterpriseDto;
 import org.outsourcing.mhadminapi.dto.JwtDto;
+import org.outsourcing.mhadminapi.dto.MessageDto;
 import org.outsourcing.mhadminapi.entity.Admin;
 import org.outsourcing.mhadminapi.entity.Enterprise;
 import org.outsourcing.mhadminapi.exception.AdminErrorResult;
@@ -15,6 +16,7 @@ import org.outsourcing.mhadminapi.exception.EnterpriseErrorResult;
 import org.outsourcing.mhadminapi.exception.EnterpriseException;
 import org.outsourcing.mhadminapi.repository.AdminRepository;
 import org.outsourcing.mhadminapi.repository.EnterpriseRepository;
+import org.outsourcing.mhadminapi.sqs.SqsSender;
 import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,6 +43,7 @@ public class AdminService{
     private final JwtTokenProvider jwtTokenProvider;
     private final EnterpriseRepository enterpriseRepository;
     private final StringRedisTemplate redisTemplate;
+    private final SqsSender sqsSender;
     @Transactional
     public AdminDto.CreateAdminResponse createAdmin(AdminDto.CreateAdminRequest request) {
         if(adminRepository.existsByEmail(request.getEmail())){
@@ -112,6 +117,17 @@ public class AdminService{
         enterprise.updateIsApproved(true);
 
         enterpriseRepository.save(enterprise);
+
+        //create enterprise
+        Map<String, String> messageMap = new LinkedHashMap<>();
+        messageMap.put("id", enterprise.getId().toString());
+        messageMap.put("name", enterprise.getName());
+        messageMap.put("country", enterprise.getCountry());
+        messageMap.put("managerEmail", enterprise.getManagerEmail());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("create enterprise", messageMap);
+
+        sqsSender.sendToSQS(messageDto);
     }
 
     public Page<EnterpriseDto.GetEnterprisePageResponse> searchEnterprises(
@@ -180,18 +196,32 @@ public class AdminService{
             redisTemplate.opsForValue().set(key, value);
         }
 
-        //@TODO: message send
+        Map<String, String> messageMap = new LinkedHashMap<>();
+
+        messageMap.put("userId", request.getUserId());
+        messageMap.put("pauseDay", String.valueOf(request.getPauseDay()));
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("pause user", messageMap);
+
+        sqsSender.sendToSQS(messageDto);
 
         return AdminDto.PauseUserResponse.builder()
                 .pauseStartAt(LocalDateTime.now())
                 .build();
     }
 
-    public AdminDto.UnpauseUserResponse unpauseUser(AdminDto.PauseUserRequest request) {
+    public AdminDto.UnpauseUserResponse unpauseUser(AdminDto.UnpauseUserRequest request) {
         String key = "pause:user:" + request.getUserId();
         redisTemplate.delete(key);
 
-        //@TODO: message send
+        Map<String, String> messageMap = new LinkedHashMap<>();
+
+        messageMap.put("userId", request.getUserId());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("unpause user", messageMap);
+
+        sqsSender.sendToSQS(messageDto);
+
         return AdminDto.UnpauseUserResponse.builder()
                 .pauseEndAt(LocalDateTime.now())
                 .build();

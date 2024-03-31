@@ -1,17 +1,18 @@
 package org.outsourcing.mhadminapi.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.auth.UserPrincipal;
-import org.outsourcing.mhadminapi.dto.AdminDto;
-import org.outsourcing.mhadminapi.dto.EnterpriseDto;
-import org.outsourcing.mhadminapi.dto.ResponseDto;
+import org.outsourcing.mhadminapi.dto.*;
 import org.outsourcing.mhadminapi.exception.AdminErrorResult;
 import org.outsourcing.mhadminapi.exception.AdminException;
 import org.outsourcing.mhadminapi.repository.AdminRepository;
 import org.outsourcing.mhadminapi.service.AdminService;
 import org.outsourcing.mhadminapi.service.EnterpriseService;
+import org.outsourcing.mhadminapi.service.UserService;
+import org.outsourcing.mhadminapi.sqs.SqsSender;
 import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +35,8 @@ import java.time.LocalDateTime;
 public class AdminController {
 
     private final AdminService adminService;
-    private final EnterpriseService enterpriseService;
+    private final SqsSender sqsSender;
+    private final UserService userService;
     //추후 배포 시 create admin은 master만 가능하도록 변경
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping
@@ -66,6 +69,7 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    //!===============기업 관리 API==================!//
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping("/approve")
     public ResponseEntity<ResponseDto> approveEnterprise(@RequestBody AdminDto.ApproveEnterpriseRequest request){
@@ -75,9 +79,6 @@ public class AdminController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
-
-    //!===============기업 관리 API==================!//
     //기업 강퇴
     @PreAuthorize("hasAuthority('MASTER')")
     @DeleteMapping("/enterprise")
@@ -114,7 +115,7 @@ public class AdminController {
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping("/enterprise/unpause")
     public ResponseEntity<AdminDto.UnpauseEnterpriseResponse> unpauseEnterprise(@RequestBody AdminDto.PauseEnterpriseRequest request){
-        log.info("pauseEnterprise: {}", request.getEnterpriseId());
+        log.info("unpauseEnterprise: {}", request.getEnterpriseId());
 
         AdminDto.UnpauseEnterpriseResponse response = adminService.unpauseEnterprise(request);
 
@@ -123,23 +124,12 @@ public class AdminController {
 
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping("/user/unpause")
-    public ResponseEntity<AdminDto.UnpauseUserResponse> unpauseUser(@RequestBody AdminDto.PauseUserRequest request){
-        log.info("pauseUser: {}", request.getUserId());
+    public ResponseEntity<AdminDto.UnpauseUserResponse> unpauseUser(@RequestBody AdminDto.UnpauseUserRequest request){
+        log.info("unpauseUser: {}", request.getUserId());
 
         AdminDto.UnpauseUserResponse response = adminService.unpauseUser(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    //모든 Story get, 페이징
-    @PreAuthorize("hasAuthority('MASTER')")
-    @GetMapping("/story")
-    public ResponseEntity<ResponseDto> getStory(@RequestParam("page") int page, @RequestParam("size") int size){
-        log.info("getStory: {} ~ {}", page, size);
-
-        //enterpriseService.getStory(page, size);
-
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
@@ -166,5 +156,77 @@ public class AdminController {
                 response = adminService.searchEnterprises(startDateTime, endDateTime, country, enterpriseName, page, size);
         }
         return ResponseEntity.ok(response);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/users/search")
+    public ResponseEntity<Page<UserDto.ReadResponse>> findUsers(
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam int page,
+            @RequestParam int size) {
+
+        Page<UserDto.ReadResponse> response = userService.findUsers(
+                gender, email, country, phoneNumber, startDate, endDate, page, size);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user-skin/created-at")
+    public ResponseEntity<Page<UserDto.ReadUserSkinResponse>> findUserSkinByCreatedAtBetween(@RequestParam String startDate, @RequestParam String endDate, @RequestParam int page, @RequestParam int size) {
+
+        Page<UserDto.ReadUserSkinResponse> response = userService.findUserSkinByCreatedAtBetween(startDate, endDate, page, size);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    //회원별 등록한 here보기
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user-skin")
+    public ResponseEntity<Page<UserDto.ReadUserSkinResponse>> findUserSkinByUserId(@RequestParam String userId, @RequestParam int page, @RequestParam int size) {
+
+        Page<UserDto.ReadUserSkinResponse> response = userService.findUserSkinByUserId(userId, page, size);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/all-user-skin")
+    public ResponseEntity<Page<UserDto.ReadUserSkinResponse>> findAllUserSkin(@RequestParam int page, @RequestParam int size) {
+
+        Page<UserDto.ReadUserSkinResponse> response = userService.findAllUserSkin(page, size);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @DeleteMapping("/user-skin")
+    public ResponseEntity<UserDto.DeleteUserSkinResponse> deleteUserSkin(@RequestBody UserDto.DeleteUserSkinRequest request) {
+
+        UserDto.DeleteUserSkinResponse response = userService.deleteUserSkin(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PreAuthorize("hasAuthority('MASTER')")
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<UserDto.DeleteResponse> deleteUser(@RequestBody UserDto.DeleteUserRequest request) {
+
+        UserDto.DeleteResponse response = userService.deleteUser(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto.ReadResponse> findUserById(@PathVariable String userId) {
+
+        UserDto.ReadResponse response = userService.findUserById(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

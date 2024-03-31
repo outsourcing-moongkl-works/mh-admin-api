@@ -3,11 +3,13 @@ package org.outsourcing.mhadminapi.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.outsourcing.mhadminapi.dto.MessageDto;
 import org.outsourcing.mhadminapi.dto.UserDto;
 import org.outsourcing.mhadminapi.entity.User;
 import org.outsourcing.mhadminapi.entity.UserSkin;
 import org.outsourcing.mhadminapi.repository.UserSkinRepository;
 import org.outsourcing.mhadminapi.repository.UserRepository;
+import org.outsourcing.mhadminapi.sqs.SqsSender;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -26,7 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserSkinRepository userSkinRepository;
     private final StringRedisTemplate redisTemplate;
-
+    private final SqsSender sqsSender;
     //findUserByGender
 //    public Page<UserDto.ReadResponse> findUserByGender(String gender, int page, int size) {
 //        final Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -136,19 +140,36 @@ public class UserService {
         return userSkinRepository.findUserSkinByCreatedAtBetween(startDate, endDate, pageable);
     }
     @Transactional
-    public UserDto.DeleteUserSkinResponse deleteUserSkin(String userSkinId) {
-        UserSkin userSkin = userSkinRepository.findById(UUID.fromString(userSkinId)).orElseThrow(() -> new NoSuchElementException("UserSkin not found"));
+    public UserDto.DeleteUserSkinResponse deleteUserSkin(UserDto.DeleteUserSkinRequest request) {
+        UserSkin userSkin = userSkinRepository.findById(UUID.fromString(request.getUserSkinId())).orElseThrow(() -> new NoSuchElementException("UserSkin not found"));
 
         userSkinRepository.delete(userSkin);
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+
+        messageMap.put("userSkinId", request.getUserSkinId());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("delete user post", messageMap);
+
+        sqsSender.sendToSQS(messageDto);
 
         return UserDto.DeleteUserSkinResponse.builder().deletedAt(LocalDateTime.now()).build();
     }
 
 
     @Transactional
-    public UserDto.DeleteResponse deleteUser(String userId) {
-        User user = userRepository.findById(UUID.fromString(userId)).orElseThrow(() -> new NoSuchElementException("User not found"));
+    public UserDto.DeleteResponse deleteUser(UserDto.DeleteUserRequest request) {
+        User user = userRepository.findById(UUID.fromString(request.getUserId())).orElseThrow(() -> new NoSuchElementException("User not found"));
         userRepository.delete(user);
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+
+        messageMap.put("userId", request.getUserId());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("delete user", messageMap);
+
+        sqsSender.sendToSQS(messageDto);
+        
         return UserDto.DeleteResponse.builder().deletedAt(LocalDateTime.now()).build();
     }
 

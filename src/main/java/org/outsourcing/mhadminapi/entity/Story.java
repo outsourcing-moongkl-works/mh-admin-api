@@ -74,7 +74,6 @@ public class Story {
     public void setEnterprise(Enterprise enterprise) {
         this.enterprise = enterprise;
     }
-
     public boolean isPublic() {
         return this.isPublic;
     }

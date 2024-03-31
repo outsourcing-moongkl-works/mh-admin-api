@@ -37,6 +37,7 @@ public class NotificationDto {
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class UpdateRequest{
+        private String notificationId;
         private String title;
         private String content;
     }

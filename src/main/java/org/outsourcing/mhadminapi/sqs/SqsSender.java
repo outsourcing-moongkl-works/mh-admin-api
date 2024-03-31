@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
@@ -26,7 +27,6 @@ public class SqsSender {
     }
 
     public SendResult<String> sendToSQS(MessageDto messageDto) {
-
         String jsonMessageBody;
         log.info("Sending message");
         try {
@@ -38,5 +38,13 @@ public class SqsSender {
         return template.send(to -> to
                 .queue(queueUrl)
                 .payload(jsonMessageBody));
+    }
+
+    public MessageDto createMessageDtoFromRequest(String topic, Map<String, String> message) {
+        return MessageDto.builder()
+                .from("mh-admin-api")
+                .topic(topic)
+                .message(message)
+                .build();
     }
 }

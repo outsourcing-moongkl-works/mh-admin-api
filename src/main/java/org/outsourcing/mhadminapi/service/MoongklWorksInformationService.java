@@ -3,6 +3,7 @@ package org.outsourcing.mhadminapi.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.outsourcing.mhadminapi.dto.MessageDto;
 import org.outsourcing.mhadminapi.dto.MoongklWorksInformationDto;
 import org.outsourcing.mhadminapi.dto.NotificationDto;
 import org.outsourcing.mhadminapi.entity.AboutUs;
@@ -13,6 +14,7 @@ import org.outsourcing.mhadminapi.repository.AboutUsRepository;
 import org.outsourcing.mhadminapi.repository.CompanyLocationRepository;
 import org.outsourcing.mhadminapi.repository.NotificationRepository;
 import org.outsourcing.mhadminapi.repository.TermsRepository;
+import org.outsourcing.mhadminapi.sqs.SqsSender;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,6 +22,8 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,6 +35,7 @@ public class MoongklWorksInformationService{
     private final NotificationRepository notificationRepository;
     private final TermsRepository termsRepository;
     private final AboutUsRepository aboutUsRepository;
+    private final SqsSender sqsSender;
     @Transactional
     public MoongklWorksInformationDto.UpdateTermsResponse updateTerms(MoongklWorksInformationDto.UpdateTermsRequest request) {
         //find Terms by '4000c0f7-0c97-4bd7-a200-0de1392f1df0'
@@ -125,15 +130,23 @@ public class MoongklWorksInformationService{
                 .createdAt(notification.getCreatedAt())
                 .build();
 
+        Map<String, String> messageMap = new LinkedHashMap<>();
+        messageMap.put("notificationId", notification.getId().toString());
+        messageMap.put("title", notification.getTitle());
+        messageMap.put("content", notification.getContent());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("create notification", messageMap);
+        sqsSender.sendToSQS(messageDto);
+
         return response;
     }
 
     @Transactional
-    public NotificationDto.UpdateResponse updateNotification(String notificationId, NotificationDto.UpdateRequest request) {
+    public NotificationDto.UpdateResponse updateNotification(NotificationDto.UpdateRequest request) {
 
         //Notification notification = notificationRepository.findById(request.getNotificationId());
         //update Notification
-        Optional<Notification> notification = notificationRepository.findById(UUID.fromString(notificationId));
+        Optional<Notification> notification = notificationRepository.findById(UUID.fromString(request.getNotificationId()));
 
         notification.get().updateNotification(request.getTitle(), request.getContent());
 
@@ -142,6 +155,14 @@ public class MoongklWorksInformationService{
         NotificationDto.UpdateResponse response = NotificationDto.UpdateResponse.builder()
                 .updatedAt(notification.get().getUpdatedAt())
                 .build();
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+        messageMap.put("notificationId", request.getNotificationId().toString());
+        messageMap.put("title", request.getTitle());
+        messageMap.put("content", request.getContent());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("update notification", messageMap);
+        sqsSender.sendToSQS(messageDto);
 
         return response;
     }

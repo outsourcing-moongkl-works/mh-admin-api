@@ -115,4 +115,14 @@ public class UserDto {
     public static class ReadUserSkinRequest {
         private String userSkinId;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class DeleteUserRequest {
+        private String userId;
+    }
 }
