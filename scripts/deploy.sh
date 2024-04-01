@@ -20,7 +20,7 @@ then
 else
   echo ">>> kill -15 $CURRENT_PID"
   kill -15 $CURRENT_PID
-  sleep 15
+  sleep 20
 fi
 
 DEPLOY_JAR=$DEPLOY_PATH$JAR_NAME
