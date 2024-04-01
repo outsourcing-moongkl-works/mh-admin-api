@@ -77,6 +77,7 @@ public class AdminService{
         if (!passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
             throw new AdminException(AdminErrorResult.NOT_FOUND_ADMIN);
         }
+
         JwtDto.JwtRequestDto jwtRequestDto = JwtDto.JwtRequestDto.builder()
                 .id(String.valueOf(admin.getId()))
                 .email(request.getEmail())

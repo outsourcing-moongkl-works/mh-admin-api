@@ -35,7 +35,6 @@ import java.util.*;
 public class AdminController {
 
     private final AdminService adminService;
-    private final SqsSender sqsSender;
     private final UserService userService;
     //추후 배포 시 create admin은 master만 가능하도록 변경
     @PreAuthorize("hasAuthority('MASTER')")
@@ -53,7 +52,6 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    //login with redis data session
     @PostMapping("/login")
     public ResponseEntity<AdminDto.LoginAdminResponse> login(@RequestBody AdminDto.LoginAdminRequest request) {
         AdminDto.LoginAdminResponse response = adminService.login(request);
@@ -213,7 +211,7 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/user")
     public ResponseEntity<UserDto.DeleteResponse> deleteUser(@RequestBody UserDto.DeleteUserRequest request) {
 
         UserDto.DeleteResponse response = userService.deleteUser(request);
