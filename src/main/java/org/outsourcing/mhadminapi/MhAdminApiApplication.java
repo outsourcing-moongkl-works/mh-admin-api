@@ -12,6 +12,5 @@ public class MhAdminApiApplication {
 	//test
 	public static void main(String[] args) {
 		SpringApplication.run(MhAdminApiApplication.class, args);
-
 	}
 }

@@ -7,6 +7,7 @@ import org.outsourcing.mhadminapi.auth.JwtTokenProvider;
 import org.outsourcing.mhadminapi.dto.AdminDto;
 import org.outsourcing.mhadminapi.dto.EnterpriseDto;
 import org.outsourcing.mhadminapi.dto.JwtDto;
+import org.outsourcing.mhadminapi.dto.MessageDto;
 import org.outsourcing.mhadminapi.entity.Enterprise;
 import org.outsourcing.mhadminapi.entity.LogoImgUrl;
 import org.outsourcing.mhadminapi.entity.Story;
@@ -182,6 +183,14 @@ public class EnterpriseService {
         story.changeIsPublic();
 
         storyRepository.save(story);
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+        messageMap.put("id", story.getId().toString());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("update story visible", messageMap);
+
+        sqsSender.sendToSQS(messageDto);
+
     }
 
     // 정지 상태 확인 및 예외 처리 메서드
