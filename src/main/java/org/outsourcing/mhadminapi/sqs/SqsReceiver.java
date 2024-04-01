@@ -61,6 +61,7 @@ public class SqsReceiver {
             case "create enquiry":
                 createEnquiry(messageDto);
                 break;
+
         }
 
     }

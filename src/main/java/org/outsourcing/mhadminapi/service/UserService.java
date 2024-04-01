@@ -140,20 +140,21 @@ public class UserService {
         return userSkinRepository.findUserSkinByCreatedAtBetween(startDate, endDate, pageable);
     }
     @Transactional
-    public UserDto.DeleteUserSkinResponse deleteUserSkin(UserDto.DeleteUserSkinRequest request) {
-        UserSkin userSkin = userSkinRepository.findById(UUID.fromString(request.getUserSkinId())).orElseThrow(() -> new NoSuchElementException("UserSkin not found"));
+    public UserDto.DeleteUserPostResponse deleteUserPost(UserDto.DeleteUserPostRequest request) {
+        UserSkin userSkin = userSkinRepository.findById(UUID.fromString(request.getPostId())).orElseThrow(() -> new NoSuchElementException("UserPost not found"));
 
         userSkinRepository.delete(userSkin);
 
         Map<String, String> messageMap = new LinkedHashMap<>();
 
-        messageMap.put("userSkinId", request.getUserSkinId());
+        messageMap.put("postId", request.getPostId());
+        messageMap.put("userId", request.getUserId());
 
         MessageDto messageDto = sqsSender.createMessageDtoFromRequest("delete user post", messageMap);
 
         sqsSender.sendToSQS(messageDto);
 
-        return UserDto.DeleteUserSkinResponse.builder().deletedAt(LocalDateTime.now()).build();
+        return UserDto.DeleteUserPostResponse.builder().deletedAt(LocalDateTime.now()).build();
     }
 
 

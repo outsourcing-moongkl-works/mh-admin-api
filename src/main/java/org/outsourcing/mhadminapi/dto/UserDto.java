@@ -35,6 +35,7 @@ public class UserDto {
     public static class ReadResponse {
         private UUID userId;
         private String email;
+        private String password;
         private String gender;
         private String country;
         private String phoneNumber;
@@ -71,7 +72,7 @@ public class UserDto {
     @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class DeleteUserSkinResponse{
+    public static class DeleteUserPostResponse{
         private LocalDateTime deletedAt;
     }
 
@@ -102,18 +103,9 @@ public class UserDto {
     @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class DeleteUserSkinRequest {
-        private String userSkinId;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class ReadUserSkinRequest {
-        private String userSkinId;
+    public static class DeleteUserPostRequest {
+        private String postId;
+        private String userId;
     }
 
     @Data

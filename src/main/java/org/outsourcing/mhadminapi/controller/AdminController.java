@@ -204,10 +204,10 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @DeleteMapping("/user-skin")
-    public ResponseEntity<UserDto.DeleteUserSkinResponse> deleteUserSkin(@RequestBody UserDto.DeleteUserSkinRequest request) {
+    @DeleteMapping("/user-post")
+    public ResponseEntity<UserDto.DeleteUserPostResponse> deleteUserPost(@RequestBody UserDto.DeleteUserPostRequest request) {
 
-        UserDto.DeleteUserSkinResponse response = userService.deleteUserSkin(request);
+        UserDto.DeleteUserPostResponse response = userService.deleteUserPost(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
