@@ -3,6 +3,7 @@ package org.outsourcing.mhadminapi.sqs;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.awspring.cloud.sqs.annotation.SqsListener;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.dto.MessageDto;
@@ -66,7 +67,8 @@ public class SqsReceiver {
 
     }
 
-    private void createEnquiry(MessageDto messageDto) {
+    @Transactional
+    public void createEnquiry(MessageDto messageDto) {
         Enquiry enquiry = Enquiry.builder()
                 .email(messageDto.getMessage().get("email"))
                 .title(messageDto.getMessage().get("title"))
@@ -78,22 +80,29 @@ public class SqsReceiver {
         enquiryRepository.save(enquiry);
     }
 
-    private void increaseUseCount(MessageDto messageDto) {
-        Story story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("storyId"))).get();
+    @Transactional
+    public void increaseUseCount(MessageDto messageDto) {
+        Story story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id"))).get();
         story.increaseUseCount();
+        storyRepository.save(story);
     }
 
-    private void increaseShareCount(MessageDto messageDto) {
-        Story story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("storyId"))).get();
+    @Transactional
+    public void increaseShareCount(MessageDto messageDto) {
+        Story story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id"))).get();
         story.increaseShareCount();
+        storyRepository.save(story);
     }
 
-    private void increaseViewCount(MessageDto messageDto) {
-        Story story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("storyId"))).get();
+    @Transactional
+    public void increaseViewCount(MessageDto messageDto) {
+        Story story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id"))).get();
         story.increaseViewCount();
+        storyRepository.save(story);
     }
 
-    private void createUser(MessageDto messageDto) {
+    @Transactional
+    public void createUser(MessageDto messageDto) {
         User user = User.builder()
                 .id(UUID.fromString(messageDto.getMessage().get("id")))
                 .email(messageDto.getMessage().get("email"))
@@ -105,7 +114,8 @@ public class SqsReceiver {
                 .build();
         userRepository.save(user);
     }
-    private void createUserSkin(MessageDto messageDto) {
+    @Transactional
+    public void createUserSkin(MessageDto messageDto) {
         UserSkin userSkin = UserSkin.builder()
                 .id(UUID.fromString(messageDto.getMessage().get("id")))
                 .storyCloudfrontUrl(messageDto.getMessage().get("storyCloudfrontUrl"))
@@ -118,11 +128,14 @@ public class SqsReceiver {
 
         userSkinRepository.save(userSkin);
     }
-    private void deleteUserSkin(MessageDto messageDto) {
+    @Transactional
+    void deleteUserSkin(MessageDto messageDto) {
         userSkinRepository.deleteById(UUID.fromString(messageDto.getMessage().get("id")));
     }
 
-    private void withdrawUser(MessageDto messageDto) {
+    @Transactional
+    void withdrawUser(MessageDto messageDto) {
+        userSkinRepository.deleteAllByUser(UUID.fromString(messageDto.getMessage().get("id")));
         userRepository.deleteById(UUID.fromString(messageDto.getMessage().get("id")));
     }
 }

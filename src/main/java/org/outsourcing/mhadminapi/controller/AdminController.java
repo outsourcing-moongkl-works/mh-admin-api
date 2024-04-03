@@ -59,7 +59,7 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @DeleteMapping("/adminId")
+    @DeleteMapping()
     public ResponseEntity<AdminDto.DeleteAdminResponse> deleteAdmin(@RequestParam(name = "admin_id") String adminId){
 
         AdminDto.DeleteAdminResponse response = adminService.deleteAdmin(adminId);

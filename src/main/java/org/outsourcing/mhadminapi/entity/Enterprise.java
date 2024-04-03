@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -77,6 +78,9 @@ public class Enterprise implements Serializable {
     @Column(name = "updated_at", length = 20)
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "enterprise", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    List<Story> stories;
+
     @PrePersist
     public void setEnterpriseId() {
         if (id == null) {
@@ -111,4 +115,7 @@ public class Enterprise implements Serializable {
         this.isApproved = isApproved;
     }
 
+    public void addStory(Story story) {
+        this.stories.add(story);
+    }
 }

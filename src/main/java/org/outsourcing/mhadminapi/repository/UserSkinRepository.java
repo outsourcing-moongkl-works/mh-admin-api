@@ -2,6 +2,7 @@ package org.outsourcing.mhadminapi.repository;
 
 import org.outsourcing.mhadminapi.dto.UserDto;
 import org.outsourcing.mhadminapi.dto.UserSkinDto;
+import org.outsourcing.mhadminapi.entity.User;
 import org.outsourcing.mhadminapi.entity.UserSkin;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,4 +62,6 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
             "WHERE uh.createdAt BETWEEN :startDate AND :endDate")
     Page<UserDto.ReadUserSkinResponse> findUserSkinByCreatedAtBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
+    @Query("DELETE FROM UserSkin uh WHERE uh.user.id = :userId")
+    void deleteAllByUser(UUID userId);
 }

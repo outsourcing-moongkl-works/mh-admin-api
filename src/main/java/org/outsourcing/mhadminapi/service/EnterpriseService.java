@@ -139,9 +139,11 @@ public class EnterpriseService {
         EnterpriseDto.StoryUrl storyImgUrlDto = storyService.uploadStoryImg(enterpriseId, storyImg);
 
         Story story = Story.builder()
-                .enterprise(enterprise)
-                .storyImgUrl(StoryImgUrl.convertStoryImgUrlDtoToEntity(storyImgUrlDto))
+                .isPublic(true)
                 .build();
+
+        story.setEnterprise(enterprise);
+        story.setStoryImgUrl(StoryImgUrl.convertStoryImgUrlDtoToEntity(storyImgUrlDto));
 
         storyRepository.save(story);
 

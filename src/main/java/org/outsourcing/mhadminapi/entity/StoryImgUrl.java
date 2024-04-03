@@ -31,7 +31,7 @@ public class StoryImgUrl {
     @Column
     private String cloudfrontUrl;
 
-    @OneToOne(mappedBy = "storyImgUrl", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "storyImgUrl", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Story story;
 
 

@@ -126,6 +126,10 @@ public class AdminService{
         messageMap.put("country", enterprise.getCountry());
         messageMap.put("managerEmail", enterprise.getManagerEmail());
 
+        messageMap.put("logoImgUrlId", enterprise.getLogoImgUrl().getId().toString());
+        messageMap.put("logoImgUrlS3Url", enterprise.getLogoImgUrl().getS3Url());
+        messageMap.put("logoImgUrlCloudfrontUrl", enterprise.getLogoImgUrl().getCloudfrontUrl());
+
         MessageDto messageDto = sqsSender.createMessageDtoFromRequest("create enterprise", messageMap);
 
         sqsSender.sendToSQS(messageDto);

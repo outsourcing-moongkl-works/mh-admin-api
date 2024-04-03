@@ -41,11 +41,11 @@ public class Story {
     private Boolean isPublic; //중지 여부
 
     @JoinColumn(name = "enterprise_id", foreignKey = @ForeignKey(name = "story_img_url_fk_enterprise_id"))
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Enterprise enterprise;
 
     @JoinColumn(name = "story_img_url_id", foreignKey = @ForeignKey(name = "story_fk_story_img_url_id"))
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     private StoryImgUrl storyImgUrl;
 
     @CreatedDate
@@ -71,8 +71,10 @@ public class Story {
     public void increaseViewCount() {
         this.viewCount++;
     }
+
     public void setEnterprise(Enterprise enterprise) {
         this.enterprise = enterprise;
+        enterprise.addStory(this);
     }
     public boolean isPublic() {
         return this.isPublic;
@@ -86,4 +88,5 @@ public class Story {
         this.storyImgUrl = storyImgUrl;
         storyImgUrl.setStory(this);
     }
+
 }
