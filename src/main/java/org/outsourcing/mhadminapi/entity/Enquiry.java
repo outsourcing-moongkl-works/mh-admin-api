@@ -37,10 +37,6 @@ public class Enquiry { //문의사항
     @Column(name = "created_at", length = 20)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Column(name = "updated_at", length = 20)
-    private LocalDateTime updatedAt;
-
     @PrePersist
     public void setEnquiryId() {
         if (id == null) {
@@ -53,7 +49,6 @@ public class Enquiry { //문의사항
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
     public void updateEnquiry(String title, String content) {
         this.title = title;

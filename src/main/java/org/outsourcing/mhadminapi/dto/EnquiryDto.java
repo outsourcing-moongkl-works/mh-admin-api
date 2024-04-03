@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class EnquiryDto {
     @Getter
@@ -28,9 +29,8 @@ public class EnquiryDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-    public static class  ReplyResponse{
+    public static class ReplyResponse{
         private String email;
-        private String Email;
         private LocalDateTime createdAt;
     }
 
@@ -40,8 +40,8 @@ public class EnquiryDto {
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class GetResponse{
+        private UUID enquiryId;
         private String email;
-        private String Email;
         private String title;
         private String content;
         private LocalDateTime createdAt;

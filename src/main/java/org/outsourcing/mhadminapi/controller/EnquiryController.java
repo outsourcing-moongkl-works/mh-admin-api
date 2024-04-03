@@ -31,14 +31,10 @@ public class EnquiryController {
 
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping("/reply")
-    public ResponseEntity<EnquiryDto.ReplyResponse> replyEnquiry(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody EnquiryDto.ReplyRequest request) {
+    public ResponseEntity<EnquiryDto.ReplyResponse> replyEnquiry(@RequestBody EnquiryDto.ReplyRequest request) {
         log.info("replyEnquiry: {}", request);
 
-        Admin admin = userPrincipal.getAdmin();
-
-        log.info("admin: {}", admin.getEmail());
-
-        EnquiryDto.ReplyResponse response = enquiryService.replyEnquiry(admin.getEmail(), request);
+        EnquiryDto.ReplyResponse response = enquiryService.replyEnquiry(request);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
