@@ -1,32 +1,20 @@
 package org.outsourcing.mhadminapi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.outsourcing.mhadminapi.auth.UserPrincipal;
 import org.outsourcing.mhadminapi.dto.*;
 import org.outsourcing.mhadminapi.exception.AdminErrorResult;
 import org.outsourcing.mhadminapi.exception.AdminException;
-import org.outsourcing.mhadminapi.repository.AdminRepository;
 import org.outsourcing.mhadminapi.service.AdminService;
-import org.outsourcing.mhadminapi.service.EnterpriseService;
-import org.outsourcing.mhadminapi.service.UserService;
-import org.outsourcing.mhadminapi.sqs.SqsSender;
 import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +23,6 @@ import java.util.*;
 public class AdminController {
 
     private final AdminService adminService;
-    private final UserService userService;
     //추후 배포 시 create admin은 master만 가능하도록 변경
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping
@@ -90,7 +77,7 @@ public class AdminController {
 
     //기업 사용 정지
     @PreAuthorize("hasAuthority('MASTER')")
-    @PostMapping("/enterprise/pause")
+    @PostMapping("/enterprise/pausing")
     public ResponseEntity<AdminDto.PauseEnterpriseResponse> pauseEnterprise(@RequestBody AdminDto.PauseEnterpriseRequest request){
         log.info("pauseEnterprise: {}", request.getEnterpriseId());
 
@@ -101,7 +88,7 @@ public class AdminController {
 
     //유저 사용정지
     @PreAuthorize("hasAuthority('MASTER')")
-    @PostMapping("/user/pause")
+    @PostMapping("/user/pausing")
     public ResponseEntity<AdminDto.PauseUserResponse> pauseUser(@RequestBody AdminDto.PauseUserRequest request){
         log.info("pauseUser: {}", request.getUserId());
 
@@ -111,7 +98,7 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @PostMapping("/enterprise/unpause")
+    @PostMapping("/enterprise/unpausing")
     public ResponseEntity<AdminDto.UnpauseEnterpriseResponse> unpauseEnterprise(@RequestBody AdminDto.PauseEnterpriseRequest request){
         log.info("unpauseEnterprise: {}", request.getEnterpriseId());
 
@@ -121,7 +108,7 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @PostMapping("/user/unpause")
+    @PostMapping("/user/unpausing")
     public ResponseEntity<AdminDto.UnpauseUserResponse> unpauseUser(@RequestBody AdminDto.UnpauseUserRequest request){
         log.info("unpauseUser: {}", request.getUserId());
 
@@ -131,7 +118,7 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
-    @GetMapping("/enterprise/search")
+    @GetMapping("/enterprise/searching")
     public ResponseEntity<Page<EnterpriseDto.GetEnterprisePageResponse>> searchEnterprises(
             @RequestParam(required = false, defaultValue = "1900-01-01") String startDate,
             @RequestParam(required = false) String endDate,
@@ -139,64 +126,78 @@ public class AdminController {
             @RequestParam(required = false) String enterpriseName,
             @RequestParam("page") int page, @RequestParam("size") int size) {
 
+        if (endDate == null || endDate.trim().isEmpty()) {
+            endDate = LocalDate.now().toString();
+        }
+
         log.info("Searching Enterprises: Date Range: {} - {}, Country: {}, Name: {}", startDate, endDate, country, enterpriseName);
+
+        LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
+        LocalDateTime endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
+
+        Page<EnterpriseDto.GetEnterprisePageResponse> response = adminService.searchEnterprises(startDateTime, endDateTime, country, enterpriseName, page, size);
+
+        return ResponseEntity.ok(response);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/user/searching")
+    public ResponseEntity<Page<UserDto.ReadResponse>> searchUsers(
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false, defaultValue = "1900-01-01") String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam int page,
+            @RequestParam int size) {
 
         if (endDate == null || endDate.trim().isEmpty()) {
             endDate = LocalDate.now().toString();
         }
 
-        Page<EnterpriseDto.GetEnterprisePageResponse> response = null;
+        log.info("Searching Users: Date Range: {} - {}, Country: {}, Name: {}", startDate, endDate, country, email);
 
         LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
         LocalDateTime endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
 
-        if (startDate != null && endDate != null) {
-                response = adminService.searchEnterprises(startDateTime, endDateTime, country, enterpriseName, page, size);
-        }
-        return ResponseEntity.ok(response);
+        Page<UserDto.ReadResponse> response = adminService.findUsers(
+                gender, email, country, phoneNumber, startDateTime, endDateTime, page, size);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/users/search")
-    public ResponseEntity<Page<UserDto.ReadResponse>> findUsers(
-            @RequestParam(required = false) String gender,
-            @RequestParam(required = false) String email,
+    @GetMapping("/user-skin/searching") //userId, country, start, end, page, size
+    public ResponseEntity<Page<UserDto.ReadUserSkinResponse>> searchUserSkins(
+            @RequestParam(required = false) String userId,
             @RequestParam(required = false) String country,
-            @RequestParam(required = false) String phoneNumber,
-            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false, defaultValue = "1900-01-01") String startDate,
             @RequestParam(required = false) String endDate,
             @RequestParam int page,
             @RequestParam int size) {
 
-        Page<UserDto.ReadResponse> response = userService.findUsers(
-                gender, email, country, phoneNumber, startDate, endDate, page, size);
+        if (endDate == null || endDate.trim().isEmpty()) {
+            endDate = LocalDate.now().toString();
+        }
+
+        log.info("Searching UserSkins: Date Range: {} - {}, Country: {}, userId: {}", startDate, endDate, country, userId);
+
+        LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
+        LocalDateTime endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
+
+        Page<UserDto.ReadUserSkinResponse> response = adminService.searchUserSkins(userId, country, startDateTime, endDateTime, page, size);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/user-skin/created-at")
-    public ResponseEntity<Page<UserDto.ReadUserSkinResponse>> findUserSkinByCreatedAtBetween(@RequestParam String startDate, @RequestParam String endDate, @RequestParam int page, @RequestParam int size) {
-
-        Page<UserDto.ReadUserSkinResponse> response = userService.findUserSkinByCreatedAtBetween(startDate, endDate, page, size);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
 
     //회원별 등록한 here보기
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/user-skin")
     public ResponseEntity<Page<UserDto.ReadUserSkinResponse>> findUserSkinByUserId(@RequestParam String userId, @RequestParam int page, @RequestParam int size) {
 
-        Page<UserDto.ReadUserSkinResponse> response = userService.findUserSkinByUserId(userId, page, size);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/all-user-skin")
-    public ResponseEntity<Page<UserDto.ReadUserSkinResponse>> findAllUserSkin(@RequestParam int page, @RequestParam int size) {
-
-        Page<UserDto.ReadUserSkinResponse> response = userService.findAllUserSkin(page, size);
+        Page<UserDto.ReadUserSkinResponse> response = adminService.findUserSkinByUserId(userId, page, size);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -205,7 +206,7 @@ public class AdminController {
     @DeleteMapping("/user-post")
     public ResponseEntity<UserDto.DeleteUserPostResponse> deleteUserPost(@RequestBody UserDto.DeleteUserPostRequest request) {
 
-        UserDto.DeleteUserPostResponse response = userService.deleteUserPost(request);
+        UserDto.DeleteUserPostResponse response = adminService.deleteUserPost(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -214,7 +215,7 @@ public class AdminController {
     @DeleteMapping("/user")
     public ResponseEntity<UserDto.DeleteResponse> deleteUser(@RequestBody UserDto.DeleteUserRequest request) {
 
-        UserDto.DeleteResponse response = userService.deleteUser(request);
+        UserDto.DeleteResponse response = adminService.deleteUser(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -223,7 +224,7 @@ public class AdminController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto.ReadResponse> findUserById(@PathVariable String userId) {
 
-        UserDto.ReadResponse response = userService.findUserById(userId);
+        UserDto.ReadResponse response = adminService.findUserById(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

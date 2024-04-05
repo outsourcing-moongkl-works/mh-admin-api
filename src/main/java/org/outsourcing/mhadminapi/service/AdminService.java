@@ -4,18 +4,19 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.auth.JwtTokenProvider;
-import org.outsourcing.mhadminapi.dto.AdminDto;
-import org.outsourcing.mhadminapi.dto.EnterpriseDto;
-import org.outsourcing.mhadminapi.dto.JwtDto;
-import org.outsourcing.mhadminapi.dto.MessageDto;
+import org.outsourcing.mhadminapi.dto.*;
 import org.outsourcing.mhadminapi.entity.Admin;
 import org.outsourcing.mhadminapi.entity.Enterprise;
+import org.outsourcing.mhadminapi.entity.User;
+import org.outsourcing.mhadminapi.entity.UserSkin;
 import org.outsourcing.mhadminapi.exception.AdminErrorResult;
 import org.outsourcing.mhadminapi.exception.AdminException;
 import org.outsourcing.mhadminapi.exception.EnterpriseErrorResult;
 import org.outsourcing.mhadminapi.exception.EnterpriseException;
 import org.outsourcing.mhadminapi.repository.AdminRepository;
 import org.outsourcing.mhadminapi.repository.EnterpriseRepository;
+import org.outsourcing.mhadminapi.repository.UserRepository;
+import org.outsourcing.mhadminapi.repository.UserSkinRepository;
 import org.outsourcing.mhadminapi.sqs.SqsSender;
 import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.data.domain.Page;
@@ -27,11 +28,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -44,6 +44,8 @@ public class AdminService{
     private final EnterpriseRepository enterpriseRepository;
     private final StringRedisTemplate redisTemplate;
     private final SqsSender sqsSender;
+    private final UserRepository userRepository;
+    private final UserSkinRepository userSkinRepository;
     @Transactional
     public AdminDto.CreateAdminResponse createAdmin(AdminDto.CreateAdminRequest request) {
         if(adminRepository.existsByEmail(request.getEmail())){
@@ -239,5 +241,87 @@ public class AdminService{
         return AdminDto.UnpauseEnterpriseResponse.builder()
                 .pauseEndAt(LocalDateTime.now())
                 .build();
+    }
+
+    public Page<UserDto.ReadResponse> findUsers(String gender, String email, String country, String phoneNumber, LocalDateTime startDateTime, LocalDateTime endDateTime, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        // 조건에 따른 분기 처리
+        if (gender != null) {
+            return userRepository.findUserByGender(startDateTime, endDateTime, gender, pageable);
+        } else if (email != null) {
+            return userRepository.findUserByEmailContaining(startDateTime, endDateTime, email, pageable);
+        } else if (country != null) {
+            return userRepository.findUserByCountryContaining(startDateTime, endDateTime, country, pageable);
+        } else if (phoneNumber != null) {
+            return userRepository.findUserByPhoneNumberContaining(startDateTime, endDateTime, phoneNumber, pageable);
+        } else {
+            return userRepository.findAllUser(startDateTime, endDateTime, pageable);
+        }
+    }
+
+
+    public Page<UserDto.ReadUserSkinResponse> findUserSkinByUserId(String userId, int page, int size) {
+        final Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        return userSkinRepository.findUserSkinByUserId(UUID.fromString(userId), pageable);
+    }
+
+    @Transactional
+    public UserDto.DeleteUserPostResponse deleteUserPost(UserDto.DeleteUserPostRequest request) {
+        UserSkin userSkin = userSkinRepository.findById(UUID.fromString(request.getPostId())).orElseThrow(() -> new NoSuchElementException("UserPost not found"));
+
+        userSkinRepository.delete(userSkin);
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+
+        messageMap.put("postId", request.getPostId());
+        messageMap.put("userId", request.getUserId());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("delete user post", messageMap);
+
+        sqsSender.sendToSQS(messageDto);
+
+        return UserDto.DeleteUserPostResponse.builder().deletedAt(LocalDateTime.now()).build();
+    }
+
+
+    @Transactional
+    public UserDto.DeleteResponse deleteUser(UserDto.DeleteUserRequest request) {
+        User user = userRepository.findById(UUID.fromString(request.getUserId())).orElseThrow(() -> new NoSuchElementException("User not found"));
+        userRepository.delete(user);
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+
+        messageMap.put("userId", request.getUserId());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("delete user", messageMap);
+
+        sqsSender.sendToSQS(messageDto);
+
+        return UserDto.DeleteResponse.builder().deletedAt(LocalDateTime.now()).build();
+    }
+
+    public Page<UserDto.ReadUserSkinResponse> searchUserSkins(String userId, String country, LocalDateTime startDateTime, LocalDateTime endDateTime, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        if (country != null) {
+            return userSkinRepository.findUserSkinByCountryContaining(startDateTime, endDateTime, country, pageable);
+        } else {
+            return userSkinRepository.findUserSkinByCreatedAtBetween(startDateTime, endDateTime, pageable);
+        }
+
+    }
+
+    public UserDto.ReadResponse findUserById(String userId) {
+
+        UserDto.ReadResponse response = userRepository.findUserById(UUID.fromString(userId)).orElse(null);
+
+        if(response == null) {
+            throw new NoSuchElementException("User not found");
+        }
+
+        return response;
     }
 }

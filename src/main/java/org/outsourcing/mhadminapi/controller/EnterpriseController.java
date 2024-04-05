@@ -112,7 +112,7 @@ public class EnterpriseController {
     }
 
     @PreAuthorize("hasAuthority('ENTERPRISE')")
-    @GetMapping("/story/search")
+    @GetMapping("/story/searching")
     public ResponseEntity<Page<EnterpriseDto.GetStoryPageResponse>> searchStories(
             @AuthenticationPrincipal UserPrincipal enterprisePrincipal,
             @Parameter(description = "시작일자(YYYY-MM-DD)", schema = @Schema(type = "string", format = "date")) @RequestParam(defaultValue = "1900-01-01") String startDate,
