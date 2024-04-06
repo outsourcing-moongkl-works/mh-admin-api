@@ -172,7 +172,7 @@ public class MoongklWorksInformationService{
         final Pageable pageable = PageRequest.of(page, size, sortBy);
 
         Page<NotificationDto.GetResponse> response = notificationRepository.findAllByOrderByCreatedAtDesc(pageable).map(notification -> NotificationDto.GetResponse.builder()
-                .adminId(notification.getAdminId().toString())
+                .adminId(notification.getAdminId())
                 .notificationId(notification.getNotificationId())
                 .title(notification.getTitle())
                 .content(notification.getContent())
