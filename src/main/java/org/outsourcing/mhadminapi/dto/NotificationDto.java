@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class NotificationDto {
     @Getter
@@ -69,8 +70,8 @@ public class NotificationDto {
     @AllArgsConstructor
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class GetResponse{
-        private String notificationId;
-        private String adminId;
+        private UUID notificationId;
+        private UUID adminId;
         private String title;
         private String content;
         private LocalDateTime createdAt;
