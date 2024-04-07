@@ -189,7 +189,7 @@ public class EnterpriseService {
         Map<String, String> messageMap = new LinkedHashMap<>();
         messageMap.put("id", story.getId().toString());
 
-        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("update story visible", messageMap);
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("update enterprise story visible", messageMap);
 
         sqsSender.sendToSQS(messageDto);
 
