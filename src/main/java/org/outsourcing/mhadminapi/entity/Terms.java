@@ -25,7 +25,7 @@ public class Terms {
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
-    @Column(name = "terms", nullable = false, length = 10000)
+    @Column(name = "terms", nullable = false, columnDefinition = "TEXT")
     private String terms;
 
     @CreatedDate

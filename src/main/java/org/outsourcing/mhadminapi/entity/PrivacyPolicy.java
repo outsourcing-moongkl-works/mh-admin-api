@@ -24,7 +24,9 @@ public class PrivacyPolicy{
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
-    @Column(name = "privacy_policy", nullable = false, length = 10000)
+    //@Column(name = "privacy_policy", nullable = false, length = 10000)
+    //TEXT
+    @Column(name = "privacy_policy", nullable = false, columnDefinition = "TEXT")
     private String privacyPolicy;
 
     @CreatedDate

@@ -7,12 +7,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.dto.MessageDto;
+import org.outsourcing.mhadminapi.dto.ResponseDto;
 import org.outsourcing.mhadminapi.entity.Enquiry;
 import org.outsourcing.mhadminapi.entity.Story;
 import org.outsourcing.mhadminapi.entity.User;
 import org.outsourcing.mhadminapi.entity.UserSkin;
+import org.outsourcing.mhadminapi.exception.SqsErrorResult;
 import org.outsourcing.mhadminapi.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,7 +37,7 @@ public class SqsReceiver {
         MessageDto messageDto = objectMapper.readValue(message, MessageDto.class);
 
         if(!"mh-app-api".equals(messageDto.getFrom())){
-            log.info("Invalid sender");
+            log.info("Invalid sender" + messageDto.getFrom());
             return;
         }
         switch (messageDto.getTopic()){

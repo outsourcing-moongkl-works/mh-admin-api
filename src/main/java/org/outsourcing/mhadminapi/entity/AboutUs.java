@@ -23,7 +23,7 @@ public class AboutUs {
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
-    @Column(name = "about_us", nullable = false, length = 10000)
+    @Column(name = "about_us", nullable = false, columnDefinition = "TEXT")
     private String aboutUs;
 
     @CreatedDate

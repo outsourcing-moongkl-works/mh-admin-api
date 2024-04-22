@@ -2,37 +2,37 @@
 CREATE TABLE IF NOT EXISTS terms
 (
     id BINARY(16) NOT NULL PRIMARY KEY,
-    terms VARCHAR(10000),
+    terms TEXT,
     created_at DATETIME,
     updated_at DATETIME
-    );
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Terms 테이블 생성
 CREATE TABLE IF NOT EXISTS terms
 (
     id BINARY(16) NOT NULL PRIMARY KEY,
-    terms VARCHAR(10000),
+    terms TEXT,
     created_at DATETIME,
     updated_at DATETIME
-    );
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- PrivacyPolicy 테이블 생성
 CREATE TABLE IF NOT EXISTS privacy_policy
 (
     id BINARY(16) NOT NULL PRIMARY KEY,
-    privacy_policy VARCHAR(10000),
+    privacy_policy TEXT,
     created_at DATETIME,
     updated_at DATETIME
-    );
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- AboutUs 테이블 생성
 CREATE TABLE IF NOT EXISTS about_us
 (
     id BINARY(16) NOT NULL PRIMARY KEY,
-    about_us VARCHAR(10000),
+    about_us TEXT,
     created_at DATETIME,
     updated_at DATETIME
-    );
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- CompanyLocation 테이블 생성
 CREATE TABLE IF NOT EXISTS company_location
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS company_location
     company_location VARCHAR(100),
     created_at DATETIME,
     updated_at DATETIME
-    );
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Admin 테이블 생성
 CREATE TABLE IF NOT EXISTS `admins` (
