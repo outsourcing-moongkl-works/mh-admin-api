@@ -33,12 +33,15 @@ public class SqsReceiver {
     private final StoryRepository storyRepository;
 
     @SqsListener("MhAppSaying")
-    public void receiveMessage(final String message) throws JsonProcessingException {
+    public ResponseEntity<ResponseDto> receiveMessage(final String message) throws JsonProcessingException {
         MessageDto messageDto = objectMapper.readValue(message, MessageDto.class);
 
         if(!"mh-app-api".equals(messageDto.getFrom())){
-            log.info("Invalid sender" + messageDto.getFrom());
-            return;
+            log.info("Invalid sender: " + messageDto.getFrom());
+            SqsErrorResult sqsErrorResult = SqsErrorResult.INVALID_SENDER;
+
+            ResponseDto responseDto = ResponseDto.error(sqsErrorResult.getMessage());
+            return ResponseEntity.status(sqsErrorResult.getHttpStatus()).body(responseDto);
         }
         switch (messageDto.getTopic()){
             case "create user":
@@ -67,7 +70,7 @@ public class SqsReceiver {
                 break;
 
         }
-
+        return ResponseEntity.ok(ResponseDto.success("Success " + messageDto.getTopic()));
     }
 
     @Transactional
