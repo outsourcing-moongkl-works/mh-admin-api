@@ -14,6 +14,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
+
+    boolean existsByEmail(String email);
+
     //유저 성별로 조회, 페이징 처리
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id," +

@@ -29,7 +29,6 @@ public class SqsReceiver {
     private final UserSkinRepository userSkinRepository;
     private final EnquiryRepository enquiryRepository;
     private final ObjectMapper objectMapper;
-
     private final StoryRepository storyRepository;
 
     @SqsListener("MhAppSaying")
@@ -109,6 +108,12 @@ public class SqsReceiver {
 
     @Transactional
     public void createUser(MessageDto messageDto) {
+
+        if(userRepository.existsByEmail(messageDto.getMessage().get("email"))){
+            log.info("User already exists: " + messageDto.getMessage().get("email"));
+            return;
+        }
+
         User user = User.builder()
                 .id(UUID.fromString(messageDto.getMessage().get("id")))
                 .email(messageDto.getMessage().get("email"))
@@ -122,6 +127,12 @@ public class SqsReceiver {
     }
     @Transactional
     public void createUserSkin(MessageDto messageDto) {
+
+        if(userSkinRepository.existsById(UUID.fromString(messageDto.getMessage().get("id")))){
+            log.info("UserSkin already exists: " + messageDto.getMessage().get("id"));
+            return;
+        }
+
         UserSkin userSkin = UserSkin.builder()
                 .id(UUID.fromString(messageDto.getMessage().get("id")))
                 .storyCloudfrontUrl(messageDto.getMessage().get("storyCloudfrontUrl"))
@@ -136,11 +147,21 @@ public class SqsReceiver {
     }
     @Transactional
     void deleteUserSkin(MessageDto messageDto) {
+        if(!userSkinRepository.existsById(UUID.fromString(messageDto.getMessage().get("id")))){
+            log.info("UserSkin does not exist: " + messageDto.getMessage().get("id"));
+            return;
+        }
         userSkinRepository.deleteById(UUID.fromString(messageDto.getMessage().get("id")));
     }
 
     @Transactional
     void withdrawUser(MessageDto messageDto) {
+
+        if(!userRepository.existsById(UUID.fromString(messageDto.getMessage().get("id")))){
+            log.info("User does not exist: " + messageDto.getMessage().get("id"));
+            return;
+        }
+
         userSkinRepository.deleteAllByUser(UUID.fromString(messageDto.getMessage().get("id")));
         userRepository.deleteById(UUID.fromString(messageDto.getMessage().get("id")));
     }
