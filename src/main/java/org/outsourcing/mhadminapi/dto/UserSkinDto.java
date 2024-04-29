@@ -14,4 +14,5 @@ public class UserSkinDto {
     private String skinCloudfrontUrl;
     private String country;
     private LocalDateTime createdAt;
+    private boolean isPublic;
 }

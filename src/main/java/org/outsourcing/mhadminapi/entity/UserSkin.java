@@ -38,14 +38,18 @@ public class UserSkin {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    private boolean isPublic;
+
     @Builder
-    public UserSkin(UUID id, String storyCloudfrontUrl, String skinCloudfrontUrl, String country, LocalDateTime createdAt, User user){
+    public UserSkin(UUID id, String storyCloudfrontUrl, String skinCloudfrontUrl, String country, LocalDateTime createdAt, User user, boolean isPublic){
         this.id = id;
         this.storyCloudfrontUrl = storyCloudfrontUrl;
         this.skinCloudfrontUrl = skinCloudfrontUrl;
         this.country = country;
         this.createdAt = createdAt;
         this.user = user;
+        this.isPublic = isPublic;
     }
 
     public static UserSkin convertUserSkinDtoToEntity(UserSkinDto uploadedUserSkinUrl) {
@@ -55,6 +59,7 @@ public class UserSkin {
                 .skinCloudfrontUrl(uploadedUserSkinUrl.getSkinCloudfrontUrl())
                 .country(uploadedUserSkinUrl.getCountry())
                 .createdAt(uploadedUserSkinUrl.getCreatedAt())
+                .isPublic(uploadedUserSkinUrl.isPublic())
                 .build();
         return userSkin;
     }
@@ -62,6 +67,10 @@ public class UserSkin {
     public void updateUser(User user) {
         this.user = user;
         user.addUserSkin(this);
+    }
+
+    public void updateIsPublic() {
+        this.isPublic = !this.isPublic;
     }
 }
 

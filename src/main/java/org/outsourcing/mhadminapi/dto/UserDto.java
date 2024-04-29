@@ -59,11 +59,19 @@ public class UserDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ReadUserSkinResponse{
         private UUID userId;
-        private String userEmail;
+        private String email;
         private String skinCloudfrontUrl;
         private String storyCloudfrontUrl;
         private String country;
         private String createdAt;
+
+        public ReadUserSkinResponse(UUID userId, String email, String skinCloudfrontUrl, String storyCloudfrontUrl, String country) {
+            this.userId = userId;
+            this.email = email;
+            this.skinCloudfrontUrl = skinCloudfrontUrl;
+            this.storyCloudfrontUrl = storyCloudfrontUrl;
+            this.country = country;
+        }
     }
 
     @Data

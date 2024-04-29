@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -67,9 +68,25 @@ public class SqsReceiver {
             case "create enquiry":
                 createEnquiry(messageDto);
                 break;
+            case "change post ispublic":
+                changePostIsPublic(messageDto);
+                break;
 
         }
         return ResponseEntity.ok(ResponseDto.success("Success " + messageDto.getTopic()));
+    }
+
+    @Transactional
+    public void changePostIsPublic(MessageDto messageDto) {
+        Optional<UserSkin> userSkin = userSkinRepository.findUserSkinById(UUID.fromString(messageDto.getMessage().get("id")));
+        if(userSkin.isEmpty()){
+            log.info("UserSkin does not exist: " + messageDto.getMessage().get("id"));
+            return;
+        }
+
+        userSkin.get().updateIsPublic();
+
+        userSkinRepository.save(userSkin.get());
     }
 
     @Transactional
@@ -138,6 +155,7 @@ public class SqsReceiver {
                 .storyCloudfrontUrl(messageDto.getMessage().get("storyCloudfrontUrl"))
                 .skinCloudfrontUrl(messageDto.getMessage().get("skinCloudfrontUrl"))
                 .country(messageDto.getMessage().get("country"))
+                .isPublic(Boolean.parseBoolean(messageDto.getMessage().get("isPublic")))
                 .build();
 
         User user = userRepository.findById(UUID.fromString(messageDto.getMessage().get("userId"))).get();
