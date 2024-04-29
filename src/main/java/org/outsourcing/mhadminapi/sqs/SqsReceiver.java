@@ -32,6 +32,7 @@ public class SqsReceiver {
     private final ObjectMapper objectMapper;
     private final StoryRepository storyRepository;
 
+    @Transactional
     @SqsListener("MhAppSaying")
     public ResponseEntity<ResponseDto> receiveMessage(final String message) throws JsonProcessingException {
         MessageDto messageDto = objectMapper.readValue(message, MessageDto.class);
