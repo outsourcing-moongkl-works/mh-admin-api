@@ -34,7 +34,7 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
 
     //findUserSkinByCountryContaining
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
-            "us.id, " +
+            "us.user.id, " +
             "us.user.email, " +
             "us.skinCloudfrontUrl, " +
             "us.storyCloudfrontUrl, " +
@@ -48,7 +48,7 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
 
     //findUserSkinsByCreatedAtBetween
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
-            "us.id, " +
+            "us.user.id, " +
             "us.user.email, " +
             "us.skinCloudfrontUrl, " +
             "us.storyCloudfrontUrl, " +

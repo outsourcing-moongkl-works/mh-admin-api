@@ -63,7 +63,7 @@ public class UserDto {
         private String skinCloudfrontUrl;
         private String storyCloudfrontUrl;
         private String country;
-        private String createdAt;
+        private LocalDateTime createdAt;
 
         public ReadUserSkinResponse(UUID userId, String email, String skinCloudfrontUrl, String storyCloudfrontUrl, String country) {
             this.userId = userId;
