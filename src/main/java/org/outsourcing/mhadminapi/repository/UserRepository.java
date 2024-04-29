@@ -45,7 +45,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
             "u.id, u.email, u.password, u.gender, u.country, u.phoneNumber) " +
-            "FROM User u WHERE u.createdAt BETWEEN :startDate AND :endDate AND u.id = :userId ORDER BY u.createdAt DESC")
+            "FROM User u WHERE u.id = :userId ORDER BY u.createdAt DESC")
     Optional<UserDto.ReadResponse> findUserById(@Param("userId") UUID userId);
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
