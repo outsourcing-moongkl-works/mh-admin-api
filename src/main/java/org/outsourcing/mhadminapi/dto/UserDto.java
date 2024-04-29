@@ -63,14 +63,17 @@ public class UserDto {
         private String skinCloudfrontUrl;
         private String storyCloudfrontUrl;
         private String country;
+        private Boolean isPublic;
         private LocalDateTime createdAt;
 
-        public ReadUserSkinResponse(UUID userId, String email, String skinCloudfrontUrl, String storyCloudfrontUrl, String country) {
+        public ReadUserSkinResponse(UUID userId, String email, String skinCloudfrontUrl, String storyCloudfrontUrl, String country, Boolean isPublic, LocalDateTime createdAt) {
             this.userId = userId;
             this.email = email;
             this.skinCloudfrontUrl = skinCloudfrontUrl;
             this.storyCloudfrontUrl = storyCloudfrontUrl;
             this.country = country;
+            this.isPublic = isPublic;
+            this.createdAt = createdAt;
         }
     }
 

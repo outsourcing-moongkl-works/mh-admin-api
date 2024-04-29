@@ -39,10 +39,10 @@ public class UserSkin {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = false)
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @Builder
-    public UserSkin(UUID id, String storyCloudfrontUrl, String skinCloudfrontUrl, String country, LocalDateTime createdAt, User user, boolean isPublic){
+    public UserSkin(UUID id, String storyCloudfrontUrl, String skinCloudfrontUrl, String country, LocalDateTime createdAt, User user, Boolean isPublic){
         this.id = id;
         this.storyCloudfrontUrl = storyCloudfrontUrl;
         this.skinCloudfrontUrl = skinCloudfrontUrl;

@@ -120,7 +120,6 @@ public class EnterpriseDto {
     @Data
     @Builder
     @NoArgsConstructor
-    @AllArgsConstructor
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class GetEnterprisePageResponse{
@@ -135,6 +134,20 @@ public class EnterpriseDto {
         String managerEmail;
         String logoImgUrl;
         Boolean isApproved;
+
+        public GetEnterprisePageResponse(UUID enterpriseId, String name, String businessNumber, String corporateNumber, String address, String country, String managerName, String managerPhone, String managerEmail, String logoImgUrl, Boolean isApproved) {
+            this.enterpriseId = enterpriseId;
+            this.name = name;
+            this.businessNumber = businessNumber;
+            this.corporateNumber = corporateNumber;
+            this.address = address;
+            this.country = country;
+            this.managerName = managerName;
+            this.managerPhone = managerPhone;
+            this.managerEmail = managerEmail;
+            this.logoImgUrl = logoImgUrl;
+            this.isApproved = isApproved;
+        }
     }
 
     @Data
