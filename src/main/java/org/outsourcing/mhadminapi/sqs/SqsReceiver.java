@@ -78,6 +78,9 @@ public class SqsReceiver {
 
     @Transactional
     public void changePostIsPublic(MessageDto messageDto) {
+
+        log.info("changePostIsPublic: " + messageDto.getMessage().get("id"));
+
         Optional<UserSkin> userSkin = userSkinRepository.findUserSkinById(UUID.fromString(messageDto.getMessage().get("id")));
         if(userSkin.isEmpty()){
             log.info("UserSkin does not exist: " + messageDto.getMessage().get("id"));
@@ -91,6 +94,9 @@ public class SqsReceiver {
 
     @Transactional
     public void createEnquiry(MessageDto messageDto) {
+
+        log.info("createEnquiry: " + messageDto.getMessage().get("email"));
+
         Enquiry enquiry = Enquiry.builder()
                 .email(messageDto.getMessage().get("email"))
                 .title(messageDto.getMessage().get("title"))
@@ -104,27 +110,57 @@ public class SqsReceiver {
 
     @Transactional
     public void increaseUseCount(MessageDto messageDto) {
-        Story story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id"))).get();
-        story.increaseUseCount();
-        storyRepository.save(story);
+
+        log.info("increaseUseCount: " + messageDto.getMessage().get("id"));
+
+        Optional<Story> story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id")));
+
+        if(story.isEmpty()){
+            log.info("Story does not exist: " + messageDto.getMessage().get("id"));
+            return;
+        }
+
+        story.get().increaseUseCount();
+
+        storyRepository.save(story.get());
     }
 
     @Transactional
     public void increaseShareCount(MessageDto messageDto) {
-        Story story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id"))).get();
-        story.increaseShareCount();
-        storyRepository.save(story);
+
+        log.info("increaseUseCount: " + messageDto.getMessage().get("id"));
+
+        Optional<Story> story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id")));
+
+        if(story.isEmpty()){
+            log.info("Story does not exist: " + messageDto.getMessage().get("id"));
+            return;
+        }
+
+        story.get().increaseShareCount();
+        storyRepository.save(story.get());
     }
 
     @Transactional
     public void increaseViewCount(MessageDto messageDto) {
-        Story story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id"))).get();
-        story.increaseViewCount();
-        storyRepository.save(story);
+
+        log.info("increaseViewCount: " + messageDto.getMessage().get("id"));
+
+        Optional<Story> story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id")));
+
+        if(story.isEmpty()){
+            log.info("Story does not exist: " + messageDto.getMessage().get("id"));
+            return;
+        }
+
+        story.get().increaseViewCount();
+        storyRepository.save(story.get());
     }
 
     @Transactional
     public void createUser(MessageDto messageDto) {
+
+        log.info("createUser: " + messageDto.getMessage().get("email"));
 
         if(userRepository.existsByEmail(messageDto.getMessage().get("email"))){
             log.info("User already exists: " + messageDto.getMessage().get("email"));
@@ -140,10 +176,13 @@ public class SqsReceiver {
                 .country(messageDto.getMessage().get("country"))
                 .createdAt(LocalDateTime.parse(messageDto.getMessage().get("createdAt")))
                 .build();
+
         userRepository.save(user);
     }
     @Transactional
     public void createUserSkin(MessageDto messageDto) {
+
+        log.info("createUserSkin: " + messageDto.getMessage().get("id"));
 
         if(userSkinRepository.existsById(UUID.fromString(messageDto.getMessage().get("id")))){
             log.info("UserSkin already exists: " + messageDto.getMessage().get("id"));
@@ -165,6 +204,9 @@ public class SqsReceiver {
     }
     @Transactional
     void deleteUserSkin(MessageDto messageDto) {
+
+        log.info("deleteUserSkin: " + messageDto.getMessage().get("id"));
+
         if(!userSkinRepository.existsById(UUID.fromString(messageDto.getMessage().get("id")))){
             log.info("UserSkin does not exist: " + messageDto.getMessage().get("id"));
             return;
@@ -174,6 +216,8 @@ public class SqsReceiver {
 
     @Transactional
     void withdrawUser(MessageDto messageDto) {
+
+        log.info("withdrawUser: " + messageDto.getMessage().get("id"));
 
         if(!userRepository.existsById(UUID.fromString(messageDto.getMessage().get("id")))){
             log.info("User does not exist: " + messageDto.getMessage().get("id"));
