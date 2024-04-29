@@ -52,17 +52,16 @@ public class UserSkin {
         this.isPublic = isPublic;
     }
 
-    public static UserSkin convertUserSkinDtoToEntity(UserSkinDto uploadedUserSkinUrl) {
-        final UserSkin userSkin = UserSkin.builder()
-                .id(uploadedUserSkinUrl.getId())
-                .storyCloudfrontUrl(uploadedUserSkinUrl.getStoryCloudfrontUrl())
-                .skinCloudfrontUrl(uploadedUserSkinUrl.getSkinCloudfrontUrl())
-                .country(uploadedUserSkinUrl.getCountry())
-                .createdAt(uploadedUserSkinUrl.getCreatedAt())
-                .isPublic(uploadedUserSkinUrl.isPublic())
-                .build();
-        return userSkin;
-    }
+//    public static UserSkin convertUserSkinDtoToEntity(UserSkinDto uploadedUserSkinUrl) {
+//        final UserSkin userSkin = UserSkin.builder()
+//                .id(uploadedUserSkinUrl.getId())
+//                .storyCloudfrontUrl(uploadedUserSkinUrl.getStoryCloudfrontUrl())
+//                .skinCloudfrontUrl(uploadedUserSkinUrl.getSkinCloudfrontUrl())
+//                .country(uploadedUserSkinUrl.getCountry())
+//                .createdAt(uploadedUserSkinUrl.getCreatedAt())
+//                .build();
+//        return userSkin;
+//    }
 
     public void updateUser(User user) {
         this.user = user;

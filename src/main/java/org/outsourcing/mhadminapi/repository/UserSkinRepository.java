@@ -1,8 +1,6 @@
 package org.outsourcing.mhadminapi.repository;
 
 import org.outsourcing.mhadminapi.dto.UserDto;
-import org.outsourcing.mhadminapi.dto.UserSkinDto;
-import org.outsourcing.mhadminapi.entity.User;
 import org.outsourcing.mhadminapi.entity.UserSkin;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
