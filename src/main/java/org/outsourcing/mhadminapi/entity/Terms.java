@@ -20,8 +20,6 @@ import java.util.UUID;
 public class Terms {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
@@ -29,7 +27,7 @@ public class Terms {
     private String terms;
 
     @CreatedDate
-    @Column(name = "created_at", length = 20)
+    @Column(name = "created_at", nullable = false, length = 20)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
@@ -37,10 +35,9 @@ public class Terms {
     private LocalDateTime updatedAt;
 
     @PrePersist
-    public void setTermsId() {
-        if (id == null) {
-            id = UUID.randomUUID();
-        }
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
     }
 
     @Builder

@@ -14,7 +14,6 @@ import org.outsourcing.mhadminapi.entity.User;
 import org.outsourcing.mhadminapi.entity.UserSkin;
 import org.outsourcing.mhadminapi.exception.SqsErrorResult;
 import org.outsourcing.mhadminapi.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,8 @@ public class SqsReceiver {
     private final StoryRepository storyRepository;
 
     @Transactional
-    @SqsListener("MhAppSaying")
+    //@SqsListener("MhAppSaying")
+    @SqsListener(value = "${spring.cloud.aws.sqs.queue-name}")
     public ResponseEntity<ResponseDto> receiveMessage(final String message) throws JsonProcessingException {
         MessageDto messageDto = objectMapper.readValue(message, MessageDto.class);
 
@@ -160,8 +160,17 @@ public class SqsReceiver {
 
     @Transactional
     public void createUser(MessageDto messageDto) {
+        String idStr = messageDto.getMessage().get("id");
+        String email = messageDto.getMessage().get("email");
 
-        log.info("createUser: " + messageDto.getMessage().get("email"));
+        if (idStr == null || email == null) {
+            log.error("Invalid message data: ID or email is missing");
+            return; // 또는 예외를 던지거나, 오류 메시지를 반환할 수 있습니다.
+        }
+
+        UUID id = UUID.fromString(idStr);
+
+        log.info("createUser: " + messageDto.getMessage().get("email") + ", " + id);
 
         if(userRepository.existsByEmail(messageDto.getMessage().get("email"))){
             log.info("User already exists: " + messageDto.getMessage().get("email"));
@@ -169,7 +178,7 @@ public class SqsReceiver {
         }
 
         User user = User.builder()
-                .id(UUID.fromString(messageDto.getMessage().get("id")))
+                .id(id)
                 .email(messageDto.getMessage().get("email"))
                 .password(messageDto.getMessage().get("password"))
                 .phoneNumber(messageDto.getMessage().get("phoneNumber"))

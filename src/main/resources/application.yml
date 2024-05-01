@@ -55,6 +55,9 @@ spring:
         secret-key: ${AWS_SECRET_KEY}
       sqs:
         queue-url: ${AWS_SQS_QUEUE_URL}
+        #queue-url: ${LOCAL_SQS_QUEUE_URL}
+        queue-name: ${AWS_SQS_QUEUE_NAME} # listen
+        #queue-name: ${LOCAL_SQS_QUEUE_NAME} # listen
       stack:
         auto: false
       ses:

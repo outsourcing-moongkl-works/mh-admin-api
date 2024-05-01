@@ -19,8 +19,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class PrivacyPolicy{
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 

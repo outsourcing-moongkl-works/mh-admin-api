@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import jakarta.persistence.*;
 import org.outsourcing.mhadminapi.dto.UserSkinDto;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,15 +18,13 @@ import java.util.UUID;
 public class UserSkin {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "story_cloudfront_url", nullable = false)
     private String storyCloudfrontUrl;
 
-    @Column(nullable = false)
+    @Column(name = "skin_cloudfront_url", nullable = false)
     private String skinCloudfrontUrl;
 
     @Column(nullable = false)
@@ -35,11 +34,18 @@ public class UserSkin {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, length = 20)
+    private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean isPublic;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @Builder
     public UserSkin(UUID id, String storyCloudfrontUrl, String skinCloudfrontUrl, String country, LocalDateTime createdAt, User user, Boolean isPublic){
@@ -51,17 +57,6 @@ public class UserSkin {
         this.user = user;
         this.isPublic = isPublic;
     }
-
-//    public static UserSkin convertUserSkinDtoToEntity(UserSkinDto uploadedUserSkinUrl) {
-//        final UserSkin userSkin = UserSkin.builder()
-//                .id(uploadedUserSkinUrl.getId())
-//                .storyCloudfrontUrl(uploadedUserSkinUrl.getStoryCloudfrontUrl())
-//                .skinCloudfrontUrl(uploadedUserSkinUrl.getSkinCloudfrontUrl())
-//                .country(uploadedUserSkinUrl.getCountry())
-//                .createdAt(uploadedUserSkinUrl.getCreatedAt())
-//                .build();
-//        return userSkin;
-//    }
 
     public void updateUser(User user) {
         this.user = user;

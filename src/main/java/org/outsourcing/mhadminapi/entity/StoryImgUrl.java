@@ -20,8 +20,6 @@ import java.util.UUID;
 public class StoryImgUrl {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
@@ -34,6 +32,11 @@ public class StoryImgUrl {
     @OneToOne(mappedBy = "storyImgUrl", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Story story;
 
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null)
+            this.id = UUID.randomUUID();
+    }
 
     @Builder
     public StoryImgUrl(UUID id, String s3Url, String cloudfrontUrl, Story story) {

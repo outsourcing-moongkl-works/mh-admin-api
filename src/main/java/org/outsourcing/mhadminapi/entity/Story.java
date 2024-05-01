@@ -20,8 +20,6 @@ import java.util.UUID;
 public class Story {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
@@ -51,6 +49,13 @@ public class Story {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void setStoryId() {
+        if (id == null) {
+            id = UUID.randomUUID();
+        }
+    }
 
     @Builder
     public Story(Enterprise enterprise, long useCount, long shareCount, long viewCount, Boolean isPublic, StoryImgUrl storyImgUrl, LocalDateTime createdAt) {

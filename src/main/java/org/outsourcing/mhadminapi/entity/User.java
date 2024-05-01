@@ -24,8 +24,6 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
@@ -50,6 +48,13 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UserSkin> userSkins;
+
+    @PrePersist
+    public void setUserId() {
+        if (id == null) {
+            id = UUID.randomUUID();
+        }
+    }
 
     public void addUserSkin(UserSkin userSkin) {
         this.userSkins.add(userSkin);
