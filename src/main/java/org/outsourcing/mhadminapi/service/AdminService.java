@@ -32,6 +32,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -137,7 +138,7 @@ public class AdminService{
         sqsSender.sendToSQS(messageDto);
     }
 
-    public Page<EnterpriseDto.GetEnterprisePageResponse> searchEnterprises(
+    public Page<EnterpriseDto.ReadResponse> searchEnterprises(
             LocalDateTime startDateTime,
             LocalDateTime endDateTime,
             String country,
@@ -147,15 +148,23 @@ public class AdminService{
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
+        Page<EnterpriseDto.ReadResponse> response;
+
         if(enterpriseName != null && country != null){
-            return enterpriseRepository.findByCreatedAtBetweenAndCountryAndEnterpriseNameContaining(startDateTime, endDateTime, country, enterpriseName, pageable);
+            response = enterpriseRepository.findByCreatedAtBetweenAndCountryAndEnterpriseNameContaining(startDateTime, endDateTime, country, enterpriseName, pageable);
         } else if(enterpriseName != null){
-            return enterpriseRepository.findByCreatedAtBetweenAndEnterpriseNameContaining(startDateTime, endDateTime, enterpriseName, pageable);
+            response = enterpriseRepository.findByCreatedAtBetweenAndEnterpriseNameContaining(startDateTime, endDateTime, enterpriseName, pageable);
         } else if(country != null){
-            return enterpriseRepository.findByCreatedAtBetweenAndCountry(startDateTime, endDateTime, country, pageable);
+            response = enterpriseRepository.findByCreatedAtBetweenAndCountry(startDateTime, endDateTime, country, pageable);
         } else {
-            return enterpriseRepository.findByCreatedAtBetween(startDateTime, endDateTime, pageable);
+            response = enterpriseRepository.findByCreatedAtBetween(startDateTime, endDateTime, pageable);
         }
+        response.forEach(enterprise -> {
+            PausingStatus pausingStatus = isPaused(enterprise.getEnterpriseId(), "enterprise");
+            enterprise.setPausingStatus(pausingStatus);
+        });
+
+        return response;
     }
 
     @Transactional
@@ -243,22 +252,31 @@ public class AdminService{
                 .build();
     }
 
-    public Page<UserDto.ReadResponse> findUsers(String gender, String email, String country, String phoneNumber, LocalDateTime startDateTime, LocalDateTime endDateTime, int page, int size) {
+    public Page<UserDto.ReadResponse> searchUsers(String gender, String email, String country, String phoneNumber, LocalDateTime startDateTime, LocalDateTime endDateTime, int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
+        Page<UserDto.ReadResponse> response;
+
         // 조건에 따른 분기 처리
         if (gender != null) {
-            return userRepository.findUserByGender(startDateTime, endDateTime, gender, pageable);
+            response = userRepository.findUserByGender(startDateTime, endDateTime, gender, pageable);
         } else if (email != null) {
-            return userRepository.findUserByEmailContaining(startDateTime, endDateTime, email, pageable);
+            response = userRepository.findUserByEmailContaining(startDateTime, endDateTime, email, pageable);
         } else if (country != null) {
-            return userRepository.findUserByCountryContaining(startDateTime, endDateTime, country, pageable);
+            response = userRepository.findUserByCountryContaining(startDateTime, endDateTime, country, pageable);
         } else if (phoneNumber != null) {
-            return userRepository.findUserByPhoneNumberContaining(startDateTime, endDateTime, phoneNumber, pageable);
+            response = userRepository.findUserByPhoneNumberContaining(startDateTime, endDateTime, phoneNumber, pageable);
         } else {
-            return userRepository.findAllUser(startDateTime, endDateTime, pageable);
+            response = userRepository.findAllUser(startDateTime, endDateTime, pageable);
         }
+
+        response.forEach(user -> {
+            PausingStatus pausingStatus = isPaused(user.getUserId(), "user");
+            user.setPausingStatus(pausingStatus);
+        });
+
+        return response;
     }
 
 
@@ -323,5 +341,37 @@ public class AdminService{
         }
 
         return response;
+    }
+
+    public PausingStatus isPaused(UUID id, String type) {
+        String key = null;
+
+        if(type.equals("user")){
+            key = "pause:user:" + id.toString();
+        }else if(type.equals("enterprise")) {
+            key = "pause:enterprise:" + id.toString();
+        }
+
+        String value = redisTemplate.opsForValue().get(key);
+        if (value == null) {
+            return PausingStatus.builder().isPaused(false).build();
+        }
+
+        Long expireSeconds = redisTemplate.getExpire(key, TimeUnit.SECONDS);
+        if (expireSeconds == null || expireSeconds == -1) {
+            return PausingStatus.builder()
+                    .isPaused(true)
+                    .days(0)
+                    .hours(0)
+                    .build();
+        } else {
+            long days = TimeUnit.SECONDS.toDays(expireSeconds);
+            long hours = TimeUnit.SECONDS.toHours(expireSeconds) - TimeUnit.DAYS.toHours(days);
+            return PausingStatus.builder()
+                    .isPaused(true)
+                    .days((int) days)
+                    .hours((int) hours)
+                    .build();
+        }
     }
 }

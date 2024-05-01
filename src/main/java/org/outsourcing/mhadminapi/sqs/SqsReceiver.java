@@ -34,15 +34,15 @@ public class SqsReceiver {
     @Transactional
     //@SqsListener("MhAppSaying")
     @SqsListener(value = "${spring.cloud.aws.sqs.queue-name}")
-    public ResponseEntity<ResponseDto> receiveMessage(final String message) throws JsonProcessingException {
+    public void receiveMessage(final String message) throws JsonProcessingException {
         MessageDto messageDto = objectMapper.readValue(message, MessageDto.class);
 
         if(!"mh-app-api".equals(messageDto.getFrom())){
-            log.info("Invalid sender: " + messageDto.getFrom());
-            SqsErrorResult sqsErrorResult = SqsErrorResult.INVALID_SENDER;
-
-            ResponseDto responseDto = ResponseDto.error(sqsErrorResult.getMessage());
-            return ResponseEntity.status(sqsErrorResult.getHttpStatus()).body(responseDto);
+            log.error("Invalid sender: " + messageDto.getFrom());
+//            SqsErrorResult sqsErrorResult = SqsErrorResult.INVALID_SENDER;
+//
+//            ResponseDto responseDto = ResponseDto.error(sqsErrorResult.getMessage());
+            return;
         }
         switch (messageDto.getTopic()){
             case "create user":
@@ -74,7 +74,6 @@ public class SqsReceiver {
                 break;
 
         }
-        return ResponseEntity.ok(ResponseDto.success("Success " + messageDto.getTopic()));
     }
 
     @Transactional
@@ -103,6 +102,7 @@ public class SqsReceiver {
                 .title(messageDto.getMessage().get("title"))
                 .content(messageDto.getMessage().get("content"))
                 .createdAt(LocalDateTime.parse(messageDto.getMessage().get("createdAt")))
+                .isReplied(false)
                 .build();
         enquiry.setEnquiryId();
 

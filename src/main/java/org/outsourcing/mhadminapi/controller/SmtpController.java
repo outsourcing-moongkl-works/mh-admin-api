@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/*
 @RestController @Slf4j @RequiredArgsConstructor @RequestMapping("/smtp")
 public class SmtpController {
 
@@ -22,3 +23,5 @@ public class SmtpController {
         return ResponseEntity.ok(ResponseDto.success("Mail sent"));
     }
 }
+
+ */

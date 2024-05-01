@@ -119,7 +119,7 @@ public class AdminController {
 
     @PreAuthorize("hasAuthority('MASTER')")
     @GetMapping("/enterprise/searching")
-    public ResponseEntity<Page<EnterpriseDto.GetEnterprisePageResponse>> searchEnterprises(
+    public ResponseEntity<Page<EnterpriseDto.ReadResponse>> searchEnterprises(
             @RequestParam(required = false, defaultValue = "1900-01-01") String startDate,
             @RequestParam(required = false) String endDate,
             @RequestParam(required = false) String country,
@@ -135,7 +135,7 @@ public class AdminController {
         LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
         LocalDateTime endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
 
-        Page<EnterpriseDto.GetEnterprisePageResponse> response = adminService.searchEnterprises(startDateTime, endDateTime, country, enterpriseName, page, size);
+        Page<EnterpriseDto.ReadResponse> response = adminService.searchEnterprises(startDateTime, endDateTime, country, enterpriseName, page, size);
 
         return ResponseEntity.ok(response);
     }
@@ -160,7 +160,7 @@ public class AdminController {
         LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
         LocalDateTime endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
 
-        Page<UserDto.ReadResponse> response = adminService.findUsers(
+        Page<UserDto.ReadResponse> response = adminService.searchUsers(
                 gender, email, country, phoneNumber, startDateTime, endDateTime, page, size);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);

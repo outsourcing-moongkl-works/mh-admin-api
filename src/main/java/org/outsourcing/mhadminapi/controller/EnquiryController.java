@@ -40,9 +40,9 @@ public class EnquiryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<EnquiryDto.GetResponse>> getEnquiries(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<Page<EnquiryDto.ReadResponse>> getEnquiries(@RequestParam(value = "page", defaultValue = "0") int page,
                                                                       @RequestParam(value = "size", defaultValue = "10") int size) {
-        Page<EnquiryDto.GetResponse> response = enquiryService.getEnquiries(page, size);
+        Page<EnquiryDto.ReadResponse> response = enquiryService.getEnquiries(page, size);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

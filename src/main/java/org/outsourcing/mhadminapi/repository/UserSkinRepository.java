@@ -20,19 +20,32 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
 
     //find userhere by userId(ManyToOne)
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
-            "us.user.id, " +
-            "us.user.email, " +
+            "u.id, " +
+            "u.email, " +
             "us.skinCloudfrontUrl, " +
             "us.storyCloudfrontUrl, " +
             "us.country, " +
-            "us.createdAt, " +
-            "us.isPublic " +
+            "us.isPublic, " +
+            "us.createdAt " +
             ") " +
             "FROM UserSkin us " +
-            "WHERE us.user.id = :userId ORDER BY us.createdAt DESC")
+            "JOIN us.user u " +
+            "WHERE u.id = :userId ORDER BY us.createdAt DESC")
     Page<UserDto.ReadUserSkinResponse> findUserSkinByUserId(UUID userId, Pageable pageable);
 
     //findUserSkinByCountryContaining
+//    @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
+//            "us.user.id, " +
+//            "us.user.email, " +
+//            "us.skinCloudfrontUrl, " +
+//            "us.storyCloudfrontUrl, " +
+//            "us.country, " +
+//            "us.createdAt, " +
+//            "us.isPublic " +
+//            ") " +
+//            "FROM UserSkin us " +
+//            "WHERE us.country LIKE %:country% AND us.createdAt BETWEEN :startDate AND :endDate")
+    //use join
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
             "us.user.id, " +
             "us.user.email, " +
@@ -43,13 +56,14 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
             "us.isPublic " +
             ") " +
             "FROM UserSkin us " +
+            "JOIN us.user u " +
             "WHERE us.country LIKE %:country% AND us.createdAt BETWEEN :startDate AND :endDate")
     Page<UserDto.ReadUserSkinResponse> findUserSkinByCountryContaining(LocalDateTime startDate, LocalDateTime endDate, String country, Pageable pageable);
 
     //findUserSkinsByCreatedAtBetween
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
-            "us.user.id, " +
-            "us.user.email, " +
+            "u.id, " +
+            "u.email, " +
             "us.skinCloudfrontUrl, " +
             "us.storyCloudfrontUrl, " +
             "us.country, " +
@@ -57,6 +71,7 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
             "us.isPublic " +
             ") " +
             "FROM UserSkin us " +
+            "JOIN us.user u " +
             "WHERE us.createdAt BETWEEN :startDate AND :endDate")
     Page<UserDto.ReadUserSkinResponse> findUserSkinByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 

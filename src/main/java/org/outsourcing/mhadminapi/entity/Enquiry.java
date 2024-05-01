@@ -35,6 +35,9 @@ public class Enquiry { //문의사항
     @Column(name = "created_at", length = 20)
     private LocalDateTime createdAt;
 
+    @Column(name = "is_replied", nullable = false, columnDefinition = "TINYINT(1) DEFAULT 0")
+    private Boolean isReplied;
+
     @PrePersist
     public void setEnquiryId() {
         if (id == null) {
@@ -42,14 +45,15 @@ public class Enquiry { //문의사항
         }
     }
     @Builder
-    public Enquiry(String email, String title, String content, LocalDateTime createdAt) {
+    public Enquiry(String email, String title, String content, LocalDateTime createdAt, Boolean isReplied) {
         this.email = email;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
+        this.isReplied = isReplied;
     }
-    public void updateEnquiry(String title, String content) {
-        this.title = title;
-        this.content = content;
+
+    public void updateReplyStatus() {
+        this.isReplied = true;
     }
 }

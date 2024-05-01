@@ -46,7 +46,7 @@ public class User {
     @Column(name = "created_at", nullable = false, length = 20)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSkin> userSkins;
 
     @PrePersist

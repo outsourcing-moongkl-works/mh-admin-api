@@ -19,10 +19,9 @@ public class MailService {
 
     public void sendMail(MailDto.MailSendDto mailSendDto) {
 
-        String email = mailSendDto.getTo();
-
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(email);
+
+        mailMessage.setTo(mailSendDto.getTo());
         mailMessage.setFrom(FROM_ADDRESS);
         mailMessage.setSubject(mailSendDto.getTitle());
         mailMessage.setText(mailSendDto.getContent());

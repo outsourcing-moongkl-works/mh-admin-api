@@ -22,7 +22,7 @@ public interface EnterpriseRepository extends JpaRepository<Enterprise, UUID>{
 
     Optional<Enterprise> findByLoginId(String loginId);
 
-    @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$GetEnterprisePageResponse(" +
+    @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$ReadResponse(" +
             "e.id, e.name, e.businessNumber, e.corporateNumber, e.address, e.country, e.managerName, e.managerPhone, e.managerEmail, l.cloudfrontUrl, e.isApproved) " +
             "FROM Enterprise e " +
             "JOIN e.logoImgUrl l " +
@@ -30,46 +30,46 @@ public interface EnterpriseRepository extends JpaRepository<Enterprise, UUID>{
             "AND e.country = :country " +
             "AND e.name LIKE %:enterpriseName% " +
             "ORDER BY e.createdAt DESC")
-    Page<EnterpriseDto.GetEnterprisePageResponse> findByCreatedAtBetweenAndCountryAndEnterpriseNameContaining(
+    Page<EnterpriseDto.ReadResponse> findByCreatedAtBetweenAndCountryAndEnterpriseNameContaining(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
             @Param("country") String country,
             @Param("enterpriseName") String enterpriseName,
             Pageable pageable);
 
-    @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$GetEnterprisePageResponse(" +
+    @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$ReadResponse(" +
             "e.id, e.name, e.businessNumber, e.corporateNumber, e.address, e.country, e.managerName, e.managerPhone, e.managerEmail, l.cloudfrontUrl, e.isApproved) " +
             "FROM Enterprise e " +
             "JOIN e.logoImgUrl l " +
             "WHERE e.createdAt BETWEEN :startDate AND :endDate " +
             "AND e.name LIKE %:enterpriseName% " +
             "ORDER BY e.createdAt DESC")
-    Page<EnterpriseDto.GetEnterprisePageResponse> findByCreatedAtBetweenAndEnterpriseNameContaining(
+    Page<EnterpriseDto.ReadResponse> findByCreatedAtBetweenAndEnterpriseNameContaining(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
             @Param("enterpriseName") String enterpriseName,
             Pageable pageable);
 
-    @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$GetEnterprisePageResponse(" +
+    @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$ReadResponse(" +
             "e.id, e.name, e.businessNumber, e.corporateNumber, e.address, e.country, e.managerName, e.managerPhone, e.managerEmail, l.cloudfrontUrl, e.isApproved) " +
             "FROM Enterprise e " +
             "JOIN e.logoImgUrl l " +
             "WHERE e.createdAt BETWEEN :startDate AND :endDate " +
             "AND e.country = :country " +
             "ORDER BY e.createdAt DESC")
-    Page<EnterpriseDto.GetEnterprisePageResponse> findByCreatedAtBetweenAndCountry(
+    Page<EnterpriseDto.ReadResponse> findByCreatedAtBetweenAndCountry(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
             @Param("country") String country,
             Pageable pageable);
 
-    @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$GetEnterprisePageResponse(" +
+    @Query("SELECT new org.outsourcing.mhadminapi.dto.EnterpriseDto$ReadResponse(" +
             "e.id, e.name, e.businessNumber, e.corporateNumber, e.address, e.country, e.managerName, e.managerPhone, e.managerEmail, l.cloudfrontUrl, e.isApproved) " +
             "FROM Enterprise e " +
             "JOIN e.logoImgUrl l " +
             "WHERE e.createdAt BETWEEN :startDate AND :endDate " +
             "ORDER BY e.createdAt DESC")
-    Page<EnterpriseDto.GetEnterprisePageResponse> findByCreatedAtBetween(
+    Page<EnterpriseDto.ReadResponse> findByCreatedAtBetween(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
             Pageable pageable);

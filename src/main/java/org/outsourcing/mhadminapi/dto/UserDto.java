@@ -39,6 +39,16 @@ public class UserDto {
         private String gender;
         private String country;
         private String phoneNumber;
+        private PausingStatus pausingStatus;
+
+        public ReadResponse(UUID userId, String email, String password, String gender, String country, String phoneNumber) {
+            this.userId = userId;
+            this.email = email;
+            this.password = password;
+            this.gender = gender;
+            this.country = country;
+            this.phoneNumber = phoneNumber;
+        }
     }
 
     @Data

@@ -39,11 +39,11 @@ public class Story {
     private Boolean isPublic; //중지 여부
 
     @JoinColumn(name = "enterprise_id", foreignKey = @ForeignKey(name = "story_img_url_fk_enterprise_id"))
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Enterprise enterprise;
 
     @JoinColumn(name = "story_img_url_id", foreignKey = @ForeignKey(name = "story_fk_story_img_url_id"))
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private StoryImgUrl storyImgUrl;
 
     @CreatedDate

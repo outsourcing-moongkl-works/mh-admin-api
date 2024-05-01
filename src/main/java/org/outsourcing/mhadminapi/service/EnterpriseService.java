@@ -4,10 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.outsourcing.mhadminapi.auth.JwtTokenProvider;
-import org.outsourcing.mhadminapi.dto.AdminDto;
-import org.outsourcing.mhadminapi.dto.EnterpriseDto;
-import org.outsourcing.mhadminapi.dto.JwtDto;
-import org.outsourcing.mhadminapi.dto.MessageDto;
+import org.outsourcing.mhadminapi.dto.*;
 import org.outsourcing.mhadminapi.entity.Enterprise;
 import org.outsourcing.mhadminapi.entity.LogoImgUrl;
 import org.outsourcing.mhadminapi.entity.Story;
@@ -17,6 +14,7 @@ import org.outsourcing.mhadminapi.exception.EnterpriseErrorResult;
 import org.outsourcing.mhadminapi.exception.EnterpriseException;
 import org.outsourcing.mhadminapi.repository.EnterpriseRepository;
 import org.outsourcing.mhadminapi.repository.LogoImgUrlRepository;
+import org.outsourcing.mhadminapi.repository.StoryImgUrlRepository;
 import org.outsourcing.mhadminapi.repository.StoryRepository;
 import org.outsourcing.mhadminapi.sqs.SqsSender;
 import org.outsourcing.mhadminapi.vo.Role;
@@ -49,6 +47,7 @@ public class EnterpriseService {
     private final StoryService storyService;
     private final StringRedisTemplate redisTemplate;
     private final SqsSender sqsSender;
+    private final StoryImgUrlRepository storyImgUrlRepository;
 
     @Transactional
     public void requestApproveEnterprise(EnterpriseDto.AuthorizeRequest request, MultipartFile logoImg) {
@@ -142,9 +141,10 @@ public class EnterpriseService {
                 .isPublic(true)
                 .build();
 
-        story.setEnterprise(enterprise);
-        story.setStoryImgUrl(StoryImgUrl.convertStoryImgUrlDtoToEntity(storyImgUrlDto));
+        StoryImgUrl storyImgUrl = StoryImgUrl.convertStoryImgUrlDtoToEntity(storyImgUrlDto);
 
+        story.setStoryImgUrl(storyImgUrl);
+        story.setEnterprise(enterprise);
         storyRepository.save(story);
 
         Map<String, String> messageMap = new LinkedHashMap<>();
@@ -152,6 +152,10 @@ public class EnterpriseService {
         messageMap.put("enterpriseId", enterpriseId.toString());
         messageMap.put("s3Url", storyImgUrlDto.getS3Url());
         messageMap.put("cloudfrontUrl", storyImgUrlDto.getCloudfrontUrl());
+        messageMap.put("isPublic", "true");
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("create enterprise story", messageMap);
+        sqsSender.sendToSQS(messageDto);
     }
 
     @Transactional
@@ -159,6 +163,7 @@ public class EnterpriseService {
         Story story = storyRepository.findById(storyId).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.STORY_NOT_FOUND));
 
         storyRepository.deleteById(storyId);
+
     }
 
     public Page<EnterpriseDto.GetStoryPageResponse> searchStory(UUID enterpriseId, int page, int size, String sort, LocalDateTime startDateTime, LocalDateTime endDateTime, Boolean isPublic) {
@@ -183,7 +188,6 @@ public class EnterpriseService {
         Story story = storyRepository.findById(UUID.fromString(storyId)).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.STORY_NOT_FOUND));
 
         story.changeIsPublic();
-
         storyRepository.save(story);
 
         Map<String, String> messageMap = new LinkedHashMap<>();
@@ -215,5 +219,4 @@ public class EnterpriseService {
             throw new EnterpriseBlockException(message);
         }
     }
-
 }
