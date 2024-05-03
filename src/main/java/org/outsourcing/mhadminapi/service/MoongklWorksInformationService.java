@@ -131,7 +131,7 @@ public class MoongklWorksInformationService{
                 .build();
 
         Map<String, String> messageMap = new LinkedHashMap<>();
-        messageMap.put("notificationId", notification.getId().toString());
+        messageMap.put("id", notification.getId().toString());
         messageMap.put("title", notification.getTitle());
         messageMap.put("content", notification.getContent());
 
@@ -157,7 +157,7 @@ public class MoongklWorksInformationService{
                 .build();
 
         Map<String, String> messageMap = new LinkedHashMap<>();
-        messageMap.put("notificationId", request.getNotificationId().toString());
+        messageMap.put("id", request.getNotificationId().toString());
         messageMap.put("title", request.getTitle());
         messageMap.put("content", request.getContent());
 
