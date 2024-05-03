@@ -94,9 +94,7 @@ public class EnterpriseController {
     @PostMapping("/story/changing-public")
     public ResponseEntity<ResponseDto> changeIsPublic(@RequestBody EnterpriseDto.ChangeIsPublicRequest request) {
         log.info("changeIsPublic: {}", request);
-
-        enterpriseService.changeIsPublic(request.getStoryId());
-
+        enterpriseService.changeIsPublic(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

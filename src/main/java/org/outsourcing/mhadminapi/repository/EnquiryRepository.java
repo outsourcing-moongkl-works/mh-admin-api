@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface EnquiryRepository extends JpaRepository<Enquiry, UUID>, PagingAndSortingRepository<Enquiry, UUID> {
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.EnquiryDto$ReadResponse " +
-            "(e.id, e.email, e.title, e.content, e.createdAt, e.isReplied) " +
+            "(e.id, e.email, e.title, e.content, e.isReplied, e.createdAt) " +
             "FROM Enquiry e ORDER BY e.createdAt DESC")
     Page<EnquiryDto.ReadResponse> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

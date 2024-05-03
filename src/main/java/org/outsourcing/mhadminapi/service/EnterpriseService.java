@@ -148,7 +148,7 @@ public class EnterpriseService {
         storyRepository.save(story);
 
         Map<String, String> messageMap = new LinkedHashMap<>();
-        messageMap.put("storyId", story.getId().toString());
+        messageMap.put("id", story.getId().toString());
         messageMap.put("enterpriseId", enterpriseId.toString());
         messageMap.put("s3Url", storyImgUrlDto.getS3Url());
         messageMap.put("cloudfrontUrl", storyImgUrlDto.getCloudfrontUrl());
@@ -160,10 +160,17 @@ public class EnterpriseService {
 
     @Transactional
     public void deleteStory(UUID storyId) {
+        log.info("deleteStory: {}", storyId);
+
         Story story = storyRepository.findById(storyId).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.STORY_NOT_FOUND));
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+        messageMap.put("id", story.getId().toString());
 
         storyRepository.deleteById(storyId);
 
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("delete enterprise story", messageMap);
+        sqsSender.sendToSQS(messageDto);
     }
 
     public Page<EnterpriseDto.GetStoryPageResponse> searchStory(UUID enterpriseId, int page, int size, String sort, LocalDateTime startDateTime, LocalDateTime endDateTime, Boolean isPublic) {
@@ -184,19 +191,20 @@ public class EnterpriseService {
     }
 
     @Transactional
-    public void changeIsPublic(String storyId) {
+    public void changeIsPublic(EnterpriseDto.ChangeIsPublicRequest request) {
+        String storyId = request.getStoryId();
+
         Story story = storyRepository.findById(UUID.fromString(storyId)).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.STORY_NOT_FOUND));
 
         story.changeIsPublic();
         storyRepository.save(story);
 
         Map<String, String> messageMap = new LinkedHashMap<>();
-        messageMap.put("id", story.getId().toString());
 
+        messageMap.put("id", story.getId().toString());
         MessageDto messageDto = sqsSender.createMessageDtoFromRequest("update enterprise story visible", messageMap);
 
         sqsSender.sendToSQS(messageDto);
-
     }
 
     // 정지 상태 확인 및 예외 처리 메서드

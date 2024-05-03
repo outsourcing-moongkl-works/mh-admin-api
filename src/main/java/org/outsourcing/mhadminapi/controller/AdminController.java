@@ -2,7 +2,9 @@ package org.outsourcing.mhadminapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.outsourcing.mhadminapi.auth.UserPrincipal;
 import org.outsourcing.mhadminapi.dto.*;
+import org.outsourcing.mhadminapi.entity.Admin;
 import org.outsourcing.mhadminapi.exception.AdminErrorResult;
 import org.outsourcing.mhadminapi.exception.AdminException;
 import org.outsourcing.mhadminapi.service.AdminService;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -45,11 +48,13 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PreAuthorize("hasAuthority('MASTER')")
+    @PreAuthorize("isAuthenticated()")
     @DeleteMapping()
-    public ResponseEntity<AdminDto.DeleteAdminResponse> deleteAdmin(@RequestParam(name = "admin_id") String adminId){
+    public ResponseEntity<AdminDto.DeleteAdminResponse> deleteAdmin(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestParam(name = "admin_id") String adminId){
 
-        AdminDto.DeleteAdminResponse response = adminService.deleteAdmin(adminId);
+        Admin admin = userPrincipal.getAdmin();
+
+        AdminDto.DeleteAdminResponse response = adminService.deleteAdmin(admin);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

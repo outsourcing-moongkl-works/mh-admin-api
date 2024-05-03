@@ -97,18 +97,12 @@ public class AdminService{
     }
 
     @Transactional
-    public AdminDto.DeleteAdminResponse deleteAdmin(String adminId) {
-        Optional<Admin> admin = adminRepository.findById(UUID.fromString(adminId));
-
-        if (admin.isEmpty()) {
-            throw new AdminException(AdminErrorResult.NOT_FOUND_ADMIN);
-        }
-
-        adminRepository.delete(admin.get());
+    public AdminDto.DeleteAdminResponse deleteAdmin(Admin admin) {
+        adminRepository.delete(admin);
 
         return AdminDto.DeleteAdminResponse.builder()
-                .adminId(admin.get().getId().toString())
-                .role(admin.get().getRole().name())
+                .adminId(admin.getId().toString())
+                .role(admin.getRole().name())
                 .deletedAt(LocalDateTime.now())
                 .build();
     }
