@@ -27,7 +27,7 @@ public class Terms {
     private String terms;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, length = 20)
+    @Column(name = "created_at", length = 20)
     private LocalDateTime createdAt;
 
     @LastModifiedDate

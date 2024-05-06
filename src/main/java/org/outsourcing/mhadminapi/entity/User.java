@@ -43,7 +43,7 @@ public class User {
     private String phoneNumber;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, length = 20)
+    @Column(name = "created_at", length = 20)
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

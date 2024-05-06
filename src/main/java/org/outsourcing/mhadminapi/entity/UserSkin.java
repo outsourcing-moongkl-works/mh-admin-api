@@ -35,7 +35,7 @@ public class UserSkin {
     private User user;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, length = 20)
+    @Column(name = "created_at", length = 20)
     private LocalDateTime createdAt;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")

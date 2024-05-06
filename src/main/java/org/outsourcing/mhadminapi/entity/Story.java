@@ -47,7 +47,7 @@ public class Story {
     private StoryImgUrl storyImgUrl;
 
     @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", length = 20)
     private LocalDateTime createdAt;
 
     @PrePersist

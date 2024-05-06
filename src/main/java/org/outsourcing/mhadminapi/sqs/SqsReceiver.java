@@ -48,15 +48,20 @@ public class SqsReceiver {
             case "create user":
                 createUser(messageDto);
                 break;
+
+                //app의 post id 넘어옴
             case "create user skin":
                 createUserSkin(messageDto);
                 break;
             case "withdraw user":
                 withdrawUser(messageDto);
                 break;
+
+                //app의 post id 넘어옴
             case "delete user skin":
                 deleteUserSkin(messageDto);
                 break;
+
             case "increase view count":
                 increaseViewCount(messageDto);
                 break;
@@ -198,6 +203,13 @@ public class SqsReceiver {
             log.info("UserSkin already exists: " + messageDto.getMessage().get("id"));
             return;
         }
+        //userSkin 만드는데 필요한 모든 정보가 messageDto에 있어야 함
+        if(messageDto.getMessage().get("storyCloudfrontUrl") == null || messageDto.getMessage().get("skinCloudfrontUrl") == null
+                || messageDto.getMessage().get("country") == null || messageDto.getMessage().get("isPublic") == null
+                || messageDto.getMessage().get("userId") == null || messageDto.getMessage().get("createdAt") == null){
+            log.error("Invalid message data: some data is missing");
+            return;
+        }
 
         UserSkin userSkin = UserSkin.builder()
                 .id(UUID.fromString(messageDto.getMessage().get("id")))
@@ -221,6 +233,7 @@ public class SqsReceiver {
             log.info("UserSkin does not exist: " + messageDto.getMessage().get("id"));
             return;
         }
+
         userSkinRepository.deleteById(UUID.fromString(messageDto.getMessage().get("id")));
     }
 
