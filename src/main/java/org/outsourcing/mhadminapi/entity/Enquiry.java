@@ -43,6 +43,8 @@ public class Enquiry { //문의사항
         if (id == null) {
             id = UUID.randomUUID();
         }
+        if (this.createdAt == null)
+            this.createdAt = LocalDateTime.now();
     }
     @Builder
     public Enquiry(String email, String title, String content, LocalDateTime createdAt, Boolean isReplied) {

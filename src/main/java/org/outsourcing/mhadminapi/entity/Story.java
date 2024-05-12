@@ -55,6 +55,8 @@ public class Story {
         if (id == null) {
             id = UUID.randomUUID();
         }
+        if (this.createdAt == null)
+            this.createdAt = LocalDateTime.now();
     }
 
     @Builder
