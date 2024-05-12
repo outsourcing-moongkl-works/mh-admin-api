@@ -16,6 +16,7 @@ import org.outsourcing.mhadminapi.exception.SqsErrorResult;
 import org.outsourcing.mhadminapi.repository.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.services.sns.model.UserErrorException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -203,10 +204,11 @@ public class SqsReceiver {
             log.info("UserSkin already exists: " + messageDto.getMessage().get("id"));
             return;
         }
+
         //userSkin 만드는데 필요한 모든 정보가 messageDto에 있어야 함
         if(messageDto.getMessage().get("storyCloudfrontUrl") == null || messageDto.getMessage().get("skinCloudfrontUrl") == null
                 || messageDto.getMessage().get("country") == null || messageDto.getMessage().get("isPublic") == null
-                || messageDto.getMessage().get("userId") == null || messageDto.getMessage().get("createdAt") == null){
+                || messageDto.getMessage().get("userId") == null){
             log.error("Invalid message data: some data is missing");
             return;
         }
@@ -219,7 +221,12 @@ public class SqsReceiver {
                 .isPublic(Boolean.parseBoolean(messageDto.getMessage().get("isPublic")))
                 .build();
 
-        User user = userRepository.findById(UUID.fromString(messageDto.getMessage().get("userId"))).get();
+        //Optional<User> user = userRepository.findById(UUID.fromString(messageDto.getMessage().get("userId"))).get();
+
+        User user = userRepository.findById(UUID.fromString(messageDto.getMessage().get("userId")))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        log.info("User: " + user.getEmail());
+
         userSkin.updateUser(user);
 
         userSkinRepository.save(userSkin);

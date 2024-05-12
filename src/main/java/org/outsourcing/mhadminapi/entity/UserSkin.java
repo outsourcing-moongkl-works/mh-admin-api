@@ -31,7 +31,7 @@ public class UserSkin {
     private String country;
 
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "user_skin_fk_user_id"))
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @CreatedDate
