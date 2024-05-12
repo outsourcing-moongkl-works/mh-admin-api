@@ -18,7 +18,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 public class User {
@@ -46,8 +45,8 @@ public class User {
     @Column(name = "created_at", length = 20)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserSkin> userSkins;
+//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<UserSkin> userSkins;
 
     @PrePersist
     public void setUserId() {
@@ -56,9 +55,9 @@ public class User {
         }
     }
 
-    public void addUserSkin(UserSkin userSkin) {
-        this.userSkins.add(userSkin);
-    }
+//    public void addUserSkin(UserSkin userSkin) {
+//        this.userSkins.add(userSkin);
+//    }
 
     @Builder(toBuilder = true)
     public User(UUID id,
@@ -75,7 +74,7 @@ public class User {
         this.country = country;
         this.phoneNumber = phoneNumber;
         this.createdAt = createdAt;
-        this.userSkins = new ArrayList<>();
+//        this.userSkins = new ArrayList<>();
     }
 }
 
