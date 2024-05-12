@@ -1,11 +1,3 @@
--- Users 테이블 생성
-CREATE TABLE IF NOT EXISTS terms
-(
-    id BINARY(16) NOT NULL PRIMARY KEY,
-    terms TEXT,
-    created_at DATETIME,
-    updated_at DATETIME
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Terms 테이블 생성
 CREATE TABLE IF NOT EXISTS terms

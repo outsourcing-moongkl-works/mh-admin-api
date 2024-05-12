@@ -30,22 +30,9 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
             ") " +
             "FROM UserSkin us " +
             "JOIN us.user u " +
-            "WHERE u.id = :userId ORDER BY us.createdAt DESC")
+            "WHERE u.id = :userId")
     Page<UserDto.ReadUserSkinResponse> findUserSkinByUserId(UUID userId, Pageable pageable);
 
-    //findUserSkinByCountryContaining
-//    @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
-//            "us.user.id, " +
-//            "us.user.email, " +
-//            "us.skinCloudfrontUrl, " +
-//            "us.storyCloudfrontUrl, " +
-//            "us.country, " +
-//            "us.createdAt, " +
-//            "us.isPublic " +
-//            ") " +
-//            "FROM UserSkin us " +
-//            "WHERE us.country LIKE %:country% AND us.createdAt BETWEEN :startDate AND :endDate")
-    //use join
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
             "u.id, " +
             "u.email, " +
@@ -60,18 +47,6 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
             "WHERE us.country LIKE %:country% AND us.createdAt BETWEEN :startDate AND :endDate")
     Page<UserDto.ReadUserSkinResponse> findUserSkinByCountryContaining(LocalDateTime startDate, LocalDateTime endDate, String country, Pageable pageable);
 
-    /*
-    "SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
-            "u.id, " +
-            "u.email, " +
-            "us.skinCloudfrontUrl, " +
-            "us.storyCloudfrontUrl, " +
-            "us.country, " +
-            "us.isPublic, " +
-            "us.createdAt " +
-            ") " +
-     */
-    //findUserSkinsByCreatedAtBetween
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
             "u.id, " +
             "u.email, " +

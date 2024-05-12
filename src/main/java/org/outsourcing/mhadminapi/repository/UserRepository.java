@@ -27,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
             "u.gender," +
             "u.country," +
             "u.phoneNumber" +
-            ") FROM User u WHERE u.createdAt BETWEEN :startDate AND :endDate AND  u.gender = :gender ORDER BY u.createdAt DESC")
+            ") FROM User u WHERE u.createdAt BETWEEN :startDate AND :endDate AND u.gender = :gender ORDER BY u.createdAt DESC")
     Page<UserDto.ReadResponse> findUserByGender(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("gender") String gender, Pageable pageable);
 
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadResponse(" +
