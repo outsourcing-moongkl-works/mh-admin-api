@@ -213,7 +213,7 @@ public class AdminController {
 
         UserDto.DeleteUserPostResponse response = adminService.deleteUserPost(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PreAuthorize("hasAuthority('MASTER')")
@@ -222,7 +222,7 @@ public class AdminController {
 
         UserDto.DeleteResponse response = adminService.deleteUser(request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PreAuthorize("isAuthenticated()")

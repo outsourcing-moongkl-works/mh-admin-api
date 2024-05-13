@@ -22,6 +22,7 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
             "u.id, " +
             "u.email, " +
+            "us.id, " +
             "us.skinCloudfrontUrl, " +
             "us.storyCloudfrontUrl, " +
             "us.country, " +
@@ -36,6 +37,7 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
             "u.id, " +
             "u.email, " +
+            "us.id, " +
             "us.skinCloudfrontUrl, " +
             "us.storyCloudfrontUrl, " +
             "us.country, " +
@@ -50,6 +52,7 @@ public interface UserSkinRepository extends JpaRepository<UserSkin, UUID>{
     @Query("SELECT new org.outsourcing.mhadminapi.dto.UserDto$ReadUserSkinResponse(" +
             "u.id, " +
             "u.email, " +
+            "us.id, " +
             "us.skinCloudfrontUrl, " +
             "us.storyCloudfrontUrl, " +
             "us.country, " +

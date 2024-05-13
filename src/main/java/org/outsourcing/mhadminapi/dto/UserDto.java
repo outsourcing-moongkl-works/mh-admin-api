@@ -68,6 +68,7 @@ public class UserDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ReadUserSkinResponse{
         private UUID userId;
+        private UUID postId;
         private String email;
         private String skinCloudfrontUrl;
         private String storyCloudfrontUrl;
@@ -75,8 +76,9 @@ public class UserDto {
         private Boolean isPublic;
         private LocalDateTime createdAt;
 
-        public ReadUserSkinResponse(UUID userId, String email, String skinCloudfrontUrl, String storyCloudfrontUrl, String country, Boolean isPublic, LocalDateTime createdAt) {
+        public ReadUserSkinResponse(UUID userId, UUID postId, String email, String skinCloudfrontUrl, String storyCloudfrontUrl, String country, Boolean isPublic, LocalDateTime createdAt) {
             this.userId = userId;
+            this.postId = postId;
             this.email = email;
             this.skinCloudfrontUrl = skinCloudfrontUrl;
             this.storyCloudfrontUrl = storyCloudfrontUrl;
@@ -93,6 +95,7 @@ public class UserDto {
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class DeleteUserPostResponse{
+
         private LocalDateTime deletedAt;
     }
 
