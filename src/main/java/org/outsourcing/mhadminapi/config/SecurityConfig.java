@@ -36,8 +36,11 @@ public class SecurityConfig{
     @Value("${app.host-url}")
     private String hostUrl;
 
-    @Value("${app.client-url}")
-    private String clientUrl;
+    @Value("${app.client1-url}")
+    private String adminClientUrl;
+
+    @Value("${app.client2-url}")
+    private String enterpriseClientUrl;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -90,7 +93,7 @@ public class SecurityConfig{
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", hostUrl, clientUrl));
+            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", hostUrl, adminClientUrl, enterpriseClientUrl));
             config.setAllowCredentials(true);
             return config;
         };

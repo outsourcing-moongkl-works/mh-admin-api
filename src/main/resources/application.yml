@@ -81,4 +81,5 @@ app:
     secret: ${APP_JWT_SECRET}
     expiration: ${APP_JWT_EXPIRATION}
   host-url: ${HOST_URL}
-  client-url: ${CLIENT_URL}
+  client1-url: ${CLIENT1_URL}
+  client2-url: ${CLIENT2_URL}
