@@ -1,6 +1,7 @@
 package org.outsourcing.mhadminapi.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.outsourcing.mhadminapi.auth.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,13 @@ import java.util.Collections;
 public class SecurityConfig{
     private final JwtTokenFilter jwtTokenFilter;
     private final UserDetailsService userDetailsService;
+
+    @Value("${app.host-url}")
+    private String hostUrl;
+
+    @Value("${app.client-url}")
+    private String clientUrl;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -82,7 +90,7 @@ public class SecurityConfig{
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
-            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "https://admin-api.moongkl.com"));
+            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", hostUrl, clientUrl));
             config.setAllowCredentials(true);
             return config;
         };

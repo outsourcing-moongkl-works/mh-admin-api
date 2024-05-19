@@ -76,7 +76,6 @@ public class User {
         this.country = country;
         this.phoneNumber = phoneNumber;
         this.createdAt = createdAt;
-//        this.userSkins = new ArrayList<>();
     }
 }
 
