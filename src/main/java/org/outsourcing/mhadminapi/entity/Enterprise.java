@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.outsourcing.mhadminapi.dto.EnterpriseDto;
 import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -117,5 +118,15 @@ public class Enterprise implements Serializable {
 
     public void addStory(Story story) {
         this.stories.add(story);
+    }
+
+    public void updateInfo(EnterpriseDto.UpdateInfoRequest request) {
+        this.businessNumber = request.getBusinessNumber();
+        this.corporateNumber = request.getCorporateNumber();
+        this.address = request.getAddress();
+        this.managerName = request.getManagerName();
+        this.managerPhone = request.getManagerPhone();
+        this.managerEmail = request.getManagerEmail();
+        this.country = request.getCountry();
     }
 }

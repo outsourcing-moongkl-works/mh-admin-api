@@ -190,4 +190,28 @@ public class EnterpriseDto {
     public static class GetApprovalRequest {
         private String loginId;
     }
+
+    @Data
+    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class UpdateInfoRequest {
+        private String businessNumber;
+        private String corporateNumber;
+        private String address;
+        private String country;
+        private String managerName;
+        private String managerPhone;
+        private String managerEmail;
+
+        @Builder
+        public UpdateInfoRequest(String businessNumber, String corporateNumber, String address, String country, String managerName, String managerPhone, String managerEmail) {
+            this.businessNumber = businessNumber;
+            this.corporateNumber = corporateNumber;
+            this.address = address;
+            this.country = country;
+            this.managerName = managerName;
+            this.managerPhone = managerPhone;
+            this.managerEmail = managerEmail;
+        }
+    }
 }

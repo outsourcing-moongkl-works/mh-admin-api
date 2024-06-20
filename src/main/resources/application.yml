@@ -1,6 +1,11 @@
 server:
   port: 8081
 spring:
+  servlet:
+      multipart:
+        resolve-lazily: true
+        max-file-size: 5MB
+        max-request-size: 10MB
   mail:
     host: smtp.gmail.com
     port: 587

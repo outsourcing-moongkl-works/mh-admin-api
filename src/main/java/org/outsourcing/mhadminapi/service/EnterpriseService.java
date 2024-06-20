@@ -227,4 +227,46 @@ public class EnterpriseService {
             throw new EnterpriseBlockException(message);
         }
     }
+
+    public void updateEnterpriseInfo(UUID id, EnterpriseDto.UpdateInfoRequest request, MultipartFile logoImg) {
+        Enterprise enterprise = enterpriseRepository.findById(id).orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
+
+        enterprise.updateInfo(request);
+
+        if(logoImg != null && !logoImg.isEmpty()){
+            EnterpriseDto.LogoImgUrl logoImgUrl = logoImgService.uploadLogoImg(id, logoImg);
+
+            enterprise.updateLogoImgUrl(LogoImgUrl.convertLogoImgUrlDtoToEntity(logoImgUrl));
+        }
+        enterpriseRepository.save(enterprise);
+        /*
+                Map<String, String> messageMap = new LinkedHashMap<>();
+        messageMap.put("id", enterprise.getId().toString());
+        messageMap.put("name", enterprise.getName());
+        messageMap.put("country", enterprise.getCountry());
+        messageMap.put("managerEmail", enterprise.getManagerEmail());
+
+        messageMap.put("logoImgUrlId", enterprise.getLogoImgUrl().getId().toString());
+        messageMap.put("logoImgUrlS3Url", enterprise.getLogoImgUrl().getS3Url());
+        messageMap.put("logoImgUrlCloudfrontUrl", enterprise.getLogoImgUrl().getCloudfrontUrl());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("create enterprise", messageMap);
+
+        sqsSender.sendToSQS(messageDto);
+         */
+
+        final LogoImgUrl logoImgUrl = enterprise.getLogoImgUrl();
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+
+        messageMap.put("id", enterprise.getId().toString());
+        messageMap.put("country", enterprise.getCountry());
+        messageMap.put("managerEmail", enterprise.getManagerEmail());
+        messageMap.put("logoImgUrlId", logoImgUrl.getId().toString());
+        messageMap.put("logoImgUrlS3Url", logoImgUrl.getS3Url());
+        messageMap.put("logoImgUrlCloudfrontUrl", logoImgUrl.getCloudfrontUrl());
+
+        sqsSender.sendToSQS(sqsSender.createMessageDtoFromRequest("update enterprise", messageMap));
+
+    }
 }

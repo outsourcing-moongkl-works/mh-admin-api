@@ -128,14 +128,13 @@ public class SqsReceiver {
         }
 
         story.get().increaseUseCount();
-
         storyRepository.save(story.get());
     }
 
     @Transactional
     public void increaseShareCount(MessageDto messageDto) {
 
-        log.info("increaseUseCount: " + messageDto.getMessage().get("id"));
+        log.info("increaseShareCount: " + messageDto.getMessage().get("id"));
 
         Optional<Story> story = storyRepository.findById(UUID.fromString(messageDto.getMessage().get("id")));
 

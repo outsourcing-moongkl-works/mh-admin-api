@@ -136,4 +136,20 @@ public class EnterpriseController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    /*
+    기업정보수정
+     */
+    @PreAuthorize("hasAuthority('ENTERPRISE')")
+    @PutMapping(value = "/info", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDto> updateEnterpriseInfo(
+            @AuthenticationPrincipal UserPrincipal enterprisePrincipal,
+            @RequestPart(name = "update_enterprise_info") EnterpriseDto.UpdateInfoRequest request,
+            @RequestPart(name = "logo_img", required = false) MultipartFile logoImg) {
+        log.info("updateEnterpriseInfo: {}", request);
+
+        enterpriseService.updateEnterpriseInfo(enterprisePrincipal.getEnterprise().getId(), request, logoImg);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

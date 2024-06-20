@@ -90,15 +90,15 @@ public class MoongklWorksInformationController {
 
         log.info(userPrincipal.getAdmin().getEmail() + " update company location");
 
-        Map<String, String> message = Map.of("companyLocation", request.getCompanyLocation());
+//        Map<String, String> message = Map.of("companyLocation", request.getCompanyLocation());
+//
+//        MessageDto messageDto = MessageDto.builder()
+//                .from("mh-admin-api")
+//                .topic("update company location")
+//                .message(message)
+//                .build();
 
-        MessageDto messageDto = MessageDto.builder()
-                .from("mh-admin-api")
-                .topic("update company location")
-                .message(message)
-                .build();
-
-        sqsSender.sendToSQS(messageDto);
+//        sqsSender.sendToSQS(messageDto);
 
         MoongklWorksInformationDto.UpdateCompanyLocationResponse response = moongklWorksInformationService.updateCompanyLocation(request);
 

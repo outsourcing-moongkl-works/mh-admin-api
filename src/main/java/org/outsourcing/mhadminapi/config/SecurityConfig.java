@@ -72,22 +72,6 @@ public class SecurityConfig{
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//
-//        configuration.addAllowedOrigin("http://localhost:3000");
-//        configuration.addAllowedMethod("GET");
-//        configuration.addAllowedMethod("POST");
-//        configuration.addAllowedMethod("PUT");
-//        configuration.addAllowedMethod("DELETE");
-//        configuration.addAllowedHeader("*");
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
     CorsConfigurationSource corsConfigurationSource() {
         return request -> {
             CorsConfiguration config = new CorsConfiguration();

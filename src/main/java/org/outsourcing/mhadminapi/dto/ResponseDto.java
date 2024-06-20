@@ -1,5 +1,6 @@
 package org.outsourcing.mhadminapi.dto;
 
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
@@ -10,20 +11,40 @@ public class ResponseDto<T> {
     private T payload;
     private String error;
 
-
-    // 'success' 빌더 메소드는 payload만 설정합니다.
     @Builder(builderMethodName = "success")
-    public static <T> ResponseDto<T> success(T payload) {
-        ResponseDto<T> dto = new ResponseDto<>();
-        dto.setPayload(payload);
-        return dto;
+    public ResponseDto(T payload) {
+        this.payload = payload;
     }
 
-    // 'error' 빌더 메소드는 error 메시지만 설정합니다.
     @Builder(builderMethodName = "error")
-    public static <T> ResponseDto<T> error(String error) {
-        ResponseDto<T> dto = new ResponseDto<>();
-        dto.setError(error);
-        return dto;
+    public ResponseDto(String error) {
+        this.error = error;
+    }
+
+    @Builder
+    public ResponseDto(T payload, String error) {
+        this.payload = payload;
+        this.error = error;
+    }
+
+    public static class ResponseDtoBuilder<T> {
+        private T payload;
+        private String error;
+
+        ResponseDtoBuilder() {}
+
+        public ResponseDtoBuilder<T> payload(T payload) {
+            this.payload = payload;
+            return this;
+        }
+
+        public ResponseDtoBuilder<T> error(String error) {
+            this.error = error;
+            return this;
+        }
+
+        public ResponseDto<T> build() {
+            return new ResponseDto<>(payload, error);
+        }
     }
 }
