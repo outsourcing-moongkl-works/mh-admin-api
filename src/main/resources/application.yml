@@ -27,8 +27,8 @@ spring:
     password: ${MARIA_PASSWORD}
   sql:
     init:
-      #mode: always
-      mode: never
+      mode: always
+      #mode: never
   data:
     redis:
       host: ${REDIS_HOST}
@@ -50,8 +50,8 @@ spring:
         format_sql: true
     repositories:
       enabled: true
-    #defer-datasource-initialization: true
-    defer-datasource-initialization: false
+    defer-datasource-initialization: true
+    #defer-datasource-initialization: false
 
   cloud:
     aws:
