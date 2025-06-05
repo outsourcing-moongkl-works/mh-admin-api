@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  S3_BUCKET_NAME: deploy.mh-admin-api.moongkl.com
+  S3_BUCKET_NAME: deploy-moongklhere-admin-api
   #글로벌하게 유일한 버킷 이름이기에 이렇게 사용해줄 수 있다.
   AWS_REGION: ap-northeast-2
   CODEDEPLOY_NAME: moongklhere-admin-api-github-actions
