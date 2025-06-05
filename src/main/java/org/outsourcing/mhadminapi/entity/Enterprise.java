@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.outsourcing.mhadminapi.dto.EnterpriseDto;
 import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +27,7 @@ public class Enterprise implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @JdbcTypeCode(Types.BINARY)
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 

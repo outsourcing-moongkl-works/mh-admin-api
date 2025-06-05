@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.outsourcing.mhadminapi.dto.EnterpriseDto;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Types;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +18,7 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class LogoImgUrl {
     @Id
+    @JdbcTypeCode(Types.BINARY)
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 

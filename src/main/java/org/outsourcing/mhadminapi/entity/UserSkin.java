@@ -5,9 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.outsourcing.mhadminapi.dto.UserSkinDto;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class UserSkin {
 
     @Id
+    @JdbcTypeCode(Types.BINARY)
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
