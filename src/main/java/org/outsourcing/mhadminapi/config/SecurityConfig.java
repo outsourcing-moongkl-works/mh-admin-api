@@ -1,8 +1,8 @@
 package org.outsourcing.mhadminapi.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.outsourcing.mhadminapi.auth.JwtTokenFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,43 +23,44 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-public class SecurityConfig{
+public class SecurityConfig {
+
     private final JwtTokenFilter jwtTokenFilter;
     private final UserDetailsService userDetailsService;
 
+    /* 환경 변수 그대로 유지 */
     @Value("${app.host-url}")
-    private String hostUrl;
-
+    private String hostUrl;                        // ex) https://admin-api.moongkl.com
     @Value("${app.client1-url}")
-    private String adminClientUrl;
-
+    private String adminClientUrl;                 // ex) https://admin.moongkl.com
     @Value("${app.client2-url}")
-    private String enterpriseClientUrl;
+    private String enterpriseClientUrl;            // ex) https://enterprise.moongkl.com
 
+    /* ===== Security ===== */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
+                .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authz -> authz
-                        .anyRequest().permitAll())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider());
+
         return http.build();
     }
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration conf) throws Exception {
+        return conf.getAuthenticationManager();
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -72,14 +73,27 @@ public class SecurityConfig{
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    CorsConfigurationSource corsConfigurationSource() {
-        return request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
-            config.setAllowedHeaders(Arrays.asList("Authorization","Content-Type","*"));
-            config.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", hostUrl, adminClientUrl, enterpriseClientUrl));
-            config.setAllowCredentials(true);
-            return config;
-        };
+
+    /* ===== CORS ===== */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration cfg = new CorsConfiguration();
+
+        /* 정확한 도메인·스킴을 허용 목록에 명시 */
+        List<String> allowedOrigins = Arrays.asList(
+                hostUrl,              // https://admin-api.moongkl.com
+                adminClientUrl,       // https://admin.moongkl.com
+                enterpriseClientUrl,  // https://enterprise.moongkl.com
+                "http://localhost:3000"
+        );
+        cfg.setAllowedOrigins(allowedOrigins);
+
+        cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        cfg.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "*"));
+        cfg.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", cfg);   // 모든 URL 에 CORS 적용
+        return source;
     }
 }
