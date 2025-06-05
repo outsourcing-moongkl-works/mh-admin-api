@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8080
 spring:
   servlet:
       multipart:
@@ -27,7 +27,8 @@ spring:
     password: ${MARIA_PASSWORD}
   sql:
     init:
-      mode: always
+      #mode: always
+      mode: never
   data:
     redis:
       host: ${REDIS_HOST}
@@ -49,7 +50,8 @@ spring:
         format_sql: true
     repositories:
       enabled: true
-    defer-datasource-initialization: true
+    #defer-datasource-initialization: true
+    defer-datasource-initialization: false
 
   cloud:
     aws:
@@ -68,7 +70,7 @@ spring:
       ses:
         region: ${AWS_REGION}
       s3:
-        bucket: files.mobile-api.moongkl.com
+        bucket: moongklhere-files
         region: ${AWS_REGION}
         root-directory: ${AWS_S3_ROOT_DIRECTORY}
         enterprise-logo-directory: "enterprise-logo"
