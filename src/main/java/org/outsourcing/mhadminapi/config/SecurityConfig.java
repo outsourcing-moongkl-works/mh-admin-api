@@ -79,22 +79,19 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-
-        /* 정확한 도메인·스킴을 허용 목록에 명시 */
-        List<String> allowedOrigins = Arrays.asList(
-                hostUrl,              // https://admin-api.moongkl.com
-                adminClientUrl,       // https://admin.moongkl.com
-                enterpriseClientUrl,  // https://enterprise.moongkl.com
+        cfg.setAllowedOriginPatterns(Arrays.asList(
+                hostUrl,
+                adminClientUrl,
+                enterpriseClientUrl,
                 "http://localhost:3000"
-        );
-        cfg.setAllowedOrigins(allowedOrigins);
-
+        ));
         cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(Collections.singletonList("*"));
         cfg.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cfg);   // 모든 URL 에 CORS 적용
+        source.registerCorsConfiguration("/**", cfg);
         return source;
     }
+
 }
