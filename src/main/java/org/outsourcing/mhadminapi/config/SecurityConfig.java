@@ -83,7 +83,8 @@ public class SecurityConfig {
                 hostUrl,
                 adminClientUrl,
                 enterpriseClientUrl,
-                "http://localhost:3000"
+                "http://localhost:3000",
+                "https://d7xm4u99ae3mz.cloudfront.net"
         ));
         cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         cfg.setAllowedHeaders(Collections.singletonList("*"));
