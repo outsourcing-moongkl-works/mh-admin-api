@@ -46,7 +46,7 @@ public class Admin implements Serializable {
     private LocalDateTime updatedAt;
 
     @PrePersist
-    public void setUserId() {
+    public void setAdminId() {
         if (id == null) {
             id = UUID.randomUUID();
         }
@@ -56,6 +56,7 @@ public class Admin implements Serializable {
 
     @Builder
     public Admin(String email, String password, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = UUID.randomUUID();
         this.email = email;
         this.password = password;
         this.role = role;

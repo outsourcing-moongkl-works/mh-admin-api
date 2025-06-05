@@ -59,6 +59,8 @@ public class AdminService{
                 .role(Role.valueOf(request.getRole()))
                 .build();
 
+        admin.setAdminId();
+
         adminRepository.save(admin);
 
         log.info("admin created: {}", admin.getId());
