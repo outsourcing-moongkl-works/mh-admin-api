@@ -169,6 +169,10 @@ public class AdminService{
                 .orElseThrow(() -> new EnterpriseException(EnterpriseErrorResult.ENTERPRISE_NOT_FOUND));
 
         enterpriseRepository.delete(enterprise);
+
+        java.util.Map<String, String> messageMap = new java.util.LinkedHashMap<>();
+        messageMap.put("id", enterpriseId);
+        sqsSender.sendToSQS(sqsSender.createMessageDtoFromRequest("delete enterprise", messageMap));
     }
 
     public AdminDto.PauseEnterpriseResponse pauseEnterprise(AdminDto.PauseEnterpriseRequest request) {
