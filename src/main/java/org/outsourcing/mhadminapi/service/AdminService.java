@@ -75,11 +75,15 @@ public class AdminService{
     public AdminDto.LoginAdminResponse login(AdminDto.LoginAdminRequest request) {
 
         // 이메일을 기반으로 사용자 정보 조회
-        Admin admin = adminRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new AdminException(AdminErrorResult.NOT_FOUND_ADMIN));
+        Optional<Admin> adminOpt = adminRepository.findByEmail(request.getEmail());
+        log.info("[LOGIN] findByEmail({}) → present={}", request.getEmail(), adminOpt.isPresent());
+        Admin admin = adminOpt.orElseThrow(() -> new AdminException(AdminErrorResult.NOT_FOUND_ADMIN));
 
         // matches 메서드를 사용하여 비밀번호 확인
-        if (!passwordEncoder.matches(request.getPassword(), admin.getPassword())) {
+        boolean pwMatches = passwordEncoder.matches(request.getPassword(), admin.getPassword());
+        log.info("[LOGIN] passwordMatches={}, storedHashPrefix={}", pwMatches,
+                admin.getPassword() != null ? admin.getPassword().substring(0, 10) : "null");
+        if (!pwMatches) {
             throw new AdminException(AdminErrorResult.NOT_FOUND_ADMIN);
         }
 
