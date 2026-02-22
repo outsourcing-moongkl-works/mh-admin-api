@@ -220,10 +220,12 @@ public class SqsReceiver {
                 .isPublic(Boolean.parseBoolean(messageDto.getMessage().get("isPublic")))
                 .build();
 
-        //Optional<User> user = userRepository.findById(UUID.fromString(messageDto.getMessage().get("userId"))).get();
-
-        User user = userRepository.findById(UUID.fromString(messageDto.getMessage().get("userId")))
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Optional<User> userOpt = userRepository.findById(UUID.fromString(messageDto.getMessage().get("userId")));
+        if (userOpt.isEmpty()) {
+            log.error("User not found: " + messageDto.getMessage().get("userId"));
+            return;
+        }
+        User user = userOpt.get();
         log.info("User: " + user.getEmail());
 
         userSkin.updateUser(user);
