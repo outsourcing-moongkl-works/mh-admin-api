@@ -1,8 +1,8 @@
 
 -- MASTER role을 가진 테스트 유저 생성
 INSERT INTO `admins` (id, email, password, role, created_at, updated_at)
-VALUES (UNHEX(REPLACE('4012c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'test@admin.com', '$2a$12$./wHNApeq/feNKojcfkWouvZJfPrhdbDKWXQZWZy9PaW7pnkt/ZV6', 'MASTER', NOW(), NOW())
-ON DUPLICATE KEY UPDATE email = email;
+VALUES (UNHEX(REPLACE('4012c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')), 'test@admin.com', '$2b$12$WGtajs9OEOjlyN342nzyYuYP24sE4/.sVOX.UV3BXgxSsyi1k.qhi', 'MASTER', NOW(), NOW())
+ON DUPLICATE KEY UPDATE password = '$2b$12$WGtajs9OEOjlyN342nzyYuYP24sE4/.sVOX.UV3BXgxSsyi1k.qhi';
 
 -- Terms 테이블에 조건부 삽입
 INSERT IGNORE INTO terms (id) VALUES (UNHEX(REPLACE('4000c0f7-0c97-4bd7-a200-0de1392f1df0', '-', '')));
