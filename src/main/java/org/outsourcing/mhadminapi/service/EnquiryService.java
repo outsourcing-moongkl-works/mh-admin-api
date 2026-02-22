@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service @Slf4j @RequiredArgsConstructor
@@ -33,16 +32,12 @@ public class EnquiryService {
 
     public EnquiryDto.ReplyResponse replyEnquiry(EnquiryDto.ReplyRequest request) {
 
-        Optional<Enquiry> enquiry = enquiryRepository.findById(UUID.fromString(request.getEnquiryId()));
+        Enquiry enquiry = enquiryRepository.findById(UUID.fromString(request.getEnquiryId()))
+                .orElseThrow(() -> new RuntimeException("Enquiry not found: " + request.getEnquiryId()));
 
-        if(!enquiry.isPresent()){
-            log.error("Enquiry not found: {}", request.getEnquiryId());
-            return null;
-        }
-
-        enquiry.get().updateReplyStatus();
-        String to = enquiry.get().getEmail();
-        enquiryRepository.save(enquiry.get());
+        enquiry.updateReplyStatus();
+        String to = enquiry.getEmail();
+        enquiryRepository.save(enquiry);
 
         MailDto.MailSendDto mailSendDto = MailDto.MailSendDto.builder()
                 .to(to)

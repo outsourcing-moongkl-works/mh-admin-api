@@ -26,8 +26,7 @@ import java.time.LocalDateTime;
 public class AdminController {
 
     private final AdminService adminService;
-    //추후 배포 시 create admin은 master만 가능하도록 변경
-    //@PreAuthorize("hasAuthority('MASTER')")
+    @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping
     public ResponseEntity<AdminDto.CreateAdminResponse> createAdmin(@RequestBody AdminDto.CreateAdminRequest request) {
 

@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,27 +37,25 @@ public class MoongklWorksInformationService{
     private final SqsSender sqsSender;
     @Transactional
     public MoongklWorksInformationDto.UpdateTermsResponse updateTerms(MoongklWorksInformationDto.UpdateTermsRequest request) {
-        //find Terms by '4000c0f7-0c97-4bd7-a200-0de1392f1df0'
-        Optional<Terms> terms = termsRepository.findById(UUID.fromString("4000c0f7-0c97-4bd7-a200-0de1392f1df0"));
+        Terms terms = termsRepository.findById(UUID.fromString("4000c0f7-0c97-4bd7-a200-0de1392f1df0"))
+                .orElseThrow(() -> new RuntimeException("Terms not found"));
 
-        if (terms.isPresent()) {
-            terms.get().updateTerms(request.getTerms());
-            termsRepository.save(terms.get());
-        }
+        terms.updateTerms(request.getTerms());
+        termsRepository.save(terms);
 
         MoongklWorksInformationDto.UpdateTermsResponse response = MoongklWorksInformationDto.UpdateTermsResponse.builder()
-                .updatedAt(terms.get().getUpdatedAt())
+                .updatedAt(terms.getUpdatedAt())
                 .build();
 
         return response;
     }
 
     public MoongklWorksInformationDto.GetTermsResponse getTerms() {
-        //find Terms by '4000c0f7-0c97-4bd7-a200-0de1392f1df0'
-        Optional<Terms> terms = termsRepository.findById(UUID.fromString("4000c0f7-0c97-4bd7-a200-0de1392f1df0"));
+        Terms terms = termsRepository.findById(UUID.fromString("4000c0f7-0c97-4bd7-a200-0de1392f1df0"))
+                .orElseThrow(() -> new RuntimeException("Terms not found"));
 
         MoongklWorksInformationDto.GetTermsResponse response = MoongklWorksInformationDto.GetTermsResponse.builder()
-                .terms(terms.get().getTerms())
+                .terms(terms.getTerms())
                 .build();
 
         return response;
@@ -66,25 +63,25 @@ public class MoongklWorksInformationService{
 
     @Transactional
     public MoongklWorksInformationDto.UpdateAboutUsResponse updateAboutUs(MoongklWorksInformationDto.UpdateAboutUsRequest request) {
-        //find AboutUs by '648c4bf4-3c90-492a-bb23-600dae7a4d70'
-        Optional<AboutUs> aboutUs = aboutUsRepository.findById(UUID.fromString("648c4bf4-3c90-492a-bb23-600dae7a4d70"));
+        AboutUs aboutUs = aboutUsRepository.findById(UUID.fromString("648c4bf4-3c90-492a-bb23-600dae7a4d70"))
+                .orElseThrow(() -> new RuntimeException("AboutUs not found"));
 
-        aboutUs.get().updateAboutUs(request.getAboutUs());
-        aboutUsRepository.save(aboutUs.get());
+        aboutUs.updateAboutUs(request.getAboutUs());
+        aboutUsRepository.save(aboutUs);
 
         MoongklWorksInformationDto.UpdateAboutUsResponse response = MoongklWorksInformationDto.UpdateAboutUsResponse.builder()
-                .updatedAt(aboutUs.get().getUpdatedAt())
+                .updatedAt(aboutUs.getUpdatedAt())
                 .build();
 
         return response;
     }
 
     public MoongklWorksInformationDto.GetAboutUsResponse getAboutUs() {
-        //find AboutUs by '648c4bf4-3c90-492a-bb23-600dae7a4d70'
-        Optional<AboutUs> aboutUs = aboutUsRepository.findById(UUID.fromString("648c4bf4-3c90-492a-bb23-600dae7a4d70"));
+        AboutUs aboutUs = aboutUsRepository.findById(UUID.fromString("648c4bf4-3c90-492a-bb23-600dae7a4d70"))
+                .orElseThrow(() -> new RuntimeException("AboutUs not found"));
 
         MoongklWorksInformationDto.GetAboutUsResponse response = MoongklWorksInformationDto.GetAboutUsResponse.builder()
-                .aboutUs(aboutUs.get().getAboutUs())
+                .aboutUs(aboutUs.getAboutUs())
                 .build();
 
         return response;
@@ -92,34 +89,34 @@ public class MoongklWorksInformationService{
 
     @Transactional
     public MoongklWorksInformationDto.UpdateCompanyLocationResponse updateCompanyLocation(MoongklWorksInformationDto.UpdateCompanyLocationRequest request) {
-        //find CompanyLocation by '7ddde530-4d8a-429f-bb19-405f4e74057a'
-        Optional<CompanyLocation> companyLocation = companyLocationRepository.findById(UUID.fromString("7ddde530-4d8a-429f-bb19-405f4e74057a"));
+        CompanyLocation companyLocation = companyLocationRepository.findById(UUID.fromString("7ddde530-4d8a-429f-bb19-405f4e74057a"))
+                .orElseThrow(() -> new RuntimeException("CompanyLocation not found"));
 
-        companyLocation.get().updateCompanyLocation(request.getCompanyLocation());
-        companyLocationRepository.save(companyLocation.get());
+        companyLocation.updateCompanyLocation(request.getCompanyLocation());
+        companyLocationRepository.save(companyLocation);
 
         MoongklWorksInformationDto.UpdateCompanyLocationResponse response = MoongklWorksInformationDto.UpdateCompanyLocationResponse.builder()
-                .updatedAt(companyLocation.get().getUpdatedAt())
+                .updatedAt(companyLocation.getUpdatedAt())
                 .build();
 
         return response;
     }
 
     public MoongklWorksInformationDto.GetCompanyLocationResponse getCompanyLocation() {
-        //find CompanyLocation by '7ddde530-4d8a-429f-bb19-405f4e74057a'
-        Optional<CompanyLocation> companyLocation = companyLocationRepository.findById(UUID.fromString("7ddde530-4d8a-429f-bb19-405f4e74057a"));
+        CompanyLocation companyLocation = companyLocationRepository.findById(UUID.fromString("7ddde530-4d8a-429f-bb19-405f4e74057a"))
+                .orElseThrow(() -> new RuntimeException("CompanyLocation not found"));
 
         MoongklWorksInformationDto.GetCompanyLocationResponse response = MoongklWorksInformationDto.GetCompanyLocationResponse.builder()
-                .companyLocation(companyLocation.get().getCompanyLocation())
+                .companyLocation(companyLocation.getCompanyLocation())
                 .build();
 
         return response;
     }
 
     @Transactional
-    public NotificationDto.CreateResponse createNotification(NotificationDto.CreateRequest request) {
+    public NotificationDto.CreateResponse createNotification(NotificationDto.CreateRequest request, UUID adminId) {
         Notification notification = Notification.builder()
-                .adminId(UUID.fromString(request.getAdminId()))
+                .adminId(adminId)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .build();
@@ -127,6 +124,8 @@ public class MoongklWorksInformationService{
         notificationRepository.save(notification);
 
         NotificationDto.CreateResponse response = NotificationDto.CreateResponse.builder()
+                .notificationId(notification.getId().toString())
+                .adminId(adminId.toString())
                 .createdAt(notification.getCreatedAt())
                 .build();
 
@@ -143,21 +142,19 @@ public class MoongklWorksInformationService{
 
     @Transactional
     public NotificationDto.UpdateResponse updateNotification(NotificationDto.UpdateRequest request) {
+        Notification notification = notificationRepository.findById(UUID.fromString(request.getNotificationId()))
+                .orElseThrow(() -> new RuntimeException("Notification not found: " + request.getNotificationId()));
 
-        //Notification notification = notificationRepository.findById(request.getNotificationId());
-        //update Notification
-        Optional<Notification> notification = notificationRepository.findById(UUID.fromString(request.getNotificationId()));
+        notification.updateNotification(request.getTitle(), request.getContent());
 
-        notification.get().updateNotification(request.getTitle(), request.getContent());
-
-        notificationRepository.save(notification.get());
+        notificationRepository.save(notification);
 
         NotificationDto.UpdateResponse response = NotificationDto.UpdateResponse.builder()
-                .updatedAt(notification.get().getUpdatedAt())
+                .updatedAt(notification.getUpdatedAt())
                 .build();
 
         Map<String, String> messageMap = new LinkedHashMap<>();
-        messageMap.put("id", request.getNotificationId().toString());
+        messageMap.put("id", request.getNotificationId());
         messageMap.put("title", request.getTitle());
         messageMap.put("content", request.getContent());
 

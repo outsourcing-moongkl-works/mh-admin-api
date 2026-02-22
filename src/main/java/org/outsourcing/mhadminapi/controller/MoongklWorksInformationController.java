@@ -119,7 +119,7 @@ public class MoongklWorksInformationController {
 
         log.info(userPrincipal.getAdmin().getEmail() + " create notification");
 
-        NotificationDto.CreateResponse response = moongklWorksInformationService.createNotification(request);
+        NotificationDto.CreateResponse response = moongklWorksInformationService.createNotification(request, userPrincipal.getAdmin().getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
