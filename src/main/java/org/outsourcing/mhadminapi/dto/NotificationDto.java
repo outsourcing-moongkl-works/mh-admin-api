@@ -71,7 +71,7 @@ public class NotificationDto {
     @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
     public static class GetResponse{
         private UUID notificationId;
-        private UUID adminId;
+        private String adminId;
         private String title;
         private String content;
         private LocalDateTime createdAt;

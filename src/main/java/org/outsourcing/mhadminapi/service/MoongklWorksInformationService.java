@@ -116,7 +116,7 @@ public class MoongklWorksInformationService{
     @Transactional
     public NotificationDto.CreateResponse createNotification(NotificationDto.CreateRequest request, UUID adminId) {
         Notification notification = Notification.builder()
-                .adminId(adminId)
+                .adminId(adminId.toString())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .build();
@@ -168,16 +168,7 @@ public class MoongklWorksInformationService{
         Sort sortBy = Sort.by(Sort.Direction.DESC, "createdAt");
         final Pageable pageable = PageRequest.of(page, size, sortBy);
 
-        Page<NotificationDto.GetResponse> response = notificationRepository.findAllByOrderByCreatedAtDesc(pageable).map(notification -> NotificationDto.GetResponse.builder()
-                .adminId(notification.getAdminId())
-                .notificationId(notification.getNotificationId())
-                .title(notification.getTitle())
-                .content(notification.getContent())
-                .createdAt(notification.getCreatedAt())
-                .updatedAt(notification.getUpdatedAt())
-                .build());
-
-        return response;
+        return notificationRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
 }

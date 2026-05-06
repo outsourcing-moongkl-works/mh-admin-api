@@ -27,8 +27,8 @@ public class Notification {
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
-    @Column(name = "admin_id", columnDefinition = "BINARY(16)", nullable = false, length = 16)
-    private UUID adminId;
+    @Column(name = "admin_id", nullable = false, length = 36)
+    private String adminId;
 
     @Column(name = "title", nullable = false, length = 50)
     private String title;
@@ -52,7 +52,7 @@ public class Notification {
     }
 
     @Builder
-    public Notification(UUID adminId, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Notification(String adminId, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.adminId = adminId;
         this.title = title;
         this.content = content;
