@@ -171,4 +171,21 @@ public class MoongklWorksInformationService{
         return notificationRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 
+    @Transactional
+    public void deleteNotification(NotificationDto.DeleteRequest request) {
+        UUID notificationId = UUID.fromString(request.getNotificationId());
+
+        if (!notificationRepository.existsById(notificationId)) {
+            throw new RuntimeException("Notification not found: " + request.getNotificationId());
+        }
+
+        notificationRepository.deleteById(notificationId);
+
+        Map<String, String> messageMap = new LinkedHashMap<>();
+        messageMap.put("id", request.getNotificationId());
+
+        MessageDto messageDto = sqsSender.createMessageDtoFromRequest("delete notification", messageMap);
+        sqsSender.sendToSQS(messageDto);
+    }
+
 }

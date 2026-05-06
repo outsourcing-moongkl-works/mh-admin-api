@@ -8,6 +8,7 @@ import org.outsourcing.mhadminapi.entity.Admin;
 import org.outsourcing.mhadminapi.exception.AdminErrorResult;
 import org.outsourcing.mhadminapi.exception.AdminException;
 import org.outsourcing.mhadminapi.service.AdminService;
+import org.outsourcing.mhadminapi.service.EnterpriseService;
 import org.outsourcing.mhadminapi.vo.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ import java.time.LocalDateTime;
 public class AdminController {
 
     private final AdminService adminService;
+    private final EnterpriseService enterpriseService;
     @PreAuthorize("hasAuthority('MASTER')")
     @PostMapping
     public ResponseEntity<AdminDto.CreateAdminResponse> createAdmin(@RequestBody AdminDto.CreateAdminRequest request) {
@@ -229,6 +232,37 @@ public class AdminController {
     public ResponseEntity<UserDto.ReadResponse> findUserById(@PathVariable String userId) {
 
         UserDto.ReadResponse response = adminService.findUserById(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PreAuthorize("hasAnyAuthority('MASTER','ADMIN','MANAGER','STAFF')")
+    @GetMapping("/enterprise/story/searching")
+    public ResponseEntity<Page<EnterpriseDto.GetStoryPageResponse>> searchEnterpriseStories(
+            @RequestParam("enterprise_id") String enterpriseId,
+            @RequestParam(defaultValue = "1900-01-01") String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) Boolean isPublic) {
+
+        if (endDate == null || endDate.trim().isEmpty()) {
+            endDate = LocalDate.now().toString();
+        }
+
+        LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
+        LocalDateTime endDateTime = LocalDate.parse(endDate).atTime(23, 59, 59);
+
+        Page<EnterpriseDto.GetStoryPageResponse> response = enterpriseService.searchStory(
+                UUID.fromString(enterpriseId),
+                page,
+                size,
+                sort,
+                startDateTime,
+                endDateTime,
+                isPublic
+        );
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

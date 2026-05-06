@@ -135,6 +135,16 @@ public class MoongklWorksInformationController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @PreAuthorize("hasAuthority('MASTER')")
+    @DeleteMapping("/notification")
+    public ResponseEntity<ResponseDto> deleteNotification(@AuthenticationPrincipal UserPrincipal userPrincipal, @RequestBody NotificationDto.DeleteRequest request) {
+        log.info(userPrincipal.getAdmin().getEmail() + " delete notification");
+
+        moongklWorksInformationService.deleteNotification(request);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @GetMapping("/notification")
     public ResponseEntity<Page<NotificationDto.GetResponse>> getNotification(@RequestParam int page, @RequestParam int size) {
 
