@@ -23,7 +23,8 @@ public class CompanyLocation {
     @Column(name = "id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID id;
 
-    @Column(name = "company_location", nullable = false, length = 500)
+    @Lob
+    @Column(name = "company_location", nullable = false, columnDefinition = "LONGTEXT")
     private String companyLocation;
 
     @CreatedDate
